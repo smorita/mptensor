@@ -1,0 +1,55 @@
+##### default #####
+# CXX = mpicxx
+# CXXFLAGS = -O3
+# LDFLAGS = -lscalapack
+
+##### OpenMPI + Intel MKL #####
+CXX = mpicxx
+CXXFLAGS = -O3 -no-prec-div -xSSE2 -openmp -parallel -Wall -Wno-unknown-pragmas
+LDFLAGS = -lmkl_scalapack_lp64 -lmkl_blacs_openmpi_lp64 -mkl=parallel
+
+##### MPICH + Intel MKL #####
+# CXX = mpicxx
+# CXXFLAGS = -O3 -no-prec-div -xSSE2 -openmp -parallel -Wall -Wno-unknown-pragmas
+# LDFLAGS = -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel
+
+##### K computer #####
+# CXX = mpiFCCpx
+# CXXFLAGS = -Kfast,parallel,ocl,openmp -Koptmsg=2
+# LDFLAGS = -SCALAPACK -SSL2BLAMP
+
+##### ISSP System B (sekirei) #####
+# CXX = mpicxx
+# CXXFLAGS = -O3 -xCORE-AVX2 -qopenmp -parallel -Wall -Wno-unknown-pragmas
+# LDFLAGS = -lmkl_scalapack_lp64 -lmkl_blacs_sgimpt_lp64 -mkl=parallel -lmpi
+
+##### without MPI + Intel MKL #####
+# CXX = icc -D_NO_MPI
+# CXXFLAGS = -O3 -no-prec-div -xSSE2 -openmp -parallel -Wall -Wno-unknown-pragmas
+# LDFLAGS = -mkl=parallel
+
+##### Ubuntu 14.04, Linux Mint 17 #####
+# CXX = mpicxx
+# CXXFLAGS = -O3 -fopenmp
+# LDFLAGS = -lscalapack-openmpi -lblacsCinit-openmpi -lblacs-openmpi -llapack -lblas
+
+
+##### For RSVD #####
+RANDOM = CPP11
+# RANDOM = BOOST
+# RANDOM = DSFMT
+
+CXXFLAGS += -D_USE_RANDOM_${RANDOM}
+
+ifeq (${RANDOM}, CPP11)
+	CXXFLAGS += -std=c++11
+endif
+
+ifeq (${RANDOM}, DSFMT)
+	DSFMT_DIR = /home/username/local/dSFMT
+	RANDOM_OBJ = ${DSFMT_DIR}/dSFMT.o
+	CXXFLAGS += -I${DSFMT_DIR}
+endif
+
+# If rsvd is unnecessary, uncomment the following line.
+#CXXFLAGS += -D_NO_RANDOM
