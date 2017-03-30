@@ -11,10 +11,12 @@
 #include <ctime>
 #include <mpi.h>
 #include <mptensor.hpp>
+#include "timer.hpp"
 
 extern "C" {
   int omp_get_max_threads();
 }
+
 using namespace mptensor;
 typedef Tensor<scalapack::Matrix,double> ptensor;
 
@@ -56,18 +58,6 @@ ptensor test_tensor(size_t n) {
 }
 
 
-class Timer {
-public:
-  Timer() {};
-  void start() {t_start = MPI_Wtime();};
-  void stop() {t_end = MPI_Wtime();};
-  double result() {return t_end - t_start;};
-private:
-  double t_start;
-  double t_end;
-};
-
-
 class Multiply_row_02 {
 public:
   Multiply_row_02(const ptensor& t) : t_(t) {};
@@ -94,6 +84,7 @@ private:
 
 /* Main function */
 int main(int argc, char **argv) {
+  using examples::benchmark::Timer;
 
   /* Start */
   MPI_Init(&argc, &argv);

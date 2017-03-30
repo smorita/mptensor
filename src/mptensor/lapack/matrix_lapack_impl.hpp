@@ -127,6 +127,26 @@ void Matrix<C>::local_position(size_t g_row, size_t g_col, int &comm_rank, size_
   lindex = g_row + g_col * n_row_;
 }
 
+
+template <typename C> inline
+size_t Matrix<C>::local_row_size() const { return n_row_; }
+
+template <typename C> inline
+size_t Matrix<C>::local_col_size() const { return n_col_; }
+
+template <typename C> inline
+size_t Matrix<C>::local_row_index(size_t lindex) const { return lindex % n_row_; }
+
+template <typename C> inline
+size_t Matrix<C>::local_col_index(size_t lindex) const { return lindex / n_row_; }
+
+template <typename C> inline
+size_t Matrix<C>::global_row_index(size_t lindex_row) const { return lindex_row; }
+
+template <typename C> inline
+size_t Matrix<C>::global_col_index(size_t lindex_col) const { return lindex_col; }
+
+
 template <typename C> inline
 void Matrix<C>::init(size_t n_row, size_t n_col) {
   comm_ = 0;
@@ -189,6 +209,11 @@ const Matrix<C> Matrix<C>::transpose() {
 
   return M_new;
 }
+
+template <typename C> inline
+std::vector<C> Matrix<C>::flatten() {
+  return V;
+};
 
 template <typename C> inline
 void Matrix<C>::barrier() const { return; }

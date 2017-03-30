@@ -32,6 +32,8 @@ extern "C" {
                double a[], int *lda, double w[],
                double work[], int *lwork,
                int iwork[], int *liwork, int *info);
+  void dgesv_(int *n, int *nrhs, double a[], int *lda,
+              int ipiv[], double b[], int *ldb, int *info);
 
 
   void zgemm_(char *transa, char *transb, int *m, int *n, int *k,
@@ -49,6 +51,8 @@ extern "C" {
                complex a[], int *lda, double w[],
                complex work[], int *lwork, double rwork[], int *lrwork,
                int iwork[], int *liwork, int *info);
+  void zgesv_(int *n, int *nrhs, complex a[], int *lda,
+              int ipiv[], complex b[], int *ldb, int *info);
 
 }
 
@@ -511,6 +515,46 @@ int matrix_eigh(Matrix<complex>& A, std::vector<double>& W) {
   zheevd_(&jobz, &uplo, &n, A.head(), &lda, &(W[0]),
           &(work[0]), &lwork, &(rwork[0]), &lrwork,
           &(iwork[0]), &liwork, &info);
+
+  return info;
+};
+
+
+template <>
+int matrix_solve(Matrix<double>& A, Matrix<double>& B) {
+  assert(A.n_row() == A.n_col());
+  assert(A.n_row() == B.n_row());
+
+  int n = A.n_row();
+  int nrhs = B.n_col();
+  int lda = A.n_row();
+  int ldb = B.n_row();
+  std::vector<int> ipiv(n);
+  int info;
+
+  /* Solve linear equation */
+  dgesv_(&n, &nrhs, A.head(), &lda,
+         &(ipiv[0]), B.head(), &ldb, &info);
+
+  return info;
+};
+
+
+template <>
+int matrix_solve(Matrix<complex>& A, Matrix<complex>& B) {
+  assert(A.n_row() == A.n_col());
+  assert(A.n_row() == B.n_row());
+
+  int n = A.n_row();
+  int nrhs = B.n_col();
+  int lda = A.n_row();
+  int ldb = B.n_row();
+  std::vector<int> ipiv(n);
+  int info;
+
+  /* Solve linear equation */
+  zgesv_(&n, &nrhs, A.head(), &lda,
+         &(ipiv[0]), B.head(), &ldb, &info);
 
   return info;
 };

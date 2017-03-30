@@ -6,6 +6,7 @@
 #include <iostream>
 #include <mpi.h>
 #include <mptensor.hpp>
+#include "timer.hpp"
 
 extern "C" {
   int omp_get_max_threads();
@@ -40,21 +41,11 @@ inline mptensor::Index permutation(size_t n) {
   return idx;
 }
 
-class Timer {
-public:
-  Timer() {};
-  void start() {t_start = MPI_Wtime();};
-  void stop() {t_end = MPI_Wtime();};
-  double result() {return t_end - t_start;};
-private:
-  double t_start;
-  double t_end;
-};
-
 /* Main function */
 int main(int argc, char **argv) {
   using namespace mptensor;
   typedef Tensor<scalapack::Matrix,double> ptensor;
+  using examples::benchmark::Timer;
 
   /* Start */
   MPI_Init(&argc, &argv);

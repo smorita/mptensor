@@ -100,6 +100,14 @@ bool check_contract_axes(const Axes& axes_1, const Axes& axes_2, size_t rank) {
   return true;
 }
 
+bool check_square(const Shape& shape, size_t urank) {
+  size_t rank = shape.size();
+  size_t d_row(1), d_col(1);
+  for(size_t i=0;i<urank;++i) d_row *= shape[i];
+  for(size_t i=urank;i<rank;++i) d_col *= shape[i];
+  return (d_row==d_col);
+}
+
 } // nemespace debug
 
 } // namespace mptensor

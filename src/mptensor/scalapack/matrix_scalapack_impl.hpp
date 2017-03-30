@@ -150,6 +150,32 @@ void Matrix<C>::local_position(size_t g_row, size_t g_col, int &comm_rank, size_
 }
 
 
+template <typename C> inline
+size_t Matrix<C>::local_row_size() const { return local_row_size_; }
+
+template <typename C> inline
+size_t Matrix<C>::local_col_size() const { return local_col_size_; }
+
+template <typename C> inline
+size_t Matrix<C>::local_row_index(size_t lindex) const {
+  return lindex % (static_cast<size_t>(get_lld()));
+}
+
+template <typename C> inline
+size_t Matrix<C>::local_col_index(size_t lindex) const {
+  return lindex / (static_cast<size_t>(get_lld()));
+}
+
+template <typename C> inline
+size_t Matrix<C>::global_row_index(size_t l_row) const {
+  return BLOCK_SIZE * ((l_row/BLOCK_SIZE) * grid.nprow + grid.myprow) + (l_row%BLOCK_SIZE);
+}
+
+template <typename C> inline
+size_t Matrix<C>::global_col_index(size_t l_col) const {
+  return BLOCK_SIZE * ((l_col/BLOCK_SIZE) * grid.npcol + grid.mypcol) + (l_col%BLOCK_SIZE);
+}
+
 //! Preprocess for fast conversion from local index to global one.
 template <typename C> inline
 void Matrix<C>::prep_local_to_global() const {
@@ -242,6 +268,8 @@ void Matrix<C>::init(size_t n_row, size_t n_col) {
   int info;
   descinit_(&(desc[0]), &xM, &xN, &xMB, &xNB, &irsrc, &icsrc, &(grid.ictxt), &lld, &info);
   V.resize(locr * locc);
+  local_row_size_ = static_cast<size_t>(locr);
+  local_col_size_ = static_cast<size_t>(locc);
   has_local_to_global = false;
   has_global_to_local = false;
 };
@@ -323,6 +351,20 @@ const Matrix<C> Matrix<C>::transpose() {
 
   return M_new;
 }
+
+template <typename C> inline
+std::vector<C> Matrix<C>::flatten() {
+  const size_t n = n_row() * n_col();
+  const size_t nr = n_row();
+  std::vector<C> vec(n);
+  size_t g_row, g_col;
+  for(size_t i=0;i<local_size();++i) {
+    global_index(i,g_row,g_col);
+    vec[g_row+g_col*nr] = V[i];
+  }
+  return mpi_wrapper::allreduce_vec(vec, get_comm());
+};
+
 
 template <typename C> inline
 void Matrix<C>::barrier() const {

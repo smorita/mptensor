@@ -1,4 +1,4 @@
-# mptensor v0.1
+# mptensor v0.2
 
 mptensor is parallel C++ libarary for tensor calculations.
 It provides similar interfaces as Numpy and Scipy in Python.
@@ -16,17 +16,15 @@ It provides similar interfaces as Numpy and Scipy in Python.
 
 ## Documents
 By `make doc`, HTML and LaTeX documents are generated in `doxygen_docs`.
-
+The HTML documents are available in http://kawashima.issp.u-tokyo.ac.jp/people/morita/mptensor/
 
 ## Examples
 
-```cpp
-#include <mptensor.hpp>
-using namespace mptensor;
-typedef Tensor<scalapack::Matrix,double> ptensor;
-ptensor A(Shape(3,4,5));
-```
-
+    #include <mptensor.hpp>
+    using namespace mptensor;
+    typedef Tensor<scalapack::Matrix,double> ptensor;
+    ptensor A(Shape(3,4,5));
+Example codes of TRG and HOTRG for the 2D Ising model are in `examples/Ising_2D`.
 
 ## Links
 

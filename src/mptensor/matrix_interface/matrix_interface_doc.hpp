@@ -105,6 +105,11 @@ template <typename C> int Matrix<C>::get_comm_size() const;
 template <typename C> int Matrix<C>::get_comm_rank() const;
 
 
+//! Return the flattened vector.
+/*!
+  \return the flattened vector. (global)
+*/
+template <typename C> std::vector<C> Matrix<C>::flatten() const;
 
 //! Wrapper of MPI_Barrier.
 template <typename C> void Matrix<C>::barrier() const;
@@ -133,6 +138,17 @@ template <typename C> void Matrix<C>::prep_global_to_local() const;
   \relatesalso Matrix
 */
 template <typename C> int matrix_eigh(Matrix<C>& a, std::vector<double>& s);
+
+
+//! Solve linear equation \f$ AX=B\f$.
+/*!
+  \param[in] a The \f$ N\times N\f$ coefficient matrix A. On exit, it may be destroyed.
+  \param[in,out]  b On entry, the \f$ N\times K\f$ right-hand side matrix B.
+  On exit, the \f$ N\times K\f$ solution matrix X.
+
+  \return information from the library.
+*/
+template <typename C> int matrix_solve(Matrix<C>& a, Matrix<C>& b);
 
 
 //! Return the maximum element.

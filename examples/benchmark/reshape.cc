@@ -6,6 +6,8 @@
 #include <iostream>
 #include <mpi.h>
 #include <mptensor.hpp>
+#include "timer.hpp"
+
 extern "C" {
   int omp_get_max_threads();
 }
@@ -14,21 +16,11 @@ inline double elem(mptensor::Index index) {
   return double(index[0] - 2.0*index[1] + 3.0*index[2] - 4.0*index[3]);
 }
 
-class Timer {
-public:
-  Timer() {};
-  void start() {t_start = MPI_Wtime();};
-  void stop() {t_end = MPI_Wtime();};
-  double result() {return t_end - t_start;};
-private:
-  double t_start;
-  double t_end;
-};
-
 
 /* Main function */
 int main(int argc, char **argv) {
   using namespace mptensor;
+  using examples::benchmark::Timer;
   typedef Tensor<scalapack::Matrix,double> ptensor;
 
   /* Start */

@@ -27,6 +27,16 @@ namespace mpi_wrapper {
 template <typename C> C allreduce_sum(C val, const MPI_Comm &comm);
 
 
+//! Calculate a summation of each element of vector over MPI communicator.
+/*!
+  \param[in] vec vector to be summed.
+  \param[in] comm MPI communicator.
+
+  \return resulted vector.
+*/
+template <typename C> std::vector<C> allreduce_vec(const std::vector<C> &vec, const MPI_Comm &comm);
+
+
 //! Wrapper of MPI_Sendrecv
 /*!
   \param[in] send_vec send vector
@@ -58,6 +68,18 @@ template <typename C>
 void alltoallv(const C *sendbuf, const int *sendcounts, const int *sdispls,
                C *recvbuf, const int *recvcounts, const int *rdispls,
                const MPI_Comm &comm);
+
+
+//! Wrapper of MPI_Bcast
+/*!
+  \param buffer Starting address of buffer.
+  \param count Number of entries in buffer.
+  \param root Rank of broadcast root.
+  \param comm Communicator.
+*/
+template <typename C>
+void bcast(C *buffer, int count, int root, const MPI_Comm &comm);
+
 
 } // namespace mpi_wrapper
 } // namespace mptensor

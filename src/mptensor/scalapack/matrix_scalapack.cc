@@ -36,6 +36,8 @@ extern "C" {
                 double tau[], double work[], int *lwork, int *info);
   void pdorgqr_(int *m, int *n, int *k, double a[], int *ia, int *ja, int desca[],
                 double tau[], double work[], int *lwork, int *info);
+  void pdgesv_(int *n, int *nrhs, double a[], int *ia, int *ja, int desca[],
+               int ipiv[], double b[], int *ib, int *jb, int descb[], int *info);
 
   void pzgemm_(char *transa, char *transb, int *m, int *n, int *k, complex *alpha,
                complex a[], int *ia, int *ja, int desca[], complex b[], int *ib,
@@ -55,6 +57,8 @@ extern "C" {
                 complex tau[], complex work[], int *lwork, int *info);
   void pzungqr_(int *m, int *n, int *k, complex a[], int *ia, int *ja, int desca[],
                 complex tau[], complex work[], int *lwork, int *info);
+  void pzgesv_(int *n, int *nrhs, complex a[], int *ia, int *ja, int desca[],
+               int ipiv[], complex b[], int *ib, int *jb, int descb[], int *info);
 }
 
 
@@ -555,6 +559,51 @@ int matrix_eigh(Matrix<complex>& A, std::vector<double>& W) {
 
   return info;
 };
+
+
+template <>
+int matrix_solve(Matrix<double>& A, Matrix<double>& B) {
+  assert(A.n_row() == A.n_col());
+  assert(A.n_row() == B.n_row());
+
+  int n = A.n_row();
+  int nrhs = B.n_col();
+  int ia, ja, ib, jb, info;
+  std::vector<int> ipiv(n);
+  ia = ja = ib = jb = 1;
+
+  /* Solve linear equation */
+  pdgesv_(&n, &nrhs,
+          A.head(), &ia, &ja, const_cast<int*>(A.descriptor()),
+          &(ipiv[0]),
+          B.head(), &ib, &jb, const_cast<int*>(B.descriptor()),
+          &info);
+
+  return info;
+};
+
+
+template <>
+int matrix_solve(Matrix<complex>& A, Matrix<complex>& B) {
+  assert(A.n_row() == A.n_col());
+  assert(A.n_row() == B.n_row());
+
+  int n = A.n_row();
+  int nrhs = B.n_col();
+  int ia, ja, ib, jb, info;
+  std::vector<int> ipiv(n);
+  ia = ja = ib = jb = 1;
+
+  /* Solve linear equation */
+  pzgesv_(&n, &nrhs,
+          A.head(), &ia, &ja, const_cast<int*>(A.descriptor()),
+          &(ipiv[0]),
+          B.head(), &ib, &jb, const_cast<int*>(B.descriptor()),
+          &info);
+
+  return info;
+};
+
 
 template <>
 double matrix_trace(const Matrix<double>& A) {
