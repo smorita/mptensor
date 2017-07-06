@@ -1,0 +1,4 @@
+# for Intel Compiler & MKL
+set(CMAKE_C_COMPILER "icc" CACHE STRING "" FORCE)
+set(CMAKE_CXX_COMPILER "icpc" CACHE STRING "" FORCE)
+set(BLA_VENDOR "Intel10_64lp" CACHE STRING "" FORCE)
