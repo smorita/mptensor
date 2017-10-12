@@ -1,21 +1,21 @@
 ##### default #####
-# CXX = mpicxx
-# CXXFLAGS = -O3 -fopenmp
-# LDFLAGS = -lscalapack -llapack -lblas
+CXX = mpicxx
+CXXFLAGS = -O3 -fopenmp
+LDFLAGS = -lscalapack -llapack -lblas
 
 ##### OpenMPI + Intel MKL #####
-CXX = mpicxx
-CXXFLAGS = -O3 -no-prec-div -xSSE2 -openmp -parallel
-LDFLAGS = -lmkl_scalapack_lp64 -lmkl_blacs_openmpi_lp64 -mkl=parallel
+# CXX = mpicxx
+# CXXFLAGS = -O3 -no-prec-div -xSSE2 -qopenmp -parallel
+# LDFLAGS = -lmkl_scalapack_lp64 -lmkl_blacs_openmpi_lp64 -mkl=parallel
 
 ##### MPICH + Intel MKL #####
 # CXX = mpicxx
-# CXXFLAGS = -O3 -no-prec-div -xSSE2 -openmp -parallel
+# CXXFLAGS = -O3 -no-prec-div -xSSE2 -qopenmp -parallel
 # LDFLAGS = -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel
 
 ##### K computer #####
 # CXX = mpiFCCpx
-# CXXFLAGS = -Kfast,parallel,ocl,openmp
+# CXXFLAGS = -Kfast,parallel,ocl,openmp -std=c++11 -Xg -Nstl=libc++
 # LDFLAGS = -SCALAPACK -SSL2BLAMP
 
 ##### ISSP System B (sekirei) #####
@@ -25,7 +25,7 @@ LDFLAGS = -lmkl_scalapack_lp64 -lmkl_blacs_openmpi_lp64 -mkl=parallel
 
 ##### without MPI + Intel MKL #####
 # CXX = icc -D_NO_MPI
-# CXXFLAGS = -O3 -no-prec-div -xSSE2 -openmp -parallel
+# CXXFLAGS = -O3 -no-prec-div -xSSE2 -qopenmp -parallel
 # LDFLAGS = -mkl=parallel
 
 ##### Ubuntu 14.04, Linux Mint 17 #####

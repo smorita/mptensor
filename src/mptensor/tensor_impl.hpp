@@ -19,6 +19,7 @@
 #include "index.hpp"
 #include "matrix.hpp"
 #include "tensor.hpp"
+#include "mpi_wrapper.hpp"
 
 namespace mptensor {
 
@@ -356,9 +357,13 @@ void Tensor<Matrix,C>::init(const Shape& shape, size_t urank, const Axes& map) {
   Every process outputs information to output stream.
 
   \param out Output stream.
+  \param tag (optional) A tag which is inserted at the head of the line.
 */
 template <template<typename> class Matrix, typename C>
-void Tensor<Matrix,C>::print_info(std::ostream& out) const {
+void Tensor<Matrix,C>::print_info(std::ostream& out, const std::string& tag) const {
+  if(tag.size()>0) {
+    out << tag << ":\t";
+  }
   out << "Tensor: shape= " << Dim
       << " upper_rank= " << upper_rank
       << " axes_map= " << axes_map
@@ -371,16 +376,21 @@ void Tensor<Matrix,C>::print_info(std::ostream& out) const {
   All processes output information of a tensor one by one.
   \note Since this function uses MPI_Barrier, all the processes should call this function at the same time.
   \param out Output stream.
+  \param tag (optional) A tag which is inserted at the head of each line.
 */
 template <template<typename> class Matrix, typename C>
-void Tensor<Matrix,C>::print_info_mpi(std::ostream& out) const {
+void Tensor<Matrix,C>::print_info_mpi(std::ostream& out, const std::string& tag) const {
   const int mpisize = get_comm_size();
   const int mpirank = get_comm_rank();
   const typename Tensor<Matrix,C>::comm_type& comm = get_comm();
+  Mat.barrier();
   for(int i=0;i<mpisize;++i) {
     if(i==mpirank) {
+      if(tag.size()>0) {
+        out << tag << ":\t";
+      }
       out << "mpirank: " << mpirank << "\t";
-      print_info(out);
+      print_info(out, "");
     }
     Mat.barrier();
   }
@@ -2321,16 +2331,16 @@ Tensor<Matrix,C> operator/(Tensor<Matrix,C> lhs, D rhs) { return (lhs /= rhs); }
 template <template<typename> class Matrix, typename C, typename D> inline
 Tensor<Matrix,C> operator*(D lhs, Tensor<Matrix,C> rhs) { return (rhs *= lhs); }
 
- //!< Return the maximum element. For complex, same as max_abs().
+//! Return the maximum element. For complex, same as max_abs().
 template <template<typename> class Matrix, typename C> inline
 double max(const Tensor<Matrix,C> &t) {return max(t.get_matrix()); }
- //!< Return the minimum element. For complex, same as min_abs().
+//! Return the minimum element. For complex, same as min_abs().
 template <template<typename> class Matrix, typename C> inline
 double min(const Tensor<Matrix,C> &t) {return min(t.get_matrix()); }
- //!< Return maximum of the absolute value of an element.
+//! Return maximum of the absolute value of an element.
 template <template<typename> class Matrix, typename C> inline
 double max_abs(const Tensor<Matrix,C> &t) {return max_abs(t.get_matrix()); }
- //!< Return minimum of the absolute value of an element.
+//! Return minimum of the absolute value of an element.
 template <template<typename> class Matrix, typename C> inline
 double min_abs(const Tensor<Matrix,C> &t) {return min_abs(t.get_matrix()); }
 

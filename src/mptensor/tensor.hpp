@@ -10,6 +10,7 @@
 #include <vector>
 #include <algorithm>
 #include <cassert>
+#include <string>
 
 #include "complex.hpp"
 #include "index.hpp"
@@ -61,8 +62,8 @@ public:
   bool get_value(const Index& idx, C &val) const;
   void set_value(const Index& idx, C val);
 
-  void print_info(std::ostream&) const;
-  void print_info_mpi(std::ostream&) const;
+  void print_info(std::ostream& out, const std::string& tag="") const;
+  void print_info_mpi(std::ostream&, const std::string& tag="") const;
 
   void save(const char* filename) const;
   void load(const char* filename);
