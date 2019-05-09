@@ -1,0 +1,5 @@
+add_subdirectory(Ising_2D)
+add_subdirectory(benchmark)
+add_subdirectory(output)
+add_subdirectory(save_load)
+add_subdirectory(simple_example)

@@ -1,0 +1,5 @@
+set(PROGS trg hotrg)
+foreach(name ${PROGS})
+  add_executable(${name} ${name}.cc ising.cc)
+  target_link_libraries(${name} mptensor)
+endforeach(name ${PROGS})
