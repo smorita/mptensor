@@ -17,53 +17,14 @@ if(DEFINED SCALAPACK_LIB)
   return()
 endif(DEFINED SCALAPACK_LIB)
 
+unset(_SCALAPACK_LIBRARY)
+
 if(DEFINED BLAS_mkl_core_LIBRARY)
 
   find_library(_SCALAPACK_LIBRARY
     NAMES mkl_scalapack_lp64
     PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
     DOC "The ScaLAPACK library")
-  if(_SCALAPACK_LIBRARY)
-    list(APPEND _SCALAPACK_LIBRARIES ${_SCALAPACK_LIBRARY})
-  else(_SCALAPACK_LIBRARY)
-    message(STATUS "ScaLAPACK library: not found")
-    set(SCALAPACK_FOUND FALSE)
-    return()
-  endif(_SCALAPACK_LIBRARY)
-
-  # Check whether SGI MPT is used
-  try_compile(_SGI_MPT
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/config/check_sgimpt.c
-    OUTPUT_VARIABLE LOG)
-  if(_SGI_MPT)
-    find_library(_SCALAPACK_BLACS_LIBRARY
-      NAMES mkl_blacs_sgimpt_lp64
-      PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
-      DOC "The BLACS library")
-    MESSAGE(STATUS "SGI MPT is used")
-  else(_SGI_MPT)
-    try_compile(_OPENMPI
-      ${CMAKE_CURRENT_BINARY_DIR}
-      ${CMAKE_CURRENT_SOURCE_DIR}/config/check_openmpi.c
-      OUTPUT_VARIABLE LOG)
-    if(_OPENMPI)
-      find_library(_SCALAPACK_BLACS_LIBRARY
-        NAMES mkl_blacs_openmpi_lp64
-        PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
-        DOC "The BLACS library")
-      MESSAGE(STATUS "OpenMPI is used")
-    else(_OPENMPI)
-      find_library(_SCALAPACK_BLACS_LIBRARY
-        NAMES mkl_blacs_intelmpi_lp64
-        PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
-        DOC "The BLACS library")
-      MESSAGE(STATUS "Intel MPI/MPICH2/MVAPICH is used")
-    endif(_OPENMPI)
-  endif(_SGI_MPT)
-  if(_SCALAPACK_BLACS_LIBRARY)
-    list(APPEND _SCALAPACK_LIBRARIES ${_SCALAPACK_BLACS_LIBRARY})
-  endif(_SCALAPACK_BLACS_LIBRARY)
 
 else(DEFINED BLAS_mkl_core_LIBRARY)
 
@@ -102,24 +63,62 @@ else(DEFINED BLAS_mkl_core_LIBRARY)
     NAMES scalapack scalapack-openmpi scalapack-mpich
     PATHS ${_LIBPATHS}
     DOC "The ScaLAPACK library")
-  if(_SCALAPACK_LIBRARY)
-    list(APPEND _SCALAPACK_LIBRARIES ${_SCALAPACK_LIBRARY})
-  else(_SCALAPACK_LIBRARY)
-    message(STATUS "ScaLAPACK library: not found")
-    set(SCALAPACK_FOUND FALSE)
-    return()
-  endif(_SCALAPACK_LIBRARY)
-
-  find_library(_BLACS_LIBRARY
-    NAMES blacs-openmpi blacs-mpich
-    PATHS ${_LIBPATHS}
-    DOC "The ScaLAPACK BLACS library")
-  if(_BLACS_LIBRARY)
-    list(APPEND _SCALAPACK_LIBRARIES ${_BLACS_LIBRARY})
-  endif(_BLACS_LIBRARY)
-
 endif(DEFINED BLAS_mkl_core_LIBRARY)
 
-set(SCALAPACK_FOUND TRUE)
-set(SCALAPACK_LIBRARIES ${_SCALAPACK_LIBRARIES})
-message(STATUS "ScaLAPACK libraries: ${SCALAPACK_LIBRARIES}")
+find_package_handle_standard_args(ScaLAPACK
+  FOUND_VAR SCALAPACK_FOUND
+  REQUIRED_VARS _SCALAPACK_LIBRARY
+  )
+
+unset(_SCALAPACK_LIBRARIES)
+
+if(SCALAPACK_FOUND)
+  list(APPEND SCALAPACK_LIBRARIES ${_SCALAPACK_LIBRARY})
+  if(DEFINED BLAS_mkl_core_LIBRARY)
+    # Check whether SGI MPT is used
+    try_compile(_SGI_MPT
+      ${CMAKE_CURRENT_BINARY_DIR}
+      ${CMAKE_CURRENT_SOURCE_DIR}/config/check_sgimpt.c
+      OUTPUT_VARIABLE LOG)
+    if(_SGI_MPT)
+      find_library(_SCALAPACK_BLACS_LIBRARY
+	NAMES mkl_blacs_sgimpt_lp64
+	PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
+	DOC "The BLACS library")
+      MESSAGE(STATUS "SGI MPT is used")
+    else(_SGI_MPT)
+      try_compile(_OPENMPI
+	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/config/check_openmpi.c
+	OUTPUT_VARIABLE LOG)
+      if(_OPENMPI)
+	find_library(_SCALAPACK_BLACS_LIBRARY
+	  NAMES mkl_blacs_openmpi_lp64
+	  PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
+	  DOC "The BLACS library")
+	MESSAGE(STATUS "OpenMPI is used")
+      else(_OPENMPI)
+	find_library(_SCALAPACK_BLACS_LIBRARY
+	  NAMES mkl_blacs_intelmpi_lp64
+	  PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
+	  DOC "The BLACS library")
+	MESSAGE(STATUS "Intel MPI/MPICH2/MVAPICH is used")
+      endif(_OPENMPI)
+    endif(_SGI_MPT)
+    if(_SCALAPACK_BLACS_LIBRARY)
+      list(APPEND SCALAPACK_LIBRARIES ${_SCALAPACK_BLACS_LIBRARY})
+    endif(_SCALAPACK_BLACS_LIBRARY)
+
+
+  else(DEFINED BLAS_mkl_core_LIBRARY)
+    find_library(_BLACS_LIBRARY
+      NAMES blacs-openmpi blacs-mpich
+      PATHS ${_LIBPATHS}
+      DOC "The ScaLAPACK BLACS library")
+    if(_BLACS_LIBRARY)
+      list(APPEND SCALAPACK_LIBRARIES ${_BLACS_LIBRARY})
+    endif(_BLACS_LIBRARY)
+
+  endif(DEFINED BLAS_mkl_core_LIBRARY)
+endif(SCALAPACK_FOUND)
+

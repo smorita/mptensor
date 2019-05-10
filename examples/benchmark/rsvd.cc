@@ -13,9 +13,13 @@
 #include <mptensor.hpp>
 #include "timer.hpp"
 
+#ifdef _OPENMP
 extern "C" {
   int omp_get_max_threads();
 }
+#else
+int omp_get_max_threads(){ return 1; }
+#endif
 
 using namespace mptensor;
 typedef Tensor<scalapack::Matrix,double> ptensor;
