@@ -8,9 +8,13 @@
 #include <mptensor.hpp>
 #include "timer.hpp"
 
+#ifdef _OPENMP
 extern "C" {
   int omp_get_max_threads();
 }
+#else
+int omp_get_max_threads(){ return 1; }
+#endif
 
 inline double elem(mptensor::Index index) {
   return double(index[0] - 2.0*index[1] + 3.0*index[2] - 4.0*index[3]);
