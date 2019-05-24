@@ -19,7 +19,7 @@
 */
 
 /*!
-  \file   timer.hpp
+  \file   benchmark/timer.hpp
   \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
   \date   Thu Aug 25
   \brief  Timer class

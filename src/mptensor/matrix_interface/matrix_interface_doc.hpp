@@ -128,7 +128,7 @@ template <typename C> int Matrix<C>::get_comm_rank() const;
 /*!
   \return the flattened vector. (global)
 */
-template <typename C> std::vector<C> Matrix<C>::flatten() const;
+template <typename C> std::vector<C> Matrix<C>::flatten();
 
 //! Wrapper of MPI_Barrier.
 template <typename C> void Matrix<C>::barrier() const;

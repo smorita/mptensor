@@ -19,10 +19,10 @@
 */
 
 /*!
-  \file   example.cc
+  \file   save_load.cc
   \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
   \date   Mar 03 2015
-  \brief  Simple example of mptensor
+  \brief  Example of save and load
 */
 
 #include <iostream>

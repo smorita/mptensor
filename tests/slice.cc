@@ -19,7 +19,7 @@
 */
 
 /*!
-  \file   slice.cc
+  \file   tests/slice.cc
   \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
   \date   April 24 2015
   \brief  Test code for slice

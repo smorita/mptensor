@@ -19,7 +19,7 @@
 */
 
 /*!
-  \file   transpose.cc
+  \file   tests/transpose.cc
   \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
   \date   April 24 2015
   \brief  Test code for transpose

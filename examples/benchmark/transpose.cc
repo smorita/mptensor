@@ -19,7 +19,7 @@
 */
 
 /*!
-  \file   transpose.cc
+  \file   benchmark/transpose.cc
   \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
   \date   Dec 02 2015
   \brief  Benchmark of transpose

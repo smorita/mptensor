@@ -132,7 +132,7 @@ Tensor<Matrix,C>::Tensor(const comm_type& comm, const Tensor<lapack::Matrix,C>& 
 //! Constructor of tensor from non-distributed vector.
 /*!
   \param[in] comm Communicator.
-  \param[in] t Non-distributed vector.
+  \param[in] v Non-distributed vector.
   \attention It is assumed that all processes have the same data.
 */
 template <template<typename> class Matrix, typename C>
@@ -2219,8 +2219,8 @@ int eigh(const Tensor<Matrix,C> &a, const Axes &axes_row, const Axes &axes_col,
 //! Solve linear equation \f$ A\vec{x}=\vec{b}\f$.
 /*!
   \param[in] a The coefficient square matrix A.
-  \param[in] b (global) The right hand side vector \vec{b}.
-  \param[out] x (global) The solution \vec{x}.
+  \param[in] b (global) The right hand side vector \f$ \vec{b}\f$.
+  \param[out] x (global) The solution \f$ \vec{x}\f$.
 
   \return Information from linear-algebra library.
 */
@@ -2388,7 +2388,8 @@ Tensor<Matrix,complex> conj(Tensor<Matrix,complex> t) {
 
 //! Output elements of tensor in numpy style
 /*!
-  \param out Output stream.
+  \param[out] out Output stream.
+  \param[in] t Tensor to be output.
 */
 template <template<typename> class Matrix, typename C> std::ostream& operator<<(std::ostream& out, const Tensor<Matrix,C> &t) {
   std::size_t dim = t.ndim();

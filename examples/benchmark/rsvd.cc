@@ -19,7 +19,7 @@
 */
 
 /*!
-  \file   rsvd.cc
+  \file   benchmark/rsvd.cc
   \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
   \date   Feb  32016
 

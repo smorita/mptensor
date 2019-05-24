@@ -19,9 +19,10 @@
 */
 
 /*!
-  \file   slice.cc
+  \file   benchmark/slice.cc
   \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
   \date   Dec 24 2015
+
   \brief  Benchmark of slice
 */
 
