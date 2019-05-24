@@ -1,7 +1,29 @@
 /*
-  Jan. 29, 2015
-  Copyright (C) 2015 Satoshi Morita
- */
+  mptensor - Parallel Library for Tensor Network Methods
+
+  Copyright 2016 Satoshi Morita
+
+  mptensor is free software: you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  mptensor is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with mptensor.  If not, see
+  <https://www.gnu.org/licenses/>.
+*/
+
+/*!
+  \file   matrix_scalapack_impl.hpp
+  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \date   Jan 29 2015
+  \brief  Implementation of scalapack::Matrix class
+*/
 
 #ifndef _MATRIX_SCALAPACK_IMPL_HPP_
 #define _MATRIX_SCALAPACK_IMPL_HPP_
