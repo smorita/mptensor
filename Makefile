@@ -15,9 +15,10 @@ tests:
 	$(MAKE) -C tests
 
 doc doxygen:
-	doxygen Doxyfile
+	$(MAKE) -C doc/doxygen
 
 clean:
 	$(MAKE) -C src clean
 	$(MAKE) -C tests clean
+	$(MAKE) -C doc/doxygen clean
 	rm -rf doxygen_docs
