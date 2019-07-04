@@ -138,6 +138,9 @@ template <typename C>
 int matrix_eigh(Matrix<C>& a, std::vector<double>& s);
 
 template <typename C>
+int matrix_eigh(Matrix<C>& a, Matrix<C>& b, std::vector<double>& s, Matrix<C>& u);
+
+template <typename C>
 int matrix_solve(Matrix<C>& a, Matrix<C>& b);
 
 template <typename C> double max(const Matrix<C>& a);

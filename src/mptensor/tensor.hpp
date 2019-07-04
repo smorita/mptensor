@@ -184,6 +184,8 @@ template <template<typename> class Matrix, typename C> int qr(const Tensor<Matri
 template <template<typename> class Matrix, typename C> int eigh(const Tensor<Matrix,C> &a, std::vector<double> &eigval, Tensor<Matrix,C> &eigvec);
 template <template<typename> class Matrix, typename C> int eigh(const Tensor<Matrix,C> &a, std::vector<double> &eigval);
 template <template<typename> class Matrix, typename C> int eigh(const Tensor<Matrix,C> &a, const Axes &axes_row, const Axes &axes_col, std::vector<double> &eigval, Tensor<Matrix,C> &eigvec);
+template <template<typename> class Matrix, typename C> int eigh(const Tensor<Matrix,C> &a, const Axes &axes_row, const Axes &axes_col, std::vector<double> &eigval);
+template <template<typename> class Matrix, typename C> int eigh(const Tensor<Matrix,C> &a, const Axes &axes_row_a, const Axes &axes_col_a, const Tensor<Matrix,C> &b, const Axes &axes_row_b, const Axes &axes_col_b, std::vector<double> &eigval, Tensor<Matrix,C> &eigvec);
 
 template <template<typename> class Matrix, typename C> int solve(const Tensor<Matrix,C> &a, const std::vector<C> &b, std::vector<C> &x);
 template <template<typename> class Matrix, typename C> int solve(const Tensor<Matrix,C> &a, const Tensor<Matrix,C> &b, Tensor<Matrix,C> &x);

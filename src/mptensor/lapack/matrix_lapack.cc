@@ -50,6 +50,9 @@ extern "C" {
                double a[], int *lda, double w[],
                double work[], int *lwork,
                int iwork[], int *liwork, int *info);
+  void dsygvd_(int *itype, char *jobz, char *uplo, int *n,
+               double a[], int *lda, double b[], int *ldb, double w[],
+               double work[], int *lwork, int iwork[], int *liwork, int *info);
   void dgesv_(int *n, int *nrhs, double a[], int *lda,
               int ipiv[], double b[], int *ldb, int *info);
 
@@ -67,6 +70,10 @@ extern "C" {
                complex tau[], complex work[], int *lwork, int *info);
   void zheevd_(char *jobz, char *uplo, int *n,
                complex a[], int *lda, double w[],
+               complex work[], int *lwork, double rwork[], int *lrwork,
+               int iwork[], int *liwork, int *info);
+  void zhegvd_(int *itype, char *jobz, char *uplo, int *n,
+               complex a[], int *lda, complex b[], int *ldb, double w[],
                complex work[], int *lwork, double rwork[], int *lrwork,
                int iwork[], int *liwork, int *info);
   void zgesv_(int *n, int *nrhs, complex a[], int *lda,
@@ -534,6 +541,97 @@ int matrix_eigh(Matrix<complex>& A, std::vector<double>& W) {
           &(work[0]), &lwork, &(rwork[0]), &lrwork,
           &(iwork[0]), &liwork, &info);
 
+  return info;
+};
+
+
+template <>
+int matrix_eigh(Matrix<double>& A, Matrix<double>& B, std::vector<double>& W, Matrix<double>& Z) {
+  assert(A.n_row() == A.n_col());
+  assert(B.n_row() == B.n_col());
+  assert(Z.n_row() == Z.n_col());
+  assert(A.n_row() == B.n_row());
+  assert(A.n_row() == Z.n_row());
+  assert(int(W.size()) == A.n_row());
+
+  int itype = 1;
+  char jobz = 'V';
+  char uplo = 'U';
+  int n = A.n_row();
+  int lda = A.n_row();
+  int ldb = B.n_row();
+  int lwork, liwork, info;
+  std::vector<double> work;
+  std::vector<int> iwork;
+  double work_size;
+  int iwork_size;
+  lwork = -1;
+
+  /* Get the size of workspace */
+  dsygvd_(&itype, &jobz, &uplo, &n, A.head(), &lda, B.head(), &ldb, &(W[0]),
+          &work_size, &lwork, &iwork_size, &liwork, &info);
+  lwork = static_cast<int>(work_size);
+  work.resize(lwork);
+  liwork = iwork_size;
+  iwork.resize(liwork);
+
+  /* Get eigenvalues and eigenvectors */
+  dsygvd_(&itype, &jobz, &uplo, &n, A.head(), &lda, B.head(), &ldb, &(W[0]),
+          &(work[0]), &lwork, &(iwork[0]), &liwork, &info);
+  Z = A;
+
+  if (info > n) {
+    std::cerr << "The tensor B is not positive definite." << std::endl;
+  }
+
+  return info;
+};
+
+
+template <>
+int matrix_eigh(Matrix<complex>& A, Matrix<complex>& B, std::vector<double>& W, Matrix<complex>& Z) {
+  assert(A.n_row() == A.n_col());
+  assert(B.n_row() == B.n_col());
+  assert(Z.n_row() == Z.n_col());
+  assert(A.n_row() == B.n_row());
+  assert(A.n_row() == Z.n_row());
+  assert(int(W.size()) == A.n_row());
+
+  int itype = 1;
+  char jobz = 'V';
+  char uplo = 'U';
+  int n = A.n_row();
+  int lda = A.n_row();
+  int ldb = B.n_row();
+  int lwork, lrwork, liwork, info;
+  std::vector<complex> work;
+  complex work_size;
+  std::vector<double> rwork;
+  double rwork_size;
+  std::vector<int> iwork;
+  int iwork_size;
+  lwork = lrwork = liwork = -1;
+
+  /* Get the size of workspace */
+  zhegvd_(&itype, &jobz, &uplo, &n, A.head(), &lda, B.head(), &ldb, &(W[0]),
+          &work_size, &lwork, &rwork_size, &lrwork,
+          &iwork_size, &liwork, &info);
+  lwork = static_cast<int>(work_size.real());
+  work.resize(lwork);
+  lrwork = static_cast<int>(rwork_size);
+  rwork.resize(lrwork);
+  liwork = iwork_size;
+  iwork.resize(liwork);
+
+  /* Get eigenvalues and eigenvectors */
+  zhegvd_(&itype, &jobz, &uplo, &n, A.head(), &lda, B.head(), &ldb, &(W[0]),
+          &(work[0]), &lwork, &(rwork[0]), &lrwork,
+          &(iwork[0]), &liwork, &info);
+  Z = A;
+
+  if (info > n) {
+    std::cerr << "The tensor B is not positive definite." << std::endl;
+  }
   return info;
 };
 

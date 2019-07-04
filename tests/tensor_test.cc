@@ -76,6 +76,7 @@ int main(int argc, char **argv) {
   test_qr_rank2(comm, n, out);
   test_eigh(comm, n, out);
   test_eigh_rank2(comm, n, out);
+  test_eigh_general(comm, n, out);
   test_arithmetic(comm, n, out);
   test_trace(comm, n, out);
   test_trace2(comm, n, out);
@@ -93,6 +94,7 @@ int main(int argc, char **argv) {
   test_qr_rank2_complex(comm, n, out);
   test_eigh_complex(comm, n, out);
   test_eigh_rank2_complex(comm, n, out);
+  test_eigh_general_complex(comm, n, out);
   test_arithmetic_complex(comm, n, out);
   test_trace_complex(comm, n, out);
   test_trace2_complex(comm, n, out);

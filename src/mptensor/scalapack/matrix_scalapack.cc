@@ -54,6 +54,15 @@ extern "C" {
                double a[], int *ia, int *ja, int desca[], double w[],
                double z[], int *iz, int *jz, int descz[],
                double work[], int *lwork, int *info);
+  void pdsygvx_(int *ibtype, char *jobz, char *range, char *uplo, int *n,
+                double a[], int *ia, int *ja, int desca[],
+                double b[], int *ib, int *jb, int descb[],
+                double *vl, double *vu, int *il, int *iu, double *abstol,
+                int *m, int *nz, double w[], double *orfac,
+                double z[], int *iz, int *jz, int descz[],
+                double work[], int *lwork, int iwork[], int *liwork,
+                int ifail[], int iclustr[], double gap[],
+                int *info);
   void pdgeqrf_(int *m, int *n, double a[], int *ia, int *ja, int desca[],
                 double tau[], double work[], int *lwork, int *info);
   void pdorgqr_(int *m, int *n, int *k, double a[], int *ia, int *ja, int desca[],
@@ -75,6 +84,16 @@ extern "C" {
                complex a[], int *ia, int *ja, int desca[], double w[],
                complex z[], int *iz, int *jz, int descz[],
                complex work[], int *lwork, double rwork[], int *lrwork, int *info);
+  void pzhegvx_(int *ibtype, char *jobz, char *range, char *uplo, int *n,
+                complex a[], int *ia, int *ja, int desca[],
+                complex b[], int *ib, int *jb, int descb[],
+                double *vl, double *vu, int *il, int *iu, double *abstol,
+                int *m, int *nz, double w[], double *orfac,
+                complex z[], int *iz, int *jz, int descz[],
+                complex work[], int *lwork, double rwork[], int *lrwork,
+                int iwork[], int *liwork,
+                int ifail[], int iclustr[], double gap[],
+                int *info);
   void pzgeqrf_(int *m, int *n, complex a[], int *ia, int *ja, int desca[],
                 complex tau[], complex work[], int *lwork, int *info);
   void pzungqr_(int *m, int *n, int *k, complex a[], int *ia, int *ja, int desca[],
@@ -578,6 +597,143 @@ int matrix_eigh(Matrix<complex>& A, std::vector<double>& W) {
           &(W[0]),
           &(c_dummy), &iz, &jz, &(i_dummy),
           &(work[0]), &lwork, &(rwork[0]), &lrwork, &info);
+
+  return info;
+};
+
+
+template <>
+int matrix_eigh(Matrix<double>& A, Matrix<double>& B, std::vector<double>& W, Matrix<double>& Z) {
+  assert(A.n_row() == A.n_col());
+  assert(B.n_row() == B.n_col());
+  assert(Z.n_row() == Z.n_col());
+  assert(A.n_row() == B.n_row());
+  assert(A.n_row() == Z.n_row());
+  assert(W.size() == A.n_row());
+
+
+  int ibtype = 1;
+  char jobz = 'V';
+  char range = 'A';
+  char uplo = 'U';
+  int n = A.n_row();
+  int ia, ja, ib, jb, iz, jz;
+  double vl, vu;
+  int il, iu;
+  double abstol = 0.0;
+  int m, nz;
+  double orfac = -1.0;
+  std::vector<double> work;
+  std::vector<int> iwork;
+  int lwork, liwork;
+  int ifail[n];
+  int iclustr[A.get_comm_size() * 2];
+  double gap[A.get_comm_size()];
+  int info;
+  double work_size;
+  int iwork_size;
+  ia = ja = ib = jb = iz = jz = 1;
+  lwork = liwork = -1;
+
+  /* Get the size of workspace */
+  pdsygvx_(&ibtype, &jobz, &range, &uplo, &n,
+           A.head(), &ia, &ja, const_cast<int*>(A.descriptor()),
+           B.head(), &ib, &jb, const_cast<int*>(B.descriptor()),
+           &vl, &vu, &il, &iu, &abstol,
+           &m, &nz, &(W[0]), &orfac,
+           Z.head(), &iz, &jz, const_cast<int*>(Z.descriptor()),
+           &work_size, &lwork, &iwork_size, &liwork,
+           ifail, iclustr, gap, &info);
+
+  lwork = static_cast<int>(work_size);
+  work.resize(lwork);
+  liwork = iwork_size;
+  iwork.resize(liwork);
+
+  /* Get eigenvalues and eigenvectors */
+  pdsygvx_(&ibtype, &jobz, &range, &uplo, &n,
+           A.head(), &ia, &ja, const_cast<int*>(A.descriptor()),
+           B.head(), &ib, &jb, const_cast<int*>(B.descriptor()),
+           &vl, &vu, &il, &iu, &abstol,
+           &m, &nz, &(W[0]), &orfac,
+           Z.head(), &iz, &jz, const_cast<int*>(Z.descriptor()),
+           &(work[0]), &lwork, &(iwork[0]), &liwork,
+           &(ifail[0]), &(iclustr[0]), &(gap[0]),
+           &info);
+
+  if (info > n) {
+    std::cerr << "The tensor B is not positive definite." << std::endl;
+  }
+
+  return info;
+};
+
+
+template <>
+int matrix_eigh(Matrix<complex>& A, Matrix<complex>& B, std::vector<double>& W, Matrix<complex>& Z) {
+  assert(A.n_row() == A.n_col());
+  assert(B.n_row() == B.n_col());
+  assert(Z.n_row() == Z.n_col());
+  assert(A.n_row() == B.n_row());
+  assert(A.n_row() == Z.n_row());
+  assert(W.size() == A.n_row());
+
+  int ibtype = 1;
+  char jobz = 'V';
+  char range = 'A';
+  char uplo = 'U';
+  int n = A.n_row();
+  int ia, ja, ib, jb, iz, jz;
+  double vl, vu;
+  int il, iu;
+  double abstol = 0.0;
+  int m, nz;
+  double orfac = -1.0;
+  std::vector<complex> work;
+  std::vector<double> rwork;
+  std::vector<int> iwork;
+  int lwork, lrwork, liwork;
+  int ifail[n];
+  int iclustr[A.get_comm_size() * 2];
+  double gap[A.get_comm_size()];
+  int info;
+  complex work_size;
+  double rwork_size;
+  int iwork_size;
+  ia = ja = ib = jb = iz = jz = 1;
+  lwork = lrwork = liwork = -1;
+
+  /* Get the size of workspace */
+  pzhegvx_(&ibtype, &jobz, &range, &uplo, &n,
+           A.head(), &ia, &ja, const_cast<int*>(A.descriptor()),
+           B.head(), &ib, &jb, const_cast<int*>(B.descriptor()),
+           &vl, &vu, &il, &iu, &abstol,
+           &m, &nz, &(W[0]), &orfac,
+           Z.head(), &iz, &jz, const_cast<int*>(Z.descriptor()),
+           &work_size, &lwork, &rwork_size, &lrwork, &iwork_size, &liwork,
+           ifail, iclustr, gap,
+           &info);
+  lwork = static_cast<int>(work_size.real());
+  work.resize(lwork);
+  lrwork = static_cast<int>(rwork_size);
+  rwork.resize(lrwork);
+  liwork = iwork_size;
+  iwork.resize(liwork);
+
+  /* Get eigenvalues and eigenvectors */
+  pzhegvx_(&ibtype, &jobz, &range, &uplo, &n,
+           A.head(), &ia, &ja, const_cast<int*>(A.descriptor()),
+           B.head(), &ib, &jb, const_cast<int*>(B.descriptor()),
+           &vl, &vu, &il, &iu, &abstol,
+           &m, &nz, &(W[0]), &orfac,
+           Z.head(), &iz, &jz, const_cast<int*>(Z.descriptor()),
+           &(work[0]), &lwork, &(rwork[0]), &lrwork, &(iwork[0]), &liwork,
+           ifail, iclustr, gap,
+           &info);
+
+  if (info > n) {
+    std::cerr << "The tensor B is not positive definite." << std::endl;
+  }
 
   return info;
 };

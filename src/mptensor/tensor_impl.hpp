@@ -2216,6 +2216,88 @@ int eigh(const Tensor<Matrix,C> &a, const Axes &axes_row, const Axes &axes_col,
 };
 
 
+//! Solve a generalized eigenvalue problem \f$ A \vec{v} = \lambda B \vec{v} \f$ for a complex Hermitian or real symmetric tensor
+/*!
+  \param[in] a A complex Hermitian or real symmetric tensor.
+  \param[in] axes_row_a Axes of tensor \c a to be row after matricization.
+  \param[in] axes_col_a Axes of tensor \c a to be column after matricization.
+  \param[in] b A complex Hermitian or real symmetric definitive positive tensor.
+  \param[in] axes_row_b Axes of tensor \c b to be row after matricization.
+  \param[in] axes_col_b Axes of tensor \c b to be column after matricization.
+  \param[out] w Eigenvalues
+  \param[out] z Tensor corresponds to Eigenvectors
+
+  \return Information from linear-algebra library.
+
+  For example,
+  \code
+  eigh(A, Axes(0,3), Axes(1,2), B, Axes(1, 3), Axes(2, 0), w, U)
+  \endcode
+  solve a generalized eigenvalue problem
+  \f[
+  \sum_{bc} A_{abcd} U_{bck} = \sum_{bc} B_{cabd} U_{bck} w_k.
+  \f]
+  In the matricized representation, it is written as
+  \f[
+  \sum_{bc} A'_{(ad)(bc)} U'_{(bc)(k)} = \sum_{bc} B_{(ad)(bc)} U'_{(bc)(k)} w_k,
+  \f]
+  where \f$ A \f$ and \f$ B \f$ are matricized as \f$ A_{abcd} =
+  A'_{(ad)(bc)} \f$ and \f$ B_{cabd} = B'_{(ad)(bc)} \f$.
+
+  \warning The matricies obtained by \c a and \c b should be square and have the same size.
+
+  \note The shape of \c z is determined by \c axes_col_a.
+*/
+template <template<typename> class Matrix, typename C>
+int eigh(const Tensor<Matrix,C> &a, const Axes &axes_row_a, const Axes &axes_col_a,
+         const Tensor<Matrix,C> &b, const Axes &axes_row_b, const Axes &axes_col_b,
+         std::vector<double> &w, Tensor<Matrix,C> &z) {
+  assert(axes_row_a.size() > 0);
+  assert(axes_col_a.size() > 0);
+  assert(axes_row_b.size() > 0);
+  assert(axes_col_b.size() > 0);
+
+  const size_t rank_a = a.rank();
+  const size_t rank_b = b.rank();
+  const size_t urank_a = axes_row_a.size();
+  const size_t urank_b = axes_row_b.size();
+  Axes axes_a = axes_row_a + axes_col_a;
+  Axes axes_b = axes_row_b + axes_col_b;
+  Tensor<Matrix, C> a_t = transpose(a, axes_a, urank_a);
+  Tensor<Matrix, C> b_t = transpose(b, axes_b, urank_b);
+  const Shape &shape_a = a_t.shape();
+  const Shape &shape_b = b_t.shape();
+  size_t d_row_a(1), d_col_a(1);
+  size_t d_row_b(1), d_col_b(1);
+  for (size_t i = 0; i < urank_a; ++i)
+    d_row_a *= shape_a[i];
+  for (size_t i = 0; i < urank_b; ++i)
+    d_row_b *= shape_b[i];
+  for (size_t i = urank_a; i < rank_a; ++i)
+    d_col_a *= shape_a[i];
+  for (size_t i = urank_b; i < rank_b; ++i)
+    d_col_b *= shape_b[i];
+
+  assert(d_row_a == d_col_a);
+  assert(d_row_b == d_col_b);
+  assert(d_row_a == d_row_b);
+  size_t size = d_row_a;
+
+  Shape shape_z;
+  shape_z.resize(rank_a - urank_a + 1);
+  for (size_t i = urank_a; i < rank_a; ++i)
+    shape_z[i - urank_a] = shape_a[i];
+  shape_z[rank_a - urank_a] = size;
+
+  z = Tensor<Matrix, C>(a.get_comm(), shape_z, urank_a);
+  w.resize(size);
+
+  int info;
+  info = matrix_eigh(a_t.get_matrix(), b_t.get_matrix(), w, z.get_matrix());
+
+  return info;
+};
+
 //! Solve linear equation \f$ A\vec{x}=\vec{b}\f$.
 /*!
   \param[in] a The coefficient square matrix A.
