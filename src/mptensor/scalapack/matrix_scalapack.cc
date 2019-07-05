@@ -634,6 +634,12 @@ int matrix_eigh(Matrix<double>& A, Matrix<double>& B, std::vector<double>& W, Ma
   int iwork_size;
   ia = ja = ib = jb = iz = jz = 1;
   lwork = liwork = -1;
+  for (size_t i = 0; i < n; ++i)
+    ifail[i] = 0;
+  for (size_t i = 0; i < A.get_comm_size() * 2; ++i)
+    iclustr[i] = 0;
+  for (size_t i = 0; i < A.get_comm_size(); ++i)
+    gap[i] = 0.0;
 
   /* Get the size of workspace */
   pdsygvx_(&ibtype, &jobz, &range, &uplo, &n,
@@ -702,6 +708,12 @@ int matrix_eigh(Matrix<complex>& A, Matrix<complex>& B, std::vector<double>& W, 
   int iwork_size;
   ia = ja = ib = jb = iz = jz = 1;
   lwork = lrwork = liwork = -1;
+  for (size_t i = 0; i < n; ++i)
+    ifail[i] = 0;
+  for (size_t i = 0; i < A.get_comm_size() * 2; ++i)
+    iclustr[i] = 0;
+  for (size_t i = 0; i < A.get_comm_size(); ++i)
+    gap[i] = 0.0;
 
   /* Get the size of workspace */
   pzhegvx_(&ibtype, &jobz, &range, &uplo, &n,
