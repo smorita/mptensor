@@ -1,5 +1,7 @@
 # mptensor v0.2
 
+[![Build Status](https://travis-ci.org/smorita/mptensor.svg?branch=master)](https://travis-ci.org/smorita/mptensor)
+
 mptensor is parallel C++ libarary for tensor calculations.
 It provides similar interfaces as Numpy and Scipy in Python.
 
