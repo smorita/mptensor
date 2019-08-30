@@ -1,0 +1,16 @@
+language: cpp
+compiler: gcc
+
+addons:
+  apt:
+    update: true
+    packages:
+      - libopenmpi-dev
+      - liblapack-dev
+      - libscalapack-mpi-dev
+      - doxygen
+
+script:
+  - make
+  - make doc
+  - make tests

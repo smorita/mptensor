@@ -1,7 +1,7 @@
 ##### default #####
-CXX = mpicxx
-CXXFLAGS = -O3 -fopenmp
-LDFLAGS = -lscalapack -llapack -lblas
+# CXX = mpicxx
+# CXXFLAGS = -O3 -fopenmp
+# LDFLAGS = -lscalapack -llapack -lblas
 
 ##### OpenMPI + Intel MKL #####
 # CXX = mpicxx
@@ -28,10 +28,10 @@ LDFLAGS = -lscalapack -llapack -lblas
 # CXXFLAGS = -O3 -no-prec-div -xSSE2 -qopenmp -parallel
 # LDFLAGS = -mkl=parallel
 
-##### Ubuntu 14.04, Linux Mint 17 #####
-# CXX = mpicxx
-# CXXFLAGS = -O3 -fopenmp
-# LDFLAGS = -lscalapack-openmpi -lblacsCinit-openmpi -lblacs-openmpi -llapack -lblas
+##### Ubuntu Xeninal 16.04, Trusty 14.04 #####
+CXX = mpicxx
+CXXFLAGS = -O3 -fopenmp
+LDFLAGS = -lscalapack-openmpi -lblacsCinit-openmpi -lblacs-openmpi -llapack -lblas
 
 
 ##### For RSVD #####
