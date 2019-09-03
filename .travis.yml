@@ -14,3 +14,12 @@ script:
   - make
   - make doc
   - make tests
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  keep_history: true
+  local_dir: doc/doxygen/html
+  on:
+    branch: master
