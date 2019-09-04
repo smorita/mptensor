@@ -46,6 +46,10 @@ typedef Index Axes;
 typedef Index Shape;
 
 /* Class definition */
+//! Tensor class. The main object of mptensor.
+/*!
+  \ingroup Tensor
+*/
 template <template<typename> class Matrix, typename C> class Tensor {
 public:
   typedef C value_type; //!< \c double or \c complex
@@ -155,19 +159,27 @@ private:
 
 
 /* Operations */
+//! \ingroup ShapeChange
+//! \{
 template <template<typename> class Matrix, typename C> Tensor<Matrix,C> transpose(Tensor<Matrix,C> a, const Axes& axes);
 template <template<typename> class Matrix, typename C> Tensor<Matrix,C> transpose(const Tensor<Matrix,C> &a, const Axes& axes, size_t urank_new);
 template <template<typename> class Matrix, typename C> Tensor<Matrix,C> reshape(const Tensor<Matrix,C> &a, const Shape& shape_new);
 template <template<typename> class Matrix, typename C> Tensor<Matrix,C> slice(const Tensor<Matrix,C> &a, size_t n_axes, size_t i_begin, size_t i_end);
 template <template<typename> class Matrix, typename C> Tensor<Matrix,C> slice(const Tensor<Matrix,C> &a, const Index &index_begin, const Index &index_end);
 template <template<typename> class Matrix, typename C> Tensor<Matrix,C> extend(const Tensor<Matrix,C> &a, const Shape& shape_new);
+//! \}
 
+//! \ingroup LinearAlgebra
+//! \{
 template <template<typename> class Matrix, typename C> C trace(const Tensor<Matrix,C> &a);
 template <template<typename> class Matrix, typename C> C trace(const Tensor<Matrix,C> &a, const Axes &axes_1, const Axes &axes_2);
 template <template<typename> class Matrix, typename C> C trace(const Tensor<Matrix,C> &a, const Tensor<Matrix,C> &b, const Axes &axes_a, const Axes &axes_b);
 template <template<typename> class Matrix, typename C> Tensor<Matrix,C> contract(const Tensor<Matrix,C> &a, const Axes &axes_1, const Axes &axes_2);
 template <template<typename> class Matrix, typename C> Tensor<Matrix,C> tensordot(const Tensor<Matrix,C> &a, const Tensor<Matrix,C> &b, const Axes& axes_a, const Axes& axes_b);
+//! \}
 
+//! \ingroup Decomposition
+//! \{
 template <template<typename> class Matrix, typename C> int svd(const Tensor<Matrix,C> &a, std::vector<double> &s);
 template <template<typename> class Matrix, typename C> int svd(const Tensor<Matrix,C> &a, Tensor<Matrix,C> &u, std::vector<double> &s, Tensor<Matrix,C> &vt);
 template <template<typename> class Matrix, typename C> int svd(const Tensor<Matrix,C> &a, const Axes &axes_row, const Axes &axes_col, std::vector<double> &s);
@@ -186,11 +198,17 @@ template <template<typename> class Matrix, typename C> int eigh(const Tensor<Mat
 template <template<typename> class Matrix, typename C> int eigh(const Tensor<Matrix,C> &a, const Axes &axes_row, const Axes &axes_col, std::vector<double> &eigval, Tensor<Matrix,C> &eigvec);
 template <template<typename> class Matrix, typename C> int eigh(const Tensor<Matrix,C> &a, const Axes &axes_row, const Axes &axes_col, std::vector<double> &eigval);
 template <template<typename> class Matrix, typename C> int eigh(const Tensor<Matrix,C> &a, const Axes &axes_row_a, const Axes &axes_col_a, const Tensor<Matrix,C> &b, const Axes &axes_row_b, const Axes &axes_col_b, std::vector<double> &eigval, Tensor<Matrix,C> &eigvec);
+//! \}
 
+//! \ingroup LinearEq
+//! \{
 template <template<typename> class Matrix, typename C> int solve(const Tensor<Matrix,C> &a, const std::vector<C> &b, std::vector<C> &x);
 template <template<typename> class Matrix, typename C> int solve(const Tensor<Matrix,C> &a, const Tensor<Matrix,C> &b, Tensor<Matrix,C> &x);
 template <template<typename> class Matrix, typename C> int solve(const Tensor<Matrix,C> &a, const Tensor<Matrix,C> &b, Tensor<Matrix,C> &x, const Axes &axes_row_a, const Axes &axes_col_a, const Axes &axes_row_b, const Axes &axes_col_b);
+//! \}
 
+//! \ingroup Arithmetic
+//! \{
 template <template<typename> class Matrix, typename C> Tensor<Matrix,C> operator+(Tensor<Matrix,C> rhs);
 template <template<typename> class Matrix, typename C> Tensor<Matrix,C> operator-(Tensor<Matrix,C> rhs);
 template <template<typename> class Matrix, typename C> Tensor<Matrix,C> operator+(Tensor<Matrix,C> lhs, const Tensor<Matrix,C> &rhs);
@@ -198,7 +216,10 @@ template <template<typename> class Matrix, typename C> Tensor<Matrix,C> operator
 template <template<typename> class Matrix, typename C, typename D> Tensor<Matrix,C> operator*(Tensor<Matrix,C> lhs, D rhs);
 template <template<typename> class Matrix, typename C, typename D> Tensor<Matrix,C> operator/(Tensor<Matrix,C> lhs, D rhs);
 template <template<typename> class Matrix, typename C, typename D> Tensor<Matrix,C> operator*(D lhs, Tensor<Matrix,C> rhs);
+//! \}
 
+//! \ingroup Misc
+//! \{
 template <template<typename> class Matrix, typename C> Tensor<Matrix,C> sqrt(Tensor<Matrix,C> t); //!< Take square-root of each element.
 template <template<typename> class Matrix, typename C> Tensor<Matrix,C> conj(Tensor<Matrix,C> t); //!< Take conjugate of each element.
 
@@ -206,8 +227,12 @@ template <template<typename> class Matrix, typename C> double max(const Tensor<M
 template <template<typename> class Matrix, typename C> double min(const Tensor<Matrix,C> &t);
 template <template<typename> class Matrix, typename C> double max_abs(const Tensor<Matrix,C> &t);
 template <template<typename> class Matrix, typename C> double min_abs(const Tensor<Matrix,C> &t);
+//! \}
 
+//! \ingroup Output
+//! \{
 template <template<typename> class Matrix, typename C> std::ostream& operator<<(std::ostream& out, const Tensor<Matrix,C> &t);
+//! \}
 
 } // namespace mptensor
 

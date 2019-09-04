@@ -33,6 +33,8 @@
 
 namespace mptensor {
 
+//! \ingroup Random
+//! \{
 template <template<typename> class Matrix, typename C>
 int rsvd(const Tensor<Matrix,C> &a, const Axes &axes_row, const Axes &axes_col,
          Tensor<Matrix,C> &u, std::vector<double> &s, Tensor<Matrix,C> &vt,
@@ -56,6 +58,7 @@ int rsvd(Func1 &multiply_row, Func2 &multiply_col,
          const size_t target_rank);
 
 inline void set_seed(unsigned int seed);
+//! \}
 
 } // namespace mptensor
 

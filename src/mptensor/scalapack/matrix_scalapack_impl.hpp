@@ -52,6 +52,11 @@ namespace mptensor {
 //! Namespace for the distributed Matrix class with ScaLAPACK, PBLAS, and BLACS.
 namespace scalapack {
 
+//! Distributed matrix using ScaLAPACK.
+/*!
+  \class Matrix
+*/
+
 /* ---------- static member variables ---------- */
 template <typename C> const size_t Matrix<C>::BLOCK_SIZE = 16;
 

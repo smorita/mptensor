@@ -37,6 +37,9 @@
 namespace mptensor {
 namespace scalapack {
 
+//! \ingroup ScaLAPACK
+//! \{
+
 template <typename C> class Matrix {
 public:
   typedef C value_type;
@@ -160,6 +163,7 @@ template <typename C> double max(const Matrix<C>& a);
 template <typename C> double min(const Matrix<C>& a);
 //! \}
 
+//! \}
 
 } // namespace scalapack
 } // namespace mptensor

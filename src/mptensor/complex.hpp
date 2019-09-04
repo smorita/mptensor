@@ -33,6 +33,8 @@
 
 namespace mptensor {
 
+//! Alias for the value type of complex numbers
+//! \ingroup Complex
 typedef std::complex<double> complex;
 
 } // namespace mptensor

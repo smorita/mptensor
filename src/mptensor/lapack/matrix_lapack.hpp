@@ -35,6 +35,9 @@
 namespace mptensor {
 namespace lapack {
 
+//! \ingroup LAPACK
+//! \{
+
 template <typename C> class Matrix {
 public:
   typedef C value_type;
@@ -146,6 +149,8 @@ int matrix_solve(Matrix<C>& a, Matrix<C>& b);
 
 template <typename C> double max(const Matrix<C>& a);
 template <typename C> double min(const Matrix<C>& a);
+//! \}
+
 //! \}
 
 } // namespace lapack

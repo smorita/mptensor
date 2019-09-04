@@ -39,11 +39,11 @@ namespace mptensor {
 //! Namespace for the non-distributed Matrix class with LAPACK.
 namespace lapack {
 
-//! Non-distributed matrix.
+//! Non-distributed matrix using LAPACK.
 /*!
+  \class Matrix
   \note The matrix is stored in column-major order.
 */
-template <typename C> class Matrix;
 
 /* ---------- constructors ---------- */
 

@@ -33,6 +33,8 @@
 #include <vector>
 
 namespace mptensor {
+//! \ingroup Index
+//! \{
 
 class Index {
 public:
@@ -84,6 +86,7 @@ inline void Index::resize(size_t n) {idx.resize(n);};
 Index range(const size_t start, const size_t stop);
 inline Index range(const size_t stop) {return range(0,stop);};
 
+//! \}
 } // namespace mptensor
 
 #endif //  _INDEX_HPP_
