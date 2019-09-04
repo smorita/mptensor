@@ -398,6 +398,12 @@ C Matrix<C>::allreduce_sum(C value) const {
   return mpi_wrapper::allreduce_sum(value, get_comm());
 }
 
+template <typename C>
+template <typename D> inline
+void Matrix<C>::bcast(D *buffer, int count, int root) const {
+  mpi_wrapper::bcast(buffer, count, root, get_comm());
+}
+
 /* ---------- non-member functions ---------- */
 
 template <typename C>

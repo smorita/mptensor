@@ -139,6 +139,16 @@ template <typename C> void Matrix<C>::barrier() const;
 */
 template <typename C> C Matrix<C>::allreduce_sum(C val) const;
 
+//! Wrapper of MPI_Bcast.
+/*!
+  \param[in] buffer Starting address of buffer.
+  \param[in] count Number of entries in buffer.
+  \param[in] root Rank of broadcast root.
+*/
+template <typename C>
+template <typename D>
+void Matrix<C>::bcast(D *buffer, int count, int root) const;
+
 
 //! Preprocess for fast conversion from local index to global one.
 template <typename C> void Matrix<C>::prep_local_to_global() const;

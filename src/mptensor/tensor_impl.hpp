@@ -42,7 +42,6 @@
 #include "index.hpp"
 #include "matrix.hpp"
 #include "tensor.hpp"
-#include "mpi_wrapper.hpp"
 
 namespace mptensor {
 
@@ -484,7 +483,7 @@ void Tensor<Matrix,C>::load(const char* filename) {
       fin.open(filename);
       fin >> n;
     }
-    mpi_wrapper::bcast(&n, 1, 0, get_comm());
+    Mat.bcast(&n, 1, 0);
 
     const size_t count = 2*n+1;
     size_t *buffer = new size_t[count];
@@ -493,7 +492,7 @@ void Tensor<Matrix,C>::load(const char* filename) {
       for(size_t i=0;i<count;++i) fin >> buffer[i];
       fin.close();
     }
-    mpi_wrapper::bcast(buffer, count, 0, get_comm());
+    Mat.bcast(buffer, count, 0);
 
     urank = buffer[0];
     shape.assign(n,(buffer+1));

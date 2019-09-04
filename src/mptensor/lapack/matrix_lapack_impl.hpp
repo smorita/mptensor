@@ -241,6 +241,12 @@ C Matrix<C>::allreduce_sum(C value) const {
   return value;
 }
 
+template <typename C>
+template <typename D> inline
+void Matrix<C>::bcast(D *buffer, int count, int root) const {
+  return;
+}
+
 //! Do nothing.
 template <typename C> inline
 void Matrix<C>::prep_local_to_global() const { return; }

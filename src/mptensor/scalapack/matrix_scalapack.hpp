@@ -83,6 +83,7 @@ public:
 
   void barrier() const;
   C allreduce_sum(C value) const;
+  template <typename D> void bcast(D *buffer, int count, int root) const;
 
   void prep_local_to_global() const;
   void prep_global_to_local() const;
