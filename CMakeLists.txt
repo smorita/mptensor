@@ -18,6 +18,8 @@ message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 
 option(BUILD_SHARED_LIBS "Build as shared library" OFF)
 option(BUILD_DOCS "Build documents" OFF)
+option(BUILD_TESTS "Build tests" ON)
+option(BUILD_EXAMPLES "Build examples" OFF)
 option(ENABLE_CXX11 "use c++11" ON)
 option(ENABLE_MPI "use MPI and ScaLAPACK" ON)
 
@@ -25,7 +27,7 @@ enable_language(C CXX)
 
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 set(CMAKE_SKIP_BUILD_RPATH FALSE)
-set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 set(CMAKE_MACOSX_RPATH 1)
 
@@ -71,5 +73,15 @@ endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/src)
 add_subdirectory(src)
-add_subdirectory(tests)
-add_subdirectory(examples)
+
+if(BUILD_TESTS)
+  add_subdirectory(tests)
+else()
+  add_subdirectory(tests EXCLUDE_FROM_ALL)
+endif()
+
+if(BUILD_EXAMPLES)
+  add_subdirectory(examples)
+else()
+  add_subdirectory(examples EXCLUDE_FROM_ALL)
+endif()
