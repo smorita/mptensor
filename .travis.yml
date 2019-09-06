@@ -10,16 +10,37 @@ addons:
       - libscalapack-mpi-dev
       - doxygen
 
-script:
-  - make
-  - make doc
-  - make tests
+jobs:
+  include:
+    - name: "Make with MPI"
+      script:
+        - make
+        - make tests
+        - mpiexec -np 2 tests/tensor_test.out
 
-deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN
-  keep_history: true
-  local_dir: doc/doxygen/html
-  on:
-    branch: master
+    - name: "CMake with MPI"
+      script:
+        - mkdir build && cd build
+        - cmake ../
+        - make
+        - mpiexec -np 2 tests/tensor_test
+
+    - name: "CMake without MPI"
+      script:
+        - mkdir build && cd build
+        - cmake -DENABLE_MPI=OFF ../
+        - make
+        - ./tests/tensor_test
+
+    - stage: deploy
+      name: "Doxygen"
+      script:
+        - make doc
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GITHUB_TOKEN
+        keep_history: true
+        local_dir: doc/doxygen/html
+        on:
+          branch: master
