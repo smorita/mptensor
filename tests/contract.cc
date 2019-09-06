@@ -25,7 +25,6 @@
   \brief  Test code of tensor contraction
 */
 
-#include <mpi.h>
 #include <cmath>
 #include <vector>
 #include <iostream>
@@ -36,6 +35,7 @@
 #include "mpi_tool.hpp"
 #include "functions.hpp"
 #include "typedef.hpp"
+#include "timer.hpp"
 
 namespace tests {
 
@@ -48,10 +48,10 @@ namespace tests {
   \param L size of tensor, A.shape = (L, L+1, L, L+2)
   \param ostrm output stream for results
 */
-void test_contract(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_contract(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2, time3, time4;
+  Timer time0, time1, time2;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -70,11 +70,11 @@ void test_contract(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     A.set_value(index, val);
   }
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   TensorD B = contract(A, 0, 2);
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   double error = 0.0;
   for(size_t i=0;i<B.local_size();++i) {
@@ -90,10 +90,9 @@ void test_contract(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     if(error < fabs(val-exact) ) error = fabs(val-exact);
   }
 
-  time2 = MPI_Wtime();
+  time2.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
 
   if(mpiroot) {
     ostrm << "========================================\n"
@@ -108,7 +107,7 @@ void test_contract(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 
@@ -120,10 +119,10 @@ void test_contract(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   \param L size of tensor, A.shape = (L, L+1, L, L+2)
   \param ostrm output stream for results
 */
-void test_contract_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_contract_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2, time3, time4;
+  Timer time0, time1, time2;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -142,11 +141,11 @@ void test_contract_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     A.set_value(index, val);
   }
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   TensorC B = contract(A, 0, 2);
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   double error = 0.0;
   for(size_t i=0;i<B.local_size();++i) {
@@ -162,10 +161,9 @@ void test_contract_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     if(error < std::abs(val-exact) ) error = std::abs(val-exact);
   }
 
-  time2 = MPI_Wtime();
+  time2.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
 
   if(mpiroot) {
     ostrm << "========================================\n"
@@ -180,7 +178,7 @@ void test_contract_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 

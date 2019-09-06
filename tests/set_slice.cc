@@ -25,7 +25,6 @@
   \brief  Test code for set_slice
 */
 
-#include <mpi.h>
 #include <cmath>
 #include <vector>
 #include <iostream>
@@ -36,6 +35,7 @@
 #include "mpi_tool.hpp"
 #include "functions.hpp"
 #include "typedef.hpp"
+#include "timer.hpp"
 
 namespace tests {
 
@@ -47,10 +47,10 @@ namespace tests {
   \param L size of tensor A.shape = (L, L+1, L+2, L+3)
   \param ostrm output stream for results
 */
-void test_set_slice(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_set_slice(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2, time3;
+  Timer time0, time1, time2, time3;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -85,17 +85,17 @@ void test_set_slice(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     C[i] = val;
   }
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   // A[:, 3:6, :, :] = B
   A.set_slice(B, 1, 3, 6);
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   // A[1:4, 0:2, :, 2:5] = C
   A.set_slice(C, Index(1,0,0,2), Index(4,2,0,5));
 
-  time2 = MPI_Wtime();
+  time2.now();
 
   double error = 0.0;
   for(size_t i=0;i<A.local_size();++i) {
@@ -119,10 +119,9 @@ void test_set_slice(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     if(error < fabs(val-exact) ) error = fabs(val-exact);
   }
 
-  time3 = MPI_Wtime();
+  time3.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
 
   if(mpiroot) {
     ostrm << "========================================\n"
@@ -143,7 +142,7 @@ void test_set_slice(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 
@@ -154,10 +153,10 @@ void test_set_slice(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   \param L size of tensor A.shape = (L, L+1, L+2, L+3)
   \param ostrm output stream for results
 */
-void test_set_slice_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_set_slice_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2, time3;
+  Timer time0, time1, time2, time3;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -192,17 +191,17 @@ void test_set_slice_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     C[i] = val;
   }
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   // A[:, 3:6, :, :] = B
   A.set_slice(B, 1, 3, 6);
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   // A[1:4, 0:2, :, 2:5] = C
   A.set_slice(C, Index(1,0,0,2), Index(4,2,0,5));
 
-  time2 = MPI_Wtime();
+  time2.now();
 
   double error = 0.0;
   for(size_t i=0;i<A.local_size();++i) {
@@ -226,10 +225,9 @@ void test_set_slice_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     if(error < std::abs(val-exact) ) error = std::abs(val-exact);
   }
 
-  time3 = MPI_Wtime();
+  time3.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
   if(mpiroot) {
     ostrm << "========================================\n"
               << "set_slice <complex> A.set_slice(B, 1, 3, 6)\n"
@@ -249,7 +247,7 @@ void test_set_slice_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 

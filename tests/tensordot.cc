@@ -25,7 +25,6 @@
   \brief  Test code for tensordot
 */
 
-#include <mpi.h>
 #include <cmath>
 #include <vector>
 #include <iostream>
@@ -36,6 +35,7 @@
 #include "mpi_tool.hpp"
 #include "functions.hpp"
 #include "typedef.hpp"
+#include "timer.hpp"
 
 namespace tests {
 
@@ -49,10 +49,10 @@ namespace tests {
   \param L size of tensor, A.shape = (L, L+4, L+1, L+5), B.shape = (L+5, L+2, L+4, L+3)
   \param ostrm output stream for results
 */
-void test_tensordot(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_tensordot(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2;
+  Timer time0, time1, time2;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -83,12 +83,12 @@ void test_tensordot(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     B.set_value(index, val);
   }
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   // C = tensordot(A, B, axes=([1,3],[2,0]))
   TensorD C = tensordot(A,B,Axes(1,3),Axes(2,0));
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   double error = 0.0;
   Index index_A;
@@ -118,10 +118,9 @@ void test_tensordot(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     if(error < fabs(val-exact) ) error = fabs(val-exact);
   }
 
-  time2 = MPI_Wtime();
+  time2.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
   if(mpiroot) {
     ostrm << "========================================\n"
               << "tensordot <double> ( C[N0, N1, N2, N3] = A[N0, M, N1, K ] * B[K, N2, M, N3] )\n"
@@ -140,7 +139,7 @@ void test_tensordot(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 
@@ -153,10 +152,10 @@ void test_tensordot(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   \param L size of tensor, A.shape = (L, L+4, L+1, L+5), B.shape = (L+5, L+2, L+4, L+3)
   \param ostrm output stream for results
 */
-void test_tensordot_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_tensordot_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2;
+  Timer time0, time1, time2;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -187,12 +186,12 @@ void test_tensordot_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     B.set_value(index, val);
   }
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   // C = tensordot(A, B, axes=([1,3],[2,0]))
   TensorC C = tensordot(A,B,Axes(1,3),Axes(2,0));
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   double error = 0.0;
   Index index_A;
@@ -223,10 +222,9 @@ void test_tensordot_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     if(error < std::abs(val-exact) ) error = std::abs(val-exact);
   }
 
-  time2 = MPI_Wtime();
+  time2.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
   if(mpiroot) {
     ostrm << "========================================\n"
               << "tensordot <complex> ( C[N0, N1, N2, N3] = A[N0, M, N1, K ] * B[K, N2, M, N3] )\n"
@@ -245,7 +243,7 @@ void test_tensordot_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 

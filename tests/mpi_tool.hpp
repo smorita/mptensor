@@ -28,10 +28,20 @@
 #ifndef _MPI_TOOL_HPP_
 #define _MPI_TOOL_HPP_
 
+#ifdef _NO_MPI
+typedef int mpi_comm;
+extern const mpi_comm MPI_COMM_WORLD;
+
+#else
 #include <mpi.h>
+typedef MPI_Comm mpi_comm;
+
+#endif
 
 void mpi_finalize();
 void mpi_init(int argc, char **argv);
-void mpi_info(const MPI_Comm &comm, int &rank, int &size, bool &is_root);
+void mpi_info(const mpi_comm &comm, int &rank, int &size, bool &is_root);
+void mpi_barrier(const mpi_comm &comm);
+double mpi_reduce_max(double send, const mpi_comm &comm);
 
 #endif // _MPI_TOOL_HPP_

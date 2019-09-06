@@ -25,7 +25,6 @@
   \brief  Test code for eigenvalue decomposition of matrix
 */
 
-#include <mpi.h>
 #include <cmath>
 #include <vector>
 #include <iostream>
@@ -36,6 +35,7 @@
 #include "mpi_tool.hpp"
 #include "functions.hpp"
 #include "typedef.hpp"
+#include "timer.hpp"
 
 namespace tests {
 
@@ -47,10 +47,10 @@ namespace tests {
   \param L size of tensor, A.shape = (L*L, L*L)
   \param ostrm output stream for results
 */
-void test_eigh_rank2(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_eigh_rank2(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2;
+  Timer time0, time1, time2;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -72,13 +72,13 @@ void test_eigh_rank2(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   TensorD Z;
   std::vector<double> W;
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   // A[i,j] => Contract( Z[i,a] * W[a] * (Z[a,j])^t )
   // Z^t A Z = diag(W)
   eigh(A, W, Z);
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   /* Check */
   TensorD B = Z;
@@ -100,10 +100,10 @@ void test_eigh_rank2(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     if(error < fabs(val-exact) ) error = fabs(val-exact);
   }
 
-  time2 = MPI_Wtime();
+  time2.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
+
   if(mpiroot) {
     ostrm << "========================================\n"
               << "eigh <double> ( A[N,N], W, Z )\n"
@@ -124,7 +124,7 @@ void test_eigh_rank2(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 
@@ -135,10 +135,10 @@ void test_eigh_rank2(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   \param L size of tensor, A.shape = (L*L, L*L)
   \param ostrm output stream for results
 */
-void test_eigh_rank2_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_eigh_rank2_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2;
+  Timer time0, time1, time2;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -160,13 +160,13 @@ void test_eigh_rank2_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   TensorC Z;
   std::vector<double> W;
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   // A[i,j] => Contract( Z[i,a] * W[a] * (Z[a,j])^t )
   // Z^t A Z = diag(W)
   eigh(A, W, Z);
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   /* Check */
   TensorC B = conj(Z);
@@ -188,10 +188,9 @@ void test_eigh_rank2_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     if(error < std::abs(val-exact) ) error = std::abs(val-exact);
   }
 
-  time2 = MPI_Wtime();
+  time2.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
   if(mpiroot) {
     ostrm << "========================================\n"
               << "eigh <complex> ( A[N,N], W, Z )\n"
@@ -212,7 +211,7 @@ void test_eigh_rank2_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 

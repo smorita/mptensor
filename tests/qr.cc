@@ -25,7 +25,6 @@
   \brief  Test code for QR decomposition
 */
 
-#include <mpi.h>
 #include <cmath>
 #include <vector>
 #include <iostream>
@@ -36,6 +35,7 @@
 #include "mpi_tool.hpp"
 #include "functions.hpp"
 #include "typedef.hpp"
+#include "timer.hpp"
 
 namespace tests {
 
@@ -58,10 +58,10 @@ namespace tests {
   \param L size of tensor, A.shape = (L, L+1, L+2, L+3)
   \param ostrm output stream for results
 */
-void test_qr(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_qr(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2;
+  Timer time0, time1, time2;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -83,12 +83,12 @@ void test_qr(const MPI_Comm &comm, int L, std::ostream &ostrm) {
 
   TensorD Q, R;
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   // QR decomposition
   qr(A, Axes(2,0), Axes(1,3), Q, R);
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   /* Check */
   TensorD B = transpose(tensordot(Q,R,Axes(2),Axes(0)), Axes(1,2,0,3)) ;
@@ -106,10 +106,9 @@ void test_qr(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     if(error < fabs(val-exact) ) error = fabs(val-exact);
   }
 
-  time2 = MPI_Wtime();
+  time2.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
   if(mpiroot) {
     ostrm << "========================================\n"
               << "QR <double> ( A[N0,N1,N2,N3], Axes(2,0), Axes(1,3), Q, R )\n"
@@ -127,7 +126,7 @@ void test_qr(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 
@@ -149,10 +148,10 @@ void test_qr(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   \param L size of tensor, A.shape = (L, L+1, L+2, L+3)
   \param ostrm output stream for results
 */
-void test_qr_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_qr_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2;
+  Timer time0, time1, time2;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -174,12 +173,12 @@ void test_qr_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
 
   TensorC Q, R;
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   // QR decomposition
   qr(A, Axes(2,0), Axes(1,3), Q, R);
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   /* Check */
   TensorC B = transpose(tensordot(Q,R,Axes(2),Axes(0)), Axes(1,2,0,3)) ;
@@ -197,10 +196,9 @@ void test_qr_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     if(error < std::abs(val-exact) ) error = std::abs(val-exact);
   }
 
-  time2 = MPI_Wtime();
+  time2.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
   if(mpiroot) {
     ostrm << "========================================\n"
               << "QR <complex> ( A[N0,N1,N2,N3], Axes(2,0), Axes(1,3), Q, R )\n"
@@ -218,7 +216,7 @@ void test_qr_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 

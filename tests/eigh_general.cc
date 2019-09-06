@@ -25,7 +25,6 @@
   \brief  Test code for eigenvalue decomposition
 */
 
-#include <mpi.h>
 #include <cmath>
 #include <vector>
 #include <iostream>
@@ -36,6 +35,7 @@
 #include "mpi_tool.hpp"
 #include "functions.hpp"
 #include "typedef.hpp"
+#include "timer.hpp"
 
 namespace tests {
 
@@ -47,10 +47,10 @@ namespace tests {
   \param L size of tensor, A.shape = (L,L,L,L)
   \param ostrm output stream for results
 */
-void test_eigh_general(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_eigh_general(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
-  const double EPS = 1.0e-10;
-  double time0, time1, time2;
+  const double EPS = 1.0e-8;
+  Timer time0, time1, time2;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -94,12 +94,12 @@ void test_eigh_general(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   TensorD Z;
   std::vector<double> W;
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   // A[i,j,k,l] Z[l,k,a] = B[j,l,i,k] Z[l,k,a] W[a]
   eigh(A, Axes(1, 0), Axes(3, 2), B, Axes(0, 2), Axes(1, 3), W, Z);
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   /* Check */
   A = tensordot(A.transpose(Axes(1, 0, 3, 2)), Z, Axes(2, 3), Axes(0, 1));
@@ -107,7 +107,7 @@ void test_eigh_general(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   B.multiply_vector(W, 2);
   double max_error = max_abs(A-B);
 
-  time2 = MPI_Wtime();
+  time2.now();
 
   if(mpiroot) {
     ostrm << "========================================\n"
@@ -139,7 +139,7 @@ void test_eigh_general(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(max_error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 
@@ -150,10 +150,10 @@ void test_eigh_general(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   \param L size of tensor, A.shape = (L,L,L,L)
   \param ostrm output stream for results
 */
-void test_eigh_general_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_eigh_general_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
-  const double EPS = 1.0e-10;
-  double time0, time1, time2;
+  const double EPS = 1.0e-8;
+  Timer time0, time1, time2;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -197,12 +197,12 @@ void test_eigh_general_complex(const MPI_Comm &comm, int L, std::ostream &ostrm)
   TensorC Z;
   std::vector<double> W;
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   // A[i,j,k,l] Z[l,k,a] = B[j,l,i,k] Z[l,k,a] W[a]
   eigh(A, Axes(1, 0), Axes(3, 2), B, Axes(0, 2), Axes(1, 3), W, Z);
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   /* Check */
   A = tensordot(A.transpose(Axes(1, 0, 3, 2)), Z, Axes(2, 3), Axes(0, 1));
@@ -210,7 +210,7 @@ void test_eigh_general_complex(const MPI_Comm &comm, int L, std::ostream &ostrm)
   B.multiply_vector(W, 2);
   double max_error = max_abs(A-B);
 
-  time2 = MPI_Wtime();
+  time2.now();
 
   if(mpiroot) {
     ostrm << "========================================\n"
@@ -242,7 +242,7 @@ void test_eigh_general_complex(const MPI_Comm &comm, int L, std::ostream &ostrm)
     ostrm << "========================================" << std::endl;
   }
   assert(max_error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 

@@ -25,7 +25,6 @@
   \brief  Test code for reshape
 */
 
-#include <mpi.h>
 #include <cmath>
 #include <vector>
 #include <iostream>
@@ -36,6 +35,7 @@
 #include "mpi_tool.hpp"
 #include "functions.hpp"
 #include "typedef.hpp"
+#include "timer.hpp"
 
 namespace tests {
 
@@ -47,10 +47,10 @@ namespace tests {
   \param L size of tensor A.shape = (L, L+1, L+2, L+3)
   \param ostrm output stream for results
 */
-void test_reshape(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_reshape(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2;
+  Timer time0, time1, time2;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -70,12 +70,12 @@ void test_reshape(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     A.set_value(index, val);
   }
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   // B = reshape(A, (N0*N1, N2*N3))
   TensorD B = reshape(A, Shape(N0*N1, N2*N3));
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   double error = 0.0;
   Index index;
@@ -95,10 +95,9 @@ void test_reshape(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     if(error < fabs(val-exact) ) error = fabs(val-exact);
   }
 
-  time2 = MPI_Wtime();
+  time2.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
   if(mpiroot) {
     ostrm << "========================================\n"
               << "reshape <double> (A[N0,N1,N2,N3], Shape(N0*N1, N2*N3)) = B[N0*N1, N2*N3]\n"
@@ -114,7 +113,7 @@ void test_reshape(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 
@@ -125,10 +124,10 @@ void test_reshape(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   \param L size of tensor A.shape = (L, L+1, L+2, L+3)
   \param ostrm output stream for results
 */
-void test_reshape_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_reshape_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2;
+  Timer time0, time1, time2;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -148,12 +147,12 @@ void test_reshape_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     A.set_value(index, val);
   }
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   // B = reshape(A, (N0*N1, N2*N3))
   TensorC B = reshape(A, Shape(N0*N1, N2*N3));
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   double error = 0.0;
   Index index;
@@ -173,10 +172,9 @@ void test_reshape_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     if(error < std::abs(val-exact) ) error = std::abs(val-exact);
   }
 
-  time2 = MPI_Wtime();
+  time2.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
   if(mpiroot) {
     ostrm << "========================================\n"
               << "reshape <complex> (A[N0,N1,N2,N3], Shape(N0*N1, N2*N3)) = B[N0*N1, N2*N3]\n"
@@ -192,7 +190,7 @@ void test_reshape_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 

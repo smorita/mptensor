@@ -31,7 +31,6 @@
 #include <fstream>
 #include <cstdio>
 #include <cstdlib>
-#include <mpi.h>
 
 #include "mpi_tool.hpp"
 #include "tensor_test.hpp"
@@ -44,7 +43,8 @@ int main(int argc, char **argv) {
   int mpirank;
   int mpisize;
   bool mpiroot;
-  mpi_info(MPI_COMM_WORLD, mpirank, mpisize, mpiroot);
+  mpi_comm comm = MPI_COMM_WORLD;
+  mpi_info(comm, mpirank, mpisize, mpiroot);
 
   /* Get arguments */
   int n;
@@ -64,7 +64,6 @@ int main(int argc, char **argv) {
 
   std::ostream out(std::cout.rdbuf());
 
-  MPI_Comm comm = MPI_COMM_WORLD;
 
   test_transpose(comm, n, out);
   test_reshape(comm, n, out);

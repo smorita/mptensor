@@ -25,7 +25,6 @@
   \brief  Test code for trace
 */
 
-#include <mpi.h>
 #include <cmath>
 #include <vector>
 #include <iostream>
@@ -36,6 +35,7 @@
 #include "mpi_tool.hpp"
 #include "functions.hpp"
 #include "typedef.hpp"
+#include "timer.hpp"
 
 namespace tests {
 
@@ -48,10 +48,10 @@ namespace tests {
   \param L size of tensor, A.shape = (L, L+1, L+1, L)
   \param ostrm output stream for results
 */
-void test_trace(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_trace(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2, time3, time4;
+  Timer time0, time1, time2, time3, time4;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -69,21 +69,21 @@ void test_trace(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     A.set_value(index, val);
   }
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   double result = trace(A, Axes(0,1), Axes(3,2));
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   TensorD M = transpose(A, Axes(0,1,3,2));
   Shape s = M.shape();
   M = reshape(M, Shape(s[0]*s[1], s[2]*s[3]));
 
-  time2 = MPI_Wtime();
+  time2.now();
 
   double result_matrix = trace(M);
 
-  time3 = MPI_Wtime();
+  time3.now();
 
   double exact = 0.0;
   for(size_t i=0;i<N0;++i) {
@@ -94,11 +94,10 @@ void test_trace(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   double error = std::abs(result-exact)/std::abs(exact);
   double error_matrix = std::abs(result_matrix-exact)/std::abs(exact);
 
-  time4 = MPI_Wtime();
+  time4.now();
 
-  double max_error, max_error_matrix;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
-  MPI_Reduce(&error_matrix, &max_error_matrix, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
+  double max_error_matrix = mpi_reduce_max(error_matrix, comm);
 
   if(mpiroot) {
     ostrm << "========================================\n"
@@ -116,7 +115,7 @@ void test_trace(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 
@@ -128,10 +127,10 @@ void test_trace(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   \param L size of tensor, A.shape = (L, L+1, L+1, L)
   \param ostrm output stream for results
 */
-void test_trace_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_trace_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2, time3, time4;
+  Timer time0, time1, time2, time3, time4;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -149,21 +148,21 @@ void test_trace_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     A.set_value(index, val);
   }
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   complex result = trace(A, Axes(0,1), Axes(3,2));
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   TensorC M = transpose(A, Axes(0,1,3,2));
   Shape s = M.shape();
   M = reshape(M, Shape(s[0]*s[1], s[2]*s[3]));
 
-  time2 = MPI_Wtime();
+  time2.now();
 
   complex result_matrix = trace(M);
 
-  time3 = MPI_Wtime();
+  time3.now();
 
   complex exact = 0.0;
   for(size_t i=0;i<N0;++i) {
@@ -174,11 +173,10 @@ void test_trace_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   double error = std::abs(result-exact)/std::abs(exact);
   double error_matrix = std::abs(result_matrix-exact)/std::abs(exact);
 
-  time4 = MPI_Wtime();
+  time4.now();
 
-  double max_error, max_error_matrix;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
-  MPI_Reduce(&error_matrix, &max_error_matrix, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
+  double max_error_matrix = mpi_reduce_max(error_matrix, comm);
 
   if(mpiroot) {
     ostrm << "========================================\n"
@@ -196,7 +194,7 @@ void test_trace_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 
@@ -208,10 +206,10 @@ void test_trace_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   \param L size of tensor, A.shape = (L, L+1, L+2, L+3)
   \param ostrm output stream for results
 */
-void test_trace2(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_trace2(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2, time3, time4;
+  Timer time0, time1, time2, time3, time4;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -239,11 +237,11 @@ void test_trace2(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     B.set_value(index, val);
   }
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   double result = trace(A, B, Axes(0,3,2,1), Axes(3,2,0,1));
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   double exact = 0.0;
   for(size_t i=0;i<N0;++i) {
@@ -257,10 +255,9 @@ void test_trace2(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   }
   double error = std::abs(result-exact)/std::abs(exact);
 
-  time2 = MPI_Wtime();
+  time2.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
 
   if(mpiroot) {
     ostrm << "========================================\n"
@@ -279,7 +276,7 @@ void test_trace2(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 
@@ -291,10 +288,10 @@ void test_trace2(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   \param L size of tensor, A.shape = (L, L+1, L+2, L+3)
   \param ostrm output stream for results
 */
-void test_trace2_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
+void test_trace2_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-10;
-  double time0, time1, time2, time3, time4;
+  Timer time0, time1, time2, time3, time4;
   int mpirank;
   int mpisize;
   bool mpiroot;
@@ -322,11 +319,11 @@ void test_trace2_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     B.set_value(index, val);
   }
 
-  time0 = MPI_Wtime();
+  time0.now();
 
   complex result = trace(A, B, Axes(0,3,2,1), Axes(3,2,0,1));
 
-  time1 = MPI_Wtime();
+  time1.now();
 
   complex exact = 0.0;
   for(size_t i=0;i<N0;++i) {
@@ -340,10 +337,9 @@ void test_trace2_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
   }
   double error = std::abs(result-exact)/std::abs(exact);
 
-  time2 = MPI_Wtime();
+  time2.now();
 
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = mpi_reduce_max(error, comm);
 
   if(mpiroot) {
     ostrm << "========================================\n"
@@ -362,7 +358,7 @@ void test_trace2_complex(const MPI_Comm &comm, int L, std::ostream &ostrm) {
     ostrm << "========================================" << std::endl;
   }
   assert(error < EPS);
-  MPI_Barrier(comm);
+  mpi_barrier(comm);
 }
 
 

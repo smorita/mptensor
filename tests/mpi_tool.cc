@@ -26,8 +26,25 @@
 */
 
 #include <cstdlib>
-#include <mpi.h>
 #include "mpi_tool.hpp"
+
+#ifdef _NO_MPI
+
+const mpi_comm MPI_COMM_WORLD = 0;
+
+void mpi_finalize() {}
+void mpi_init(int argc, char **argv) {}
+void mpi_info(const mpi_comm &comm, int &rank, int &size, bool &is_root) {
+  rank = 0;
+  rank = 1;
+  is_root = true;
+}
+void mpi_barrier(const mpi_comm &comm) {}
+double mpi_reduce_max(double send, const mpi_comm &comm) {
+  return send;
+}
+
+#else // _NO_MPI
 
 void mpi_finalize() {
   int mpi_finalized;
@@ -42,9 +59,20 @@ void mpi_init(int argc, char **argv) {
   atexit( mpi_finalize );
 }
 
-void mpi_info(const MPI_Comm &comm, int &rank, int &size, bool &is_root) {
+void mpi_info(const mpi_comm &comm, int &rank, int &size, bool &is_root) {
   MPI_Comm_rank(comm, &rank);
   MPI_Comm_size(comm, &size);
   is_root = (rank==0);
 }
 
+void mpi_barrier(const mpi_comm &comm) {
+  MPI_Barrier(comm);
+}
+
+double mpi_reduce_max(double send, const mpi_comm &comm) {
+  double recv;
+  MPI_Reduce(&send, &recv, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  return recv;
+}
+
+#endif // _NO_MPI
