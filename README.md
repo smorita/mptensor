@@ -1,5 +1,6 @@
 # mptensor v0.2
 
+[![GitHub](https://img.shields.io/github/license/smorita/mptensor)](LICENSE)
 [![Build Status](https://travis-ci.org/smorita/mptensor.svg?branch=master)](https://travis-ci.org/smorita/mptensor)
 
 "mptensor" is parallel C++ libarary for tensor calculations.
