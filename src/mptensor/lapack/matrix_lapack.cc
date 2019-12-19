@@ -237,7 +237,7 @@ int matrix_svd(Matrix<double>& A, std::vector<double>& S) {
   double work_size;
   lwork = -1;
   double d_dummy;
-  int i_dummy;
+  int i_dummy=1;
 
   /* Get the size of workspace */
   dgesvd_(&jobu, &jobvt, &m, &n,
@@ -278,7 +278,7 @@ int matrix_svd(Matrix<complex>& A, std::vector<double>& S) {
   double rwork_size;
   lwork = -1;
   complex c_dummy;
-  int i_dummy;
+  int i_dummy=1;
 
   /* Get the size of workspace */
   zgesvd_(&jobu, &jobvt, &M, &N,

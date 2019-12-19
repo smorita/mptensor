@@ -274,7 +274,7 @@ int matrix_svd(Matrix<double>& A, std::vector<double>& S) {
   ia = ja = iu = ju = ivt = jvt = 1;
   lwork = -1;
   double d_dummy;
-  int i_dummy;
+  int i_dummy=1;
 
   /* Get the size of workspace */
   pdgesvd_(&jobu, &jobvt, &M, &N,
@@ -320,7 +320,7 @@ int matrix_svd(Matrix<complex>& A, std::vector<double>& S) {
   ia = ja = iu = ju = ivt = jvt = 1;
   lwork = -1;
   complex c_dummy;
-  int i_dummy;
+  int i_dummy=1;
 
   /* Get the size of workspace */
   pzgesvd_(&jobu, &jobvt, &M, &N,
@@ -541,7 +541,7 @@ int matrix_eigh(Matrix<double>& A, std::vector<double>& W) {
   ia = ja = iz = jz = 1;
   lwork = -1;
   double d_dummy;
-  int i_dummy;
+  int i_dummy=1;
 
   /* Get the size of workspace */
   pdsyev_(&jobz, &uplo, &n,
@@ -578,7 +578,7 @@ int matrix_eigh(Matrix<complex>& A, std::vector<double>& W) {
   ia = ja = iz = jz = 1;
   lwork = lrwork = -1;
   complex c_dummy;
-  int i_dummy;
+  int i_dummy=1;
 
   /* Get the size of workspace */
   pzheev_(&jobz, &uplo, &n,
