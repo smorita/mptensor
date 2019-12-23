@@ -134,12 +134,14 @@ void matrix_product(const Matrix<complex>& A, const Matrix<complex>& B, Matrix<c
 template <>
 int matrix_svd(Matrix<double>& A, Matrix<double>& U,
                std::vector<double>& S, Matrix<double>& VT) {
+#ifndef NDEBUG
   assert(A.n_row() == U.n_row());
   assert(A.n_col() == VT.n_col());
   size_t size = (A.n_row() < A.n_col()) ? A.n_row() : A.n_col();
   assert(U.n_col() == size);
   assert(S.size() == size);
   assert(VT.n_row() == size);
+#endif
 
   int m = A.n_row();
   int n = A.n_col();
@@ -223,8 +225,10 @@ int matrix_svd(Matrix<complex>& A, Matrix<complex>& U,
 
 template <>
 int matrix_svd(Matrix<double>& A, std::vector<double>& S) {
+#ifndef NDEBUG
   size_t size = (A.n_row() < A.n_col()) ? A.n_row() : A.n_col();
   assert(S.size() == size);
+#endif
 
   int m = A.n_row();
   int n = A.n_col();
@@ -262,8 +266,10 @@ int matrix_svd(Matrix<double>& A, std::vector<double>& S) {
 
 template <>
 int matrix_svd(Matrix<complex>& A, std::vector<double>& S) {
+#ifndef NDEBUG
   size_t size = (A.n_row() < A.n_col()) ? A.n_row() : A.n_col();
   assert(S.size() == size);
+#endif
 
   int M = A.n_row();
   int N = A.n_col();
