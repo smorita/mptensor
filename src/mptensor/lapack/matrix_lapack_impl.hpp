@@ -323,7 +323,6 @@ template <typename C> double min_abs(const Matrix<C>& a) {
   const size_t n = a.local_size();
   if(n==0) return 0.0;
   double val = std::abs(a[0]);
-  double recv;
   for(size_t i=0;i<n;++i) {
     val = std::min(val, std::abs(a[i]));
   }

@@ -54,7 +54,6 @@ Index Index::inverse() {
 
 bool Index::operator==(const Index& rhs) const {
   if( size() != rhs.size() ) return false;
-  bool same=true;
   for(int i=0;i<size();++i) {
     if(idx[i] != rhs[i]) return false;
   }

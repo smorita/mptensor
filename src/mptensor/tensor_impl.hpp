@@ -2385,8 +2385,8 @@ int solve(const Tensor<Matrix,C> &a, const Tensor<Matrix,C> &b, Tensor<Matrix,C>
   assert(axes_row_b.size() > 0);
   assert(axes_col_b.size() >= 0);
 
-  size_t rank_a = a.rank();
-  size_t rank_b = b.rank();
+  // size_t rank_a = a.rank();
+  // size_t rank_b = b.rank();
   size_t rank_row_a = axes_row_a.size();
   size_t rank_col_a = axes_col_a.size();
   size_t rank_row_b = axes_row_b.size();

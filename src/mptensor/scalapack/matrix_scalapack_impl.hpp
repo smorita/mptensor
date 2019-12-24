@@ -418,7 +418,7 @@ void replace_matrix_data(const Matrix<C>& M,
                          Matrix<C>& M_new) {
   const MPI_Comm comm = M.get_comm();
   const int mpisize = M.get_comm_size();
-  const int mpirank = M.get_comm_rank();
+  // const int mpirank = M.get_comm_rank();
   const size_t local_size = M.local_size();
 
   const C* mat = M.head();
