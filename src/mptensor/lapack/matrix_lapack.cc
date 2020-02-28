@@ -199,7 +199,6 @@ int matrix_svd(Matrix<complex>& A, Matrix<complex>& U,
   std::vector<complex> work;
   complex work_size;
   std::vector<double> rwork(5*size); // 5*min(m,n)
-  double d_dummy;
   lwork = -1;
 
   /* Get the size of workspace */
@@ -208,7 +207,7 @@ int matrix_svd(Matrix<complex>& A, Matrix<complex>& U,
           &(S[0]),
           U.head(), &ldu,
           VT.head(), &ldvt,
-          &work_size, &lwork, &(d_dummy), &info);
+          &work_size, &lwork, &(rwork[0]), &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
 
@@ -266,10 +265,8 @@ int matrix_svd(Matrix<double>& A, std::vector<double>& S) {
 
 template <>
 int matrix_svd(Matrix<complex>& A, std::vector<double>& S) {
-#ifndef NDEBUG
   size_t size = (A.n_row() < A.n_col()) ? A.n_row() : A.n_col();
   assert(S.size() == size);
-#endif
 
   int M = A.n_row();
   int N = A.n_col();
@@ -280,8 +277,7 @@ int matrix_svd(Matrix<complex>& A, std::vector<double>& S) {
   int lwork, info;
   std::vector<complex> work;
   complex work_size;
-  std::vector<double> rwork;
-  double rwork_size;
+  std::vector<double> rwork(5*size); // 5*min(m,n)
   lwork = -1;
   complex c_dummy;
   int i_dummy=1;
@@ -292,10 +288,9 @@ int matrix_svd(Matrix<complex>& A, std::vector<double>& S) {
           &(S[0]),
           &(c_dummy), &(i_dummy),
           &(c_dummy), &(i_dummy),
-          &work_size, &lwork, &rwork_size, &info);
+          &work_size, &lwork, &(rwork[0]), &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
-  rwork.resize(static_cast<int>(rwork_size));
 
   /* SVD: A(m,n) = U(m,i) * S(i) * VT(i,n) */
   zgesvd_(&jobu, &jobvt, &M, &N,

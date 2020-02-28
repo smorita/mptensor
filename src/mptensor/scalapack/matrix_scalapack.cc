@@ -228,8 +228,9 @@ int matrix_svd(Matrix<complex>& A, Matrix<complex>& U,
   int ia, ja, iu, ju, ivt, jvt, lwork, info;
   std::vector<complex> work;
   complex work_size;
-  std::vector<double> rwork;
-  double rwork_size;
+  std::vector<double> rwork(1 + 4 * std::max(M, N));
+  // size_t sizeb = std::max(A.n_row(), A.n_col());
+  // std::vector<double> rwork(1 + 4 * sizeb);
   ia = ja = iu = ju = ivt = jvt = 1;
   lwork = -1;
 
@@ -239,10 +240,9 @@ int matrix_svd(Matrix<complex>& A, Matrix<complex>& U,
            &(S[0]),
            U.head(), &iu, &ju, const_cast<int*>(U.descriptor()),
            VT.head(), &ivt, &jvt, const_cast<int*>(VT.descriptor()),
-           &work_size, &lwork, &rwork_size, &info);
+           &work_size, &lwork, &(rwork[0]), &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
-  rwork.resize(static_cast<int>(rwork_size));
 
   /* SVD: A(m,n) = U(m,i) * S(i) * VT(i,n) */
   pzgesvd_(&jobu, &jobvt, &M, &N,
@@ -255,7 +255,6 @@ int matrix_svd(Matrix<complex>& A, Matrix<complex>& U,
   /* for debug */
   // std::cerr << "matrix_svd<complex>: M= " << M << " N= " << N
   //           << " SIZE= " << size << " lwork= " << lwork
-  //           << " rwork_size= " << rwork.size()
   //           << " info = " << info << "\n";
 
   return info;
@@ -323,8 +322,7 @@ int matrix_svd(Matrix<complex>& A, std::vector<double>& S) {
   int ia, ja, iu, ju, ivt, jvt, lwork, info;
   std::vector<complex> work;
   complex work_size;
-  std::vector<double> rwork;
-  double rwork_size;
+  std::vector<double> rwork(1 + 4 * std::max(M, N));
   ia = ja = iu = ju = ivt = jvt = 1;
   lwork = -1;
   complex c_dummy;
@@ -336,10 +334,9 @@ int matrix_svd(Matrix<complex>& A, std::vector<double>& S) {
            &(S[0]),
            &(c_dummy), &iu, &ju, &(i_dummy),
            &(c_dummy), &ivt, &jvt, &(i_dummy),
-           &work_size, &lwork, &rwork_size, &info);
+           &work_size, &lwork, &(rwork[0]), &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
-  rwork.resize(static_cast<int>(rwork_size));
 
   /* SVD: A(m,n) = U(m,i) * S(i) * VT(i,n) */
   pzgesvd_(&jobu, &jobvt, &M, &N,
@@ -352,7 +349,6 @@ int matrix_svd(Matrix<complex>& A, std::vector<double>& S) {
   /* for debug */
   // std::cerr << "matrix_svd<complex>: M= " << M << " N= " << N
   //           << " SIZE= " << size << " lwork= " << lwork
-  //           << " rwork_size= " << rwork.size()
   //           << " info = " << info << "\n";
 
   return info;
