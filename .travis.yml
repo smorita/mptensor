@@ -22,14 +22,14 @@ jobs:
       script:
         - mkdir build && cd build
         - cmake ../
-        - make
+        - make tensor_tests
         - mpiexec -np 2 tests/tensor_test
 
     - name: "CMake without MPI"
       script:
         - mkdir build && cd build
         - cmake -DENABLE_MPI=OFF ../
-        - make
+        - make tensor_tests
         - ./tests/tensor_test
 
     - stage: deploy
@@ -40,7 +40,6 @@ jobs:
         provider: pages
         skip_cleanup: true
         github_token: $GITHUB_TOKEN
-        keep_history: true
         local_dir: doc/doxygen/html
         on:
           branch: master

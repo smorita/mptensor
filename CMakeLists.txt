@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8.0 FATAL_ERROR)
 
+message(STATUS "Start configuration of mptesnor")
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 
 project(mptensor NONE)
@@ -16,10 +17,9 @@ endif(NOT CMAKE_BUILD_TYPE)
 message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 
 
+option(MPTENSOR_BUILD_LIBS_ONLY "Build only library" OFF)
 option(BUILD_SHARED_LIBS "Build as shared library" OFF)
 option(BUILD_DOCS "Build documents" OFF)
-option(BUILD_TESTS "Build tests" ON)
-option(BUILD_EXAMPLES "Build examples" OFF)
 option(ENABLE_CXX11 "use c++11" ON)
 option(ENABLE_MPI "use MPI and ScaLAPACK" ON)
 
@@ -74,14 +74,7 @@ endif()
 include_directories(${PROJECT_SOURCE_DIR}/src)
 add_subdirectory(src)
 
-if(BUILD_TESTS)
-  add_subdirectory(tests)
-else()
+if(NOT MPTENSOR_BUILD_LIBRARY_ONLY)
   add_subdirectory(tests EXCLUDE_FROM_ALL)
-endif()
-
-if(BUILD_EXAMPLES)
-  add_subdirectory(examples)
-else()
   add_subdirectory(examples EXCLUDE_FROM_ALL)
 endif()
