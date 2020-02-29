@@ -22,14 +22,14 @@ jobs:
       script:
         - mkdir build && cd build
         - cmake ../
-        - make tensor_tests
+        - make tensor_test
         - mpiexec -np 2 tests/tensor_test
 
     - name: "CMake without MPI"
       script:
         - mkdir build && cd build
         - cmake -DENABLE_MPI=OFF ../
-        - make tensor_tests
+        - make tensor_test
         - ./tests/tensor_test
 
     - stage: deploy
