@@ -64,17 +64,14 @@ else()
   add_definitions(-D_USE_RANDOM_BOOST)
 endif()
 
-if(BUILD_DOCS)
-  find_package(Doxygen REQUIRED)
-  configure_file(${PROJECT_SOURCE_DIR}/config/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY)
-  add_custom_target(doc COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile)
-  install(DIRECTORY doxygen_docs/html DESTINATION share/mptensor/${mptensor_version})
-endif()
-
 include_directories(${PROJECT_SOURCE_DIR}/src)
 add_subdirectory(src)
 
 if(NOT MPTENSOR_BUILD_LIBRARY_ONLY)
   add_subdirectory(tests EXCLUDE_FROM_ALL)
   add_subdirectory(examples EXCLUDE_FROM_ALL)
+endif()
+
+if(BUILD_DOCS)
+  add_subdirectory(doc/doxygen)
 endif()
