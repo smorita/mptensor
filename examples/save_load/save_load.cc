@@ -25,17 +25,17 @@
   \brief  Example of save and load
 */
 
-#include <iostream>
-#include <iomanip>
-#include <ctime>
 #include <mpi.h>
+#include <ctime>
+#include <iomanip>
+#include <iostream>
 #include <mptensor.hpp>
 
 /* Main function */
 int main(int argc, char **argv) {
   using namespace mptensor;
   // typedef Tensor<scalapack::Matrix,double> ptensor;
-  typedef Tensor<scalapack::Matrix,complex> ptensor;
+  typedef Tensor<scalapack::Matrix, complex> ptensor;
 
   /* Start */
   MPI_Init(&argc, &argv);
@@ -45,53 +45,53 @@ int main(int argc, char **argv) {
   bool mpiroot;
   MPI_Comm_rank(comm, &mpirank);
   MPI_Comm_size(comm, &mpisize);
-  mpiroot = (mpirank==0);
+  mpiroot = (mpirank == 0);
 
   /* Get arguments */
   int n;
   if (argc < 2) {
-    if (mpiroot) std::cerr << "Usage: a.out N\n"
-                           << "waring: assuming N=10" << std::endl;
+    if (mpiroot)
+      std::cerr << "Usage: a.out N\n"
+                << "waring: assuming N=10" << std::endl;
     n = 10;
   } else {
     n = atoi(argv[1]);
   }
 
   /* Construct a tensor */
-  ptensor A(Shape(n,n+1,n+2,n+3));
+  ptensor A(Shape(n, n + 1, n + 2, n + 3));
 
   /* Do something here */
   set_seed(std::time(NULL) + mpirank);
   random_tensor::fill(A);
-  A.transpose(Axes(3,1,0,2));
+  A.transpose(Axes(3, 1, 0, 2));
   A.save("A.dat");
 
   ptensor B;
   B.load("A.dat");
 
   /* Output */
-  if(mpiroot) std::cout << "########## Saved Tensor ##########\n";
-  for(int i=0;i<mpisize;++i) {
-    if(i==mpirank) {
+  if (mpiroot) std::cout << "########## Saved Tensor ##########\n";
+  for (int i = 0; i < mpisize; ++i) {
+    if (i == mpirank) {
       std::cout << "rank=" << i << ": ";
       A.print_info(std::cout);
     }
     MPI_Barrier(comm);
   }
-  if(mpiroot) std::cout << "########## Loaded Tensor ##########\n";
-  for(int i=0;i<mpisize;++i) {
-    if(i==mpirank) {
+  if (mpiroot) std::cout << "########## Loaded Tensor ##########\n";
+  for (int i = 0; i < mpisize; ++i) {
+    if (i == mpirank) {
       std::cout << "rank=" << i << ": ";
       B.print_info(std::cout);
     }
     MPI_Barrier(comm);
   }
 
-  double val = max_abs(B-A);
-  if(mpiroot) {
+  double val = max_abs(B - A);
+  if (mpiroot) {
     std::cout << "########## Error ##########\n"
-              << std::scientific << std::setprecision(10)
-              << val << std::endl;
+              << std::scientific << std::setprecision(10) << val << std::endl;
   }
 
   /* End */

@@ -60,12 +60,13 @@ void test_qr_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
 void test_qr_rank2_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
 void test_eigh_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
 void test_eigh_rank2_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
-void test_eigh_general_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
+void test_eigh_general_complex(const mpi_comm &comm, int L,
+                               std::ostream &ostrm);
 void test_arithmetic_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
 void test_trace_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
 void test_trace2_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
 void test_contract_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
 
-} // namespace tests
+}  // namespace tests
 
-#endif // _TENSOR_TEST_HPP_
+#endif  // _TENSOR_TEST_HPP_

@@ -35,6 +35,6 @@
 
 #ifndef _NO_RANDOM
 #include "mptensor/rsvd.hpp"
-#endif // _NO_RANDOM
+#endif  // _NO_RANDOM
 
-#endif // _MPTENSOR_HPP_
+#endif  // _MPTENSOR_HPP_

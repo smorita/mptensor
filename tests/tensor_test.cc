@@ -26,11 +26,11 @@
 */
 
 #include <cmath>
-#include <vector>
-#include <iostream>
-#include <fstream>
 #include <cstdio>
 #include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 #include "mpi_tool.hpp"
 #include "tensor_test.hpp"
@@ -49,8 +49,9 @@ int main(int argc, char **argv) {
   /* Get arguments */
   int n;
   if (argc < 2) {
-    if (mpiroot) std::cerr << "Usage: a.out N\n"
-                           << "waring: assuming N=10" << std::endl;
+    if (mpiroot)
+      std::cerr << "Usage: a.out N\n"
+                << "waring: assuming N=10" << std::endl;
     n = 10;
   } else {
     n = atoi(argv[1]);
@@ -63,7 +64,6 @@ int main(int argc, char **argv) {
   // std::ostream out(fout.rdbuf());
 
   std::ostream out(std::cout.rdbuf());
-
 
   test_transpose(comm, n, out);
   test_reshape(comm, n, out);
@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
   test_trace2(comm, n, out);
   test_contract(comm, n, out);
 
-  if(mpiroot) out << "\n";
+  if (mpiroot) out << "\n";
 
   test_transpose_complex(comm, n, out);
   test_reshape_complex(comm, n, out);

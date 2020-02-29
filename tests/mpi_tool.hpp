@@ -44,4 +44,4 @@ void mpi_info(const mpi_comm &comm, int &rank, int &size, bool &is_root);
 void mpi_barrier(const mpi_comm &comm);
 double mpi_reduce_max(double send, const mpi_comm &comm);
 
-#endif // _MPI_TOOL_HPP_
+#endif  // _MPI_TOOL_HPP_

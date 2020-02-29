@@ -37,6 +37,6 @@ namespace mptensor {
 //! \ingroup Complex
 typedef std::complex<double> complex;
 
-} // namespace mptensor
+}  // namespace mptensor
 
-#endif // _COMPLEX_HPP_
+#endif  // _COMPLEX_HPP_

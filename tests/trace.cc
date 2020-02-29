@@ -25,20 +25,19 @@
   \brief  Test code for trace
 */
 
-#include <cmath>
-#include <vector>
-#include <iostream>
-#include <cstdlib>
 #include <cassert>
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <vector>
 
 #include <mptensor.hpp>
-#include "mpi_tool.hpp"
 #include "functions.hpp"
-#include "typedef.hpp"
+#include "mpi_tool.hpp"
 #include "timer.hpp"
+#include "typedef.hpp"
 
 namespace tests {
-
 
 //! Test for full trace of tensor
 /*! trace(A, Axes(0,1), Axes(3,2))
@@ -58,12 +57,12 @@ void test_trace(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_info(comm, mpirank, mpisize, mpiroot);
 
   int N0 = L;
-  int N1 = L+1;
+  int N1 = L + 1;
 
   TensorD A(Shape(N0, N1, N1, N0));
   Shape shape_A = A.shape();
 
-  for(size_t i=0;i<A.local_size();++i) {
+  for (size_t i = 0; i < A.local_size(); ++i) {
     Index index = A.global_index(i);
     double val = func4_1(index, shape_A);
     A.set_value(index, val);
@@ -71,13 +70,13 @@ void test_trace(const mpi_comm &comm, int L, std::ostream &ostrm) {
 
   time0.now();
 
-  double result = trace(A, Axes(0,1), Axes(3,2));
+  double result = trace(A, Axes(0, 1), Axes(3, 2));
 
   time1.now();
 
-  TensorD M = transpose(A, Axes(0,1,3,2));
+  TensorD M = transpose(A, Axes(0, 1, 3, 2));
   Shape s = M.shape();
-  M = reshape(M, Shape(s[0]*s[1], s[2]*s[3]));
+  M = reshape(M, Shape(s[0] * s[1], s[2] * s[3]));
 
   time2.now();
 
@@ -86,29 +85,29 @@ void test_trace(const mpi_comm &comm, int L, std::ostream &ostrm) {
   time3.now();
 
   double exact = 0.0;
-  for(size_t i=0;i<N0;++i) {
-    for(size_t j=0;j<N1;++j) {
-      exact += func4_1(Index(i,j,j,i), shape_A);
+  for (size_t i = 0; i < N0; ++i) {
+    for (size_t j = 0; j < N1; ++j) {
+      exact += func4_1(Index(i, j, j, i), shape_A);
     }
   }
-  double error = std::abs(result-exact)/std::abs(exact);
-  double error_matrix = std::abs(result_matrix-exact)/std::abs(exact);
+  double error = std::abs(result - exact) / std::abs(exact);
+  double error_matrix = std::abs(result_matrix - exact) / std::abs(exact);
 
   time4.now();
 
   double max_error = mpi_reduce_max(error, comm);
   double max_error_matrix = mpi_reduce_max(error_matrix, comm);
 
-  if(mpiroot) {
+  if (mpiroot) {
     ostrm << "========================================\n"
           << "Full Trace <double> ( A[N0, N1, N1, N0], Axes(0,1), Axes(3,2) )\n"
-          << "[N0, N1, N1, N0] = " <<  A.shape() << "\n"
+          << "[N0, N1, N1, N0] = " << A.shape() << "\n"
           << "Error=          " << max_error << "\n"
           << "Error(matrix)=  " << max_error_matrix << "\n"
-          << "Time=           " << time1-time0 << " [sec]\n"
-          << "Time(reshape)=  " << time2-time1 << " [sec]\n"
-          << "Time(matrix)=   " << time3-time2 << " [sec]\n"
-          << "Time(check)=    " << time4-time3 << " [sec]\n"
+          << "Time=           " << time1 - time0 << " [sec]\n"
+          << "Time(reshape)=  " << time2 - time1 << " [sec]\n"
+          << "Time(matrix)=   " << time3 - time2 << " [sec]\n"
+          << "Time(check)=    " << time4 - time3 << " [sec]\n"
           << "----------------------------------------\n";
     ostrm << "A: ";
     A.print_info(ostrm);
@@ -117,7 +116,6 @@ void test_trace(const mpi_comm &comm, int L, std::ostream &ostrm) {
   assert(error < EPS);
   mpi_barrier(comm);
 }
-
 
 //! Test for full trace of tensor (complex version)
 /*! trace(A, Axes(0,1), Axes(3,2))
@@ -137,12 +135,12 @@ void test_trace_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_info(comm, mpirank, mpisize, mpiroot);
 
   int N0 = L;
-  int N1 = L+1;
+  int N1 = L + 1;
 
   TensorC A(Shape(N0, N1, N1, N0));
   Shape shape_A = A.shape();
 
-  for(size_t i=0;i<A.local_size();++i) {
+  for (size_t i = 0; i < A.local_size(); ++i) {
     Index index = A.global_index(i);
     complex val = cfunc4_1(index, shape_A);
     A.set_value(index, val);
@@ -150,13 +148,13 @@ void test_trace_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
 
   time0.now();
 
-  complex result = trace(A, Axes(0,1), Axes(3,2));
+  complex result = trace(A, Axes(0, 1), Axes(3, 2));
 
   time1.now();
 
-  TensorC M = transpose(A, Axes(0,1,3,2));
+  TensorC M = transpose(A, Axes(0, 1, 3, 2));
   Shape s = M.shape();
-  M = reshape(M, Shape(s[0]*s[1], s[2]*s[3]));
+  M = reshape(M, Shape(s[0] * s[1], s[2] * s[3]));
 
   time2.now();
 
@@ -165,30 +163,31 @@ void test_trace_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   time3.now();
 
   complex exact = 0.0;
-  for(size_t i=0;i<N0;++i) {
-    for(size_t j=0;j<N1;++j) {
-      exact += cfunc4_1(Index(i,j,j,i), shape_A);
+  for (size_t i = 0; i < N0; ++i) {
+    for (size_t j = 0; j < N1; ++j) {
+      exact += cfunc4_1(Index(i, j, j, i), shape_A);
     }
   }
-  double error = std::abs(result-exact)/std::abs(exact);
-  double error_matrix = std::abs(result_matrix-exact)/std::abs(exact);
+  double error = std::abs(result - exact) / std::abs(exact);
+  double error_matrix = std::abs(result_matrix - exact) / std::abs(exact);
 
   time4.now();
 
   double max_error = mpi_reduce_max(error, comm);
   double max_error_matrix = mpi_reduce_max(error_matrix, comm);
 
-  if(mpiroot) {
-    ostrm << "========================================\n"
-          << "Full Trace <complex> ( A[N0, N1, N1, N0], Axes(0,1), Axes(3,2) )\n"
-          << "[N0, N1, N1, N0] = " <<  A.shape() << "\n"
-          << "Error=          " << max_error << "\n"
-          << "Error(matrix)=  " << max_error_matrix << "\n"
-          << "Time=           " << time1-time0 << " [sec]\n"
-          << "Time(reshape)=  " << time2-time1 << " [sec]\n"
-          << "Time(matrix)=   " << time3-time2 << " [sec]\n"
-          << "Time(check)=    " << time4-time3 << " [sec]\n"
-          << "----------------------------------------\n";
+  if (mpiroot) {
+    ostrm
+        << "========================================\n"
+        << "Full Trace <complex> ( A[N0, N1, N1, N0], Axes(0,1), Axes(3,2) )\n"
+        << "[N0, N1, N1, N0] = " << A.shape() << "\n"
+        << "Error=          " << max_error << "\n"
+        << "Error(matrix)=  " << max_error_matrix << "\n"
+        << "Time=           " << time1 - time0 << " [sec]\n"
+        << "Time(reshape)=  " << time2 - time1 << " [sec]\n"
+        << "Time(matrix)=   " << time3 - time2 << " [sec]\n"
+        << "Time(check)=    " << time4 - time3 << " [sec]\n"
+        << "----------------------------------------\n";
     ostrm << "A: ";
     A.print_info(ostrm);
     ostrm << "========================================" << std::endl;
@@ -196,7 +195,6 @@ void test_trace_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   assert(error < EPS);
   mpi_barrier(comm);
 }
-
 
 //! Test for full contraction of two tensors
 /*! trace(A, B, Axes(0,3,2,1), Axes(3,2,0,1))
@@ -216,22 +214,22 @@ void test_trace2(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_info(comm, mpirank, mpisize, mpiroot);
 
   int N0 = L;
-  int N1 = L+1;
-  int N2 = L+2;
-  int N3 = L+3;
+  int N1 = L + 1;
+  int N2 = L + 2;
+  int N3 = L + 3;
 
   TensorD A(Shape(N0, N1, N2, N3));
   TensorD B(Shape(N2, N1, N3, N0));
 
   Shape shape_A = A.shape();
-  for(size_t i=0;i<A.local_size();++i) {
+  for (size_t i = 0; i < A.local_size(); ++i) {
     Index index = A.global_index(i);
     double val = func4_1(index, shape_A);
     A.set_value(index, val);
   }
 
   Shape shape_B = B.shape();
-  for(size_t i=0;i<B.local_size();++i) {
+  for (size_t i = 0; i < B.local_size(); ++i) {
     Index index = B.global_index(i);
     double val = func4_2(index, shape_B);
     B.set_value(index, val);
@@ -239,35 +237,37 @@ void test_trace2(const mpi_comm &comm, int L, std::ostream &ostrm) {
 
   time0.now();
 
-  double result = trace(A, B, Axes(0,3,2,1), Axes(3,2,0,1));
+  double result = trace(A, B, Axes(0, 3, 2, 1), Axes(3, 2, 0, 1));
 
   time1.now();
 
   double exact = 0.0;
-  for(size_t i=0;i<N0;++i) {
-    for(size_t j=0;j<N1;++j) {
-      for(size_t k=0;k<N2;++k) {
-        for(size_t l=0;l<N3;++l) {
-          exact += func4_1(Index(i,j,k,l), shape_A) * func4_2(Index(k,j,l,i), shape_B);
+  for (size_t i = 0; i < N0; ++i) {
+    for (size_t j = 0; j < N1; ++j) {
+      for (size_t k = 0; k < N2; ++k) {
+        for (size_t l = 0; l < N3; ++l) {
+          exact += func4_1(Index(i, j, k, l), shape_A) *
+                   func4_2(Index(k, j, l, i), shape_B);
         }
       }
     }
   }
-  double error = std::abs(result-exact)/std::abs(exact);
+  double error = std::abs(result - exact) / std::abs(exact);
 
   time2.now();
 
   double max_error = mpi_reduce_max(error, comm);
 
-  if(mpiroot) {
+  if (mpiroot) {
     ostrm << "========================================\n"
-          << "Trace_2 <double> ( A[N0, N1, N2, N3], B[N2, N1, N3, N0], Axes(0,3,2,1), Axes(3,2,0,1) )\n"
-          << "[N0, N1, N2, N3] = " <<  A.shape() << "\n"
+          << "Trace_2 <double> ( A[N0, N1, N2, N3], B[N2, N1, N3, N0], "
+             "Axes(0,3,2,1), Axes(3,2,0,1) )\n"
+          << "[N0, N1, N2, N3] = " << A.shape() << "\n"
           << "Result=         " << result << "\n"
           << "Exact=          " << exact << "\n"
           << "Error=          " << max_error << "\n"
-          << "Time=           " << time1-time0 << " [sec]\n"
-          << "Time(check)=    " << time2-time1 << " [sec]\n"
+          << "Time=           " << time1 - time0 << " [sec]\n"
+          << "Time(check)=    " << time2 - time1 << " [sec]\n"
           << "----------------------------------------\n";
     ostrm << "A: ";
     A.print_info(ostrm);
@@ -278,7 +278,6 @@ void test_trace2(const mpi_comm &comm, int L, std::ostream &ostrm) {
   assert(error < EPS);
   mpi_barrier(comm);
 }
-
 
 //! Test for full contraction of two tensors (complex version)
 /*! trace(A, B, Axes(0,3,2,1), Axes(3,2,0,1))
@@ -298,22 +297,22 @@ void test_trace2_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_info(comm, mpirank, mpisize, mpiroot);
 
   int N0 = L;
-  int N1 = L+1;
-  int N2 = L+2;
-  int N3 = L+3;
+  int N1 = L + 1;
+  int N2 = L + 2;
+  int N3 = L + 3;
 
   TensorC A(Shape(N0, N1, N2, N3));
   TensorC B(Shape(N2, N1, N3, N0));
 
   Shape shape_A = A.shape();
-  for(size_t i=0;i<A.local_size();++i) {
+  for (size_t i = 0; i < A.local_size(); ++i) {
     Index index = A.global_index(i);
     complex val = cfunc4_1(index, shape_A);
     A.set_value(index, val);
   }
 
   Shape shape_B = B.shape();
-  for(size_t i=0;i<B.local_size();++i) {
+  for (size_t i = 0; i < B.local_size(); ++i) {
     Index index = B.global_index(i);
     complex val = cfunc4_2(index, shape_B);
     B.set_value(index, val);
@@ -321,35 +320,37 @@ void test_trace2_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
 
   time0.now();
 
-  complex result = trace(A, B, Axes(0,3,2,1), Axes(3,2,0,1));
+  complex result = trace(A, B, Axes(0, 3, 2, 1), Axes(3, 2, 0, 1));
 
   time1.now();
 
   complex exact = 0.0;
-  for(size_t i=0;i<N0;++i) {
-    for(size_t j=0;j<N1;++j) {
-      for(size_t k=0;k<N2;++k) {
-        for(size_t l=0;l<N3;++l) {
-          exact += cfunc4_1(Index(i,j,k,l), shape_A) * cfunc4_2(Index(k,j,l,i), shape_B);
+  for (size_t i = 0; i < N0; ++i) {
+    for (size_t j = 0; j < N1; ++j) {
+      for (size_t k = 0; k < N2; ++k) {
+        for (size_t l = 0; l < N3; ++l) {
+          exact += cfunc4_1(Index(i, j, k, l), shape_A) *
+                   cfunc4_2(Index(k, j, l, i), shape_B);
         }
       }
     }
   }
-  double error = std::abs(result-exact)/std::abs(exact);
+  double error = std::abs(result - exact) / std::abs(exact);
 
   time2.now();
 
   double max_error = mpi_reduce_max(error, comm);
 
-  if(mpiroot) {
+  if (mpiroot) {
     ostrm << "========================================\n"
-          << "Trace_2 <complex> ( A[N0, N1, N2, N3], B[N2, N1, N3, N0], Axes(0,3,2,1), Axes(3,2,0,1) )\n"
-          << "[N0, N1, N2, N3] = " <<  A.shape() << "\n"
+          << "Trace_2 <complex> ( A[N0, N1, N2, N3], B[N2, N1, N3, N0], "
+             "Axes(0,3,2,1), Axes(3,2,0,1) )\n"
+          << "[N0, N1, N2, N3] = " << A.shape() << "\n"
           << "Result=         " << result << "\n"
           << "Exact=          " << exact << "\n"
           << "Error=          " << max_error << "\n"
-          << "Time=           " << time1-time0 << " [sec]\n"
-          << "Time(check)=    " << time2-time1 << " [sec]\n"
+          << "Time=           " << time1 - time0 << " [sec]\n"
+          << "Time(check)=    " << time2 - time1 << " [sec]\n"
           << "----------------------------------------\n";
     ostrm << "A: ";
     A.print_info(ostrm);
@@ -361,5 +362,4 @@ void test_trace2_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_barrier(comm);
 }
 
-
-} // namespace tests
+}  // namespace tests

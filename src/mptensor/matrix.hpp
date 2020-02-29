@@ -31,9 +31,9 @@
 #define _MATRIX_HPP_
 
 #ifndef _NO_MPI
-  #include "scalapack/matrix_scalapack.hpp"
-#endif // _NO_MPI
+#include "scalapack/matrix_scalapack.hpp"
+#endif  // _NO_MPI
 
 #include "lapack/matrix_lapack.hpp"
 
-#endif // _MATRIX_HPP_
+#endif  // _MATRIX_HPP_

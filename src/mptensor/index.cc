@@ -26,36 +26,33 @@
   \brief  Index class
 */
 
-#include <iostream>
+#include "index.hpp"
 #include <algorithm>
 #include <cassert>
-#include "index.hpp"
+#include <iostream>
 
 namespace mptensor {
 
-
 void Index::assign(size_t n, size_t j[]) {
   idx.resize(n);
-  idx.assign(j,j+n);
+  idx.assign(j, j + n);
 };
 
-void Index::sort() {
-  std::sort(idx.begin(), idx.end());
-}
+void Index::sort() { std::sort(idx.begin(), idx.end()); }
 
 Index Index::inverse() {
   Index inv;
   inv.resize(size());
-  for(int i=0;i<size();++i) {
+  for (int i = 0; i < size(); ++i) {
     inv[(*this)[i]] = i;
   }
   return inv;
 };
 
 bool Index::operator==(const Index& rhs) const {
-  if( size() != rhs.size() ) return false;
-  for(int i=0;i<size();++i) {
-    if(idx[i] != rhs[i]) return false;
+  if (size() != rhs.size()) return false;
+  for (int i = 0; i < size(); ++i) {
+    if (idx[i] != rhs[i]) return false;
   }
   return true;
 }
@@ -72,8 +69,8 @@ Index& Index::operator+=(const Index& rhs) {
 */
 std::ostream& operator<<(std::ostream& os, const Index& idx) {
   os << "[";
-  if(idx.size()>0) os << idx[0];
-  for(int i=1;i<idx.size();++i) {
+  if (idx.size() > 0) os << idx[0];
+  for (int i = 1; i < idx.size(); ++i) {
     os << ", " << idx[i];
   }
   os << "]";
@@ -89,14 +86,13 @@ Index operator+(const Index& lhs, const Index& rhs) {
   return (Index(lhs) += rhs);
 };
 
-
 //! Create an increasing sequence. it is similar to range() in python
 Index range(const size_t start, const size_t stop) {
   assert(start <= stop);
   Index index;
-  index.resize(stop-start);
-  for(size_t i=start;i<stop;++i) index[i-start] = i;
+  index.resize(stop - start);
+  for (size_t i = start; i < stop; ++i) index[i - start] = i;
   return index;
 }
 
-} // namespace mptensor
+}  // namespace mptensor

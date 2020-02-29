@@ -33,11 +33,11 @@
 using namespace std::chrono;
 
 class Timer {
-public:
+ public:
   Timer(){};
   void now() { t = system_clock::now(); };
 
-private:
+ private:
   system_clock::time_point t;
 
   friend double operator-(Timer& t1, Timer& t0);
@@ -51,11 +51,11 @@ inline double operator-(Timer& t1, Timer& t0) {
 #include <ctime>
 
 class Timer {
-public:
+ public:
   Timer(){};
   void now() { t = std::clock(); };
 
-private:
+ private:
   clock_t t;
 
   friend double operator-(Timer& t1, Timer& t0);
@@ -67,4 +67,4 @@ inline double operator-(Timer& t1, Timer& t0) {
 
 #endif
 
-#endif // _MPI_TOOL_HPP_
+#endif  // _MPI_TOOL_HPP_

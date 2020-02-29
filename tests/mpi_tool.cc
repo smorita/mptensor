@@ -25,8 +25,8 @@
   \brief  Some utilities for MPI
 */
 
-#include <cstdlib>
 #include "mpi_tool.hpp"
+#include <cstdlib>
 
 #ifdef _NO_MPI
 
@@ -40,34 +40,30 @@ void mpi_info(const mpi_comm &comm, int &rank, int &size, bool &is_root) {
   is_root = true;
 }
 void mpi_barrier(const mpi_comm &comm) {}
-double mpi_reduce_max(double send, const mpi_comm &comm) {
-  return send;
-}
+double mpi_reduce_max(double send, const mpi_comm &comm) { return send; }
 
-#else // _NO_MPI
+#else  // _NO_MPI
 
 void mpi_finalize() {
   int mpi_finalized;
   MPI_Finalized(&mpi_finalized);
-  if(!mpi_finalized) {
+  if (!mpi_finalized) {
     MPI_Finalize();
   }
 };
 
 void mpi_init(int argc, char **argv) {
   MPI_Init(&argc, &argv);
-  atexit( mpi_finalize );
+  atexit(mpi_finalize);
 }
 
 void mpi_info(const mpi_comm &comm, int &rank, int &size, bool &is_root) {
   MPI_Comm_rank(comm, &rank);
   MPI_Comm_size(comm, &size);
-  is_root = (rank==0);
+  is_root = (rank == 0);
 }
 
-void mpi_barrier(const mpi_comm &comm) {
-  MPI_Barrier(comm);
-}
+void mpi_barrier(const mpi_comm &comm) { MPI_Barrier(comm); }
 
 double mpi_reduce_max(double send, const mpi_comm &comm) {
   double recv;
@@ -75,4 +71,4 @@ double mpi_reduce_max(double send, const mpi_comm &comm) {
   return recv;
 }
 
-#endif // _NO_MPI
+#endif  // _NO_MPI

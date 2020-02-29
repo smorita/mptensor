@@ -36,15 +36,15 @@ using namespace mptensor;
 
 #ifdef _NO_MPI
 // LAPACK
-typedef Tensor<lapack::Matrix,double> TensorD;
-typedef Tensor<lapack::Matrix,complex> TensorC;
+typedef Tensor<lapack::Matrix, double> TensorD;
+typedef Tensor<lapack::Matrix, complex> TensorC;
 
 #else
 // ScaLAPACK
-typedef Tensor<scalapack::Matrix,double> TensorD;
-typedef Tensor<scalapack::Matrix,complex> TensorC;
+typedef Tensor<scalapack::Matrix, double> TensorD;
+typedef Tensor<scalapack::Matrix, complex> TensorC;
 
 #endif
 
-} // namespace tests
-#endif // _TEST_TYPEDEF_HPP_
+}  // namespace tests
+#endif  // _TEST_TYPEDEF_HPP_

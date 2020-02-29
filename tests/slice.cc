@@ -25,20 +25,19 @@
   \brief  Test code for slice
 */
 
-#include <cmath>
-#include <vector>
-#include <iostream>
-#include <cstdlib>
 #include <cassert>
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <vector>
 
 #include <mptensor.hpp>
-#include "mpi_tool.hpp"
 #include "functions.hpp"
-#include "typedef.hpp"
+#include "mpi_tool.hpp"
 #include "timer.hpp"
+#include "typedef.hpp"
 
 namespace tests {
-
 
 //! Test for TensorD::slice
 /*! B = A[:, 3:6, :, :] and C = A[:, 2:4, :, 1:5]
@@ -57,17 +56,17 @@ void test_slice(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_info(comm, mpirank, mpisize, mpiroot);
 
   int N0 = L;
-  int N1 = L+1;
-  int N2 = L+2;
-  int N3 = L+3;
+  int N1 = L + 1;
+  int N2 = L + 2;
+  int N3 = L + 3;
 
-  if (N1<6) N1 = 6;
-  if (N3<5) N3 = 5;
+  if (N1 < 6) N1 = 6;
+  if (N3 < 5) N3 = 5;
 
   TensorD A(Shape(N0, N1, N2, N3));
 
   Shape shape_A = A.shape();
-  for(size_t i=0;i<A.local_size();++i) {
+  for (size_t i = 0; i < A.local_size(); ++i) {
     Index index = A.global_index(i);
     double val = func4_1(index, shape_A);
     A.set_value(index, val);
@@ -81,12 +80,12 @@ void test_slice(const mpi_comm &comm, int L, std::ostream &ostrm) {
   time1.now();
 
   // C = A[:, 2:4, :, 1:5]
-  TensorD C = slice(A, Index(0,2,0,1), Index(0,4,0,5));
+  TensorD C = slice(A, Index(0, 2, 0, 1), Index(0, 4, 0, 5));
 
   time2.now();
 
   double error = 0.0;
-  for(size_t i=0;i<B.local_size();++i) {
+  for (size_t i = 0; i < B.local_size(); ++i) {
     Index index = B.global_index(i);
     double val;
     B.get_value(index, val);
@@ -94,10 +93,10 @@ void test_slice(const mpi_comm &comm, int L, std::ostream &ostrm) {
     index[1] += 3;
     double exact = func4_1(index, shape_A);
 
-    if(error < fabs(val-exact) ) error = fabs(val-exact);
+    if (error < fabs(val - exact)) error = fabs(val - exact);
   }
 
-  for(size_t i=0;i<C.local_size();++i) {
+  for (size_t i = 0; i < C.local_size(); ++i) {
     Index index = C.global_index(i);
     double val;
     C.get_value(index, val);
@@ -106,23 +105,24 @@ void test_slice(const mpi_comm &comm, int L, std::ostream &ostrm) {
     index[3] += 1;
     double exact = func4_1(index, shape_A);
 
-    if(error < fabs(val-exact) ) error = fabs(val-exact);
+    if (error < fabs(val - exact)) error = fabs(val - exact);
   }
 
   time3.now();
 
   double max_error = mpi_reduce_max(error, comm);
 
-  if(mpiroot) {
+  if (mpiroot) {
     ostrm << "========================================\n"
-              << "slice <double> (A[N0,N1,N2,N3], 1, 3, 6) = B[N0, 3, N2, N3]\n"
-              << "slice <double> (A[N0,N1,N2,N3], Index(0,2,0,1), Index(0,4,0,5)) = C[N0, 2, N2, 4]\n"
-              << "[N0, N1, N2, N3] = " <<  A.shape() << "\n"
-              << "Error= " << max_error << "\n"
-              << "Time(B)= " << time1-time0 << " [sec]\n"
-              << "Time(C)= " << time2-time1 << " [sec]\n"
-              << "Time(check)= " << time3-time2 << " [sec]\n"
-              << "----------------------------------------\n";
+          << "slice <double> (A[N0,N1,N2,N3], 1, 3, 6) = B[N0, 3, N2, N3]\n"
+          << "slice <double> (A[N0,N1,N2,N3], Index(0,2,0,1), Index(0,4,0,5)) "
+             "= C[N0, 2, N2, 4]\n"
+          << "[N0, N1, N2, N3] = " << A.shape() << "\n"
+          << "Error= " << max_error << "\n"
+          << "Time(B)= " << time1 - time0 << " [sec]\n"
+          << "Time(C)= " << time2 - time1 << " [sec]\n"
+          << "Time(check)= " << time3 - time2 << " [sec]\n"
+          << "----------------------------------------\n";
     ostrm << "A: ";
     A.print_info(ostrm);
     ostrm << "B: ";
@@ -134,7 +134,6 @@ void test_slice(const mpi_comm &comm, int L, std::ostream &ostrm) {
   assert(error < EPS);
   mpi_barrier(comm);
 }
-
 
 //! Test for TensorC::slice
 /*! B = A[:, 3:6, :, :] and C = A[:, 2:4, :, 1:5]
@@ -153,16 +152,16 @@ void test_slice_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_info(comm, mpirank, mpisize, mpiroot);
 
   int N0 = L;
-  int N1 = L+1;
-  int N2 = L+2;
-  int N3 = L+3;
+  int N1 = L + 1;
+  int N2 = L + 2;
+  int N3 = L + 3;
 
-  if (N1<6) N1 = 6;
+  if (N1 < 6) N1 = 6;
 
   TensorC A(Shape(N0, N1, N2, N3));
 
   Shape shape_A = A.shape();
-  for(size_t i=0;i<A.local_size();++i) {
+  for (size_t i = 0; i < A.local_size(); ++i) {
     Index index = A.global_index(i);
     complex val = cfunc4_1(index, shape_A);
     A.set_value(index, val);
@@ -176,12 +175,12 @@ void test_slice_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   time1.now();
 
   // C = A[:, 2:4, :, 1:5]
-  TensorC C = slice(A, Index(0,2,0,1), Index(0,4,0,5));
+  TensorC C = slice(A, Index(0, 2, 0, 1), Index(0, 4, 0, 5));
 
   time2.now();
 
   double error = 0.0;
-  for(size_t i=0;i<B.local_size();++i) {
+  for (size_t i = 0; i < B.local_size(); ++i) {
     Index index = B.global_index(i);
     complex val;
     B.get_value(index, val);
@@ -189,10 +188,10 @@ void test_slice_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
     index[1] += 3;
     complex exact = cfunc4_1(index, shape_A);
 
-    if(error < std::abs(val-exact) ) error = std::abs(val-exact);
+    if (error < std::abs(val - exact)) error = std::abs(val - exact);
   }
 
-  for(size_t i=0;i<C.local_size();++i) {
+  for (size_t i = 0; i < C.local_size(); ++i) {
     Index index = C.global_index(i);
     complex val;
     C.get_value(index, val);
@@ -201,22 +200,23 @@ void test_slice_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
     index[3] += 1;
     complex exact = cfunc4_1(index, shape_A);
 
-    if(error < std::abs(val-exact) ) error = std::abs(val-exact);
+    if (error < std::abs(val - exact)) error = std::abs(val - exact);
   }
 
   time3.now();
 
   double max_error = mpi_reduce_max(error, comm);
-  if(mpiroot) {
+  if (mpiroot) {
     ostrm << "========================================\n"
-              << "slice <complex> (A[N0,N1,N2,N3], 1, 3, 6) = B[N0, 3, N2, N3]\n"
-              << "slice <complex> (A[N0,N1,N2,N3], Index(0,2,0,1), Index(0,4,0,5)) = C[N0, 2, N2, 4]\n"
-              << "[N0, N1, N2, N3] = " <<  A.shape() << "\n"
-              << "Error= " << max_error << "\n"
-              << "Time(B)= " << time1-time0 << " [sec]\n"
-              << "Time(C)= " << time2-time1 << " [sec]\n"
-              << "Time(check)= " << time3-time2 << " [sec]\n"
-              << "----------------------------------------\n";
+          << "slice <complex> (A[N0,N1,N2,N3], 1, 3, 6) = B[N0, 3, N2, N3]\n"
+          << "slice <complex> (A[N0,N1,N2,N3], Index(0,2,0,1), Index(0,4,0,5)) "
+             "= C[N0, 2, N2, 4]\n"
+          << "[N0, N1, N2, N3] = " << A.shape() << "\n"
+          << "Error= " << max_error << "\n"
+          << "Time(B)= " << time1 - time0 << " [sec]\n"
+          << "Time(C)= " << time2 - time1 << " [sec]\n"
+          << "Time(check)= " << time3 - time2 << " [sec]\n"
+          << "----------------------------------------\n";
     ostrm << "A: ";
     A.print_info(ostrm);
     ostrm << "B: ";
@@ -229,5 +229,4 @@ void test_slice_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_barrier(comm);
 }
 
-
-} // namespace tests
+}  // namespace tests

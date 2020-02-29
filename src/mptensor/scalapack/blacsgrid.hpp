@@ -30,21 +30,20 @@
 #define _BLACSGRID_HPP_
 #ifndef _NO_MPI
 
-#include <vector>
 #include <mpi.h>
+#include <vector>
 
 namespace mptensor {
 namespace scalapack {
 
-
 class BlacsGrid {
-private:
+ private:
   // std::vector<int> pnum2mpirank;
   // std::vector<int> mpirank2pnum;
   void init_grid(const MPI_Comm &comm, int nprow, int npcol);
   static bool is_initialized;
 
-public:
+ public:
   BlacsGrid(const MPI_Comm &comm);
 
   static void init();
@@ -69,11 +68,10 @@ inline int BlacsGrid::mpirank(int prow, int pcol) const {
   // return pnum2mpirank[pnum];
 }
 
-inline int BlacsGrid::mpirank() const {return myrank;}
+inline int BlacsGrid::mpirank() const { return myrank; }
 
+}  // namespace scalapack
+}  // namespace mptensor
 
-} // namespace scalapack
-} // namespace mptensor
-
-#endif // _NO_MPI
-#endif // _BLACSGRID_HPP_
+#endif  // _NO_MPI
+#endif  // _BLACSGRID_HPP_

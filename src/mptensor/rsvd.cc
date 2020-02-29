@@ -27,8 +27,8 @@
 */
 //! @cond
 
-#include "complex.hpp"
 #include "rsvd.hpp"
+#include "complex.hpp"
 
 #if defined(_USE_RANDOM_CPP11)
 #include <random>
@@ -46,29 +46,38 @@ typedef typename boost::random::uniform_real_distribution<double> dist_t;
 
 #endif
 
-
 namespace mptensor {
 namespace random_tensor {
 
-
 #if defined(_USE_RANDOM_CPP11) || defined(_USE_RANDOM_BOOST)
 gen_t gen;
-dist_t dist(-1.0,1.0);
-template <> double uniform_dist() {return dist(gen);};
-template <> complex uniform_dist() {return complex(dist(gen),dist(gen));};
-void set_seed(unsigned int seed) {gen.seed(seed);};
+dist_t dist(-1.0, 1.0);
+template <>
+double uniform_dist() {
+  return dist(gen);
+};
+template <>
+complex uniform_dist() {
+  return complex(dist(gen), dist(gen));
+};
+void set_seed(unsigned int seed) { gen.seed(seed); };
 
 #elif defined(_USE_RANDOM_DSFMT)
 dsfmt_t dsfmt;
-double dist() {return 2.0*dsfmt_genrand_close_open(&dsfmt)-1.0;};
-template <> double uniform_dist() {return dist();};
-template <> complex uniform_dist() {return complex(dist(),dist());};
-void set_seed(unsigned int seed) {dsfmt_init_gen_rand(&dsfmt, seed);};
+double dist() { return 2.0 * dsfmt_genrand_close_open(&dsfmt) - 1.0; };
+template <>
+double uniform_dist() {
+  return dist();
+};
+template <>
+complex uniform_dist() {
+  return complex(dist(), dist());
+};
+void set_seed(unsigned int seed) { dsfmt_init_gen_rand(&dsfmt, seed); };
 
 #endif
 
-
-} // namespace random_tensor
-} // namespace mptensor
+}  // namespace random_tensor
+}  // namespace mptensor
 
 //! @endcond

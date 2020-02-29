@@ -62,4 +62,3 @@
   \defgroup Complex Complex numbers
   Value type of complex numbers
 */
-

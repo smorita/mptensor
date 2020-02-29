@@ -25,20 +25,19 @@
   \brief  Test code for eigenvalue decomposition
 */
 
-#include <cmath>
-#include <vector>
-#include <iostream>
-#include <cstdlib>
 #include <cassert>
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <vector>
 
 #include <mptensor.hpp>
-#include "mpi_tool.hpp"
 #include "functions.hpp"
-#include "typedef.hpp"
+#include "mpi_tool.hpp"
 #include "timer.hpp"
+#include "typedef.hpp"
 
 namespace tests {
-
 
 //! Test for TensorD::eigh (generalized eigenvalue problem)
 /*! A[i,j,k,l] Z[l,k,a] = B[j,l,i,k] Z[l,k,a] W[a]
@@ -56,14 +55,14 @@ void test_eigh_general(const mpi_comm &comm, int L, std::ostream &ostrm) {
   bool mpiroot;
   mpi_info(comm, mpirank, mpisize, mpiroot);
 
-  size_t N = L*L;
+  size_t N = L * L;
 
   TensorD A(Shape(L, L, L, L));
   TensorD B(Shape(L, L, L, L));
 
   {
     Shape shape = A.shape();
-    for(size_t i=0;i<A.local_size();++i) {
+    for (size_t i = 0; i < A.local_size(); ++i) {
       Index index = A.global_index(i);
       Index index2(index[2], index[3], index[0], index[1]);
       double val = func4_1(index, shape) + func4_1(index2, shape);
@@ -73,7 +72,7 @@ void test_eigh_general(const mpi_comm &comm, int L, std::ostream &ostrm) {
 
   {
     Shape shape = B.shape();
-    for(size_t i=0;i<B.local_size();++i) {
+    for (size_t i = 0; i < B.local_size(); ++i) {
       Index index = B.global_index(i);
       double val = func4_2(index, shape);
       B.set_value(index, val);
@@ -81,9 +80,9 @@ void test_eigh_general(const mpi_comm &comm, int L, std::ostream &ostrm) {
     TensorD u, vt;
     std::vector<double> s;
     svd(B, Axes(0, 1), Axes(2, 3), u, s, vt);
-    for(size_t i=0;i<s.size();++i) {
-      if(s[i] < 1.0e-3) {
-        s[i] = 1.0e-3 * (i+1);
+    for (size_t i = 0; i < s.size(); ++i) {
+      if (s[i] < 1.0e-3) {
+        s[i] = 1.0e-3 * (i + 1);
       }
     }
     TensorD us = u;
@@ -105,17 +104,18 @@ void test_eigh_general(const mpi_comm &comm, int L, std::ostream &ostrm) {
   A = tensordot(A.transpose(Axes(1, 0, 3, 2)), Z, Axes(2, 3), Axes(0, 1));
   B = tensordot(B.transpose(Axes(0, 2, 1, 3)), Z, Axes(2, 3), Axes(0, 1));
   B.multiply_vector(W, 2);
-  double max_error = max_abs(A-B);
+  double max_error = max_abs(A - B);
 
   time2.now();
 
-  if(mpiroot) {
+  if (mpiroot) {
     ostrm << "========================================\n"
-          << "eigh <double> (A, Axes(1, 0), Axes(3, 2), B, Axes(0, 2), Axes(1, 3), W, Z)\n"
+          << "eigh <double> (A, Axes(1, 0), Axes(3, 2), B, Axes(0, 2), Axes(1, "
+             "3), W, Z)\n"
           << "[L,L,L,L] = " << Shape(L, L, L, L) << "\n"
           << "Error= " << max_error << "\n"
-          << "Time= " << time1-time0 << " [sec]\n"
-          << "Time(check)= " << time2-time1 << " [sec]\n"
+          << "Time= " << time1 - time0 << " [sec]\n"
+          << "Time(check)= " << time2 - time1 << " [sec]\n"
           << "----------------------------------------\n";
     ostrm << "A: ";
     A.print_info(ostrm);
@@ -124,15 +124,15 @@ void test_eigh_general(const mpi_comm &comm, int L, std::ostream &ostrm) {
     ostrm << "Z: ";
     Z.print_info(ostrm);
     ostrm << "----------------------------------------\n";
-    if(W.size() < 7) {
-      for(int i=0;i<W.size();++i) {
+    if (W.size() < 7) {
+      for (int i = 0; i < W.size(); ++i) {
         ostrm << "S[" << i << "]= " << W[i] << "\n";
       }
     } else {
-      for(int i=0;i<3;++i) {
+      for (int i = 0; i < 3; ++i) {
         ostrm << "S[" << i << "]= " << W[i] << "\n";
       }
-      for(int i=W.size()-3;i<W.size();++i) {
+      for (int i = W.size() - 3; i < W.size(); ++i) {
         ostrm << "S[" << i << "]= " << W[i] << "\n";
       }
     }
@@ -142,7 +142,6 @@ void test_eigh_general(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_barrier(comm);
 }
 
-
 //! Test for TensorC::eigh
 /*! A[i,j,k,l] => Contract( Z[i,k,a] * W[a] * conj(Z[a,l,j]^t) )
 
@@ -150,7 +149,8 @@ void test_eigh_general(const mpi_comm &comm, int L, std::ostream &ostrm) {
   \param L size of tensor, A.shape = (L,L,L,L)
   \param ostrm output stream for results
 */
-void test_eigh_general_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
+void test_eigh_general_complex(const mpi_comm &comm, int L,
+                               std::ostream &ostrm) {
   using namespace mptensor;
   const double EPS = 1.0e-8;
   Timer time0, time1, time2;
@@ -159,14 +159,14 @@ void test_eigh_general_complex(const mpi_comm &comm, int L, std::ostream &ostrm)
   bool mpiroot;
   mpi_info(comm, mpirank, mpisize, mpiroot);
 
-  size_t N = L*L;
+  size_t N = L * L;
 
   TensorC A(Shape(L, L, L, L));
   TensorC B(Shape(L, L, L, L));
 
   {
     Shape shape = A.shape();
-    for(size_t i=0;i<A.local_size();++i) {
+    for (size_t i = 0; i < A.local_size(); ++i) {
       Index index = A.global_index(i);
       Index index2(index[2], index[3], index[0], index[1]);
       complex val = cfunc4_2(index, shape) + conj(cfunc4_2(index2, shape));
@@ -176,7 +176,7 @@ void test_eigh_general_complex(const mpi_comm &comm, int L, std::ostream &ostrm)
 
   {
     Shape shape = B.shape();
-    for(size_t i=0;i<B.local_size();++i) {
+    for (size_t i = 0; i < B.local_size(); ++i) {
       Index index = B.global_index(i);
       complex val = cfunc4_1(index, shape);
       B.set_value(index, val);
@@ -184,9 +184,9 @@ void test_eigh_general_complex(const mpi_comm &comm, int L, std::ostream &ostrm)
     TensorC u, vt;
     std::vector<double> s;
     svd(B, Axes(0, 1), Axes(2, 3), u, s, vt);
-    for(size_t i=0;i<s.size();++i) {
-      if(s[i] < 1.0e-3) {
-        s[i] = 1.0e-3 * (i+1);
+    for (size_t i = 0; i < s.size(); ++i) {
+      if (s[i] < 1.0e-3) {
+        s[i] = 1.0e-3 * (i + 1);
       }
     }
     TensorC us = u;
@@ -208,17 +208,18 @@ void test_eigh_general_complex(const mpi_comm &comm, int L, std::ostream &ostrm)
   A = tensordot(A.transpose(Axes(1, 0, 3, 2)), Z, Axes(2, 3), Axes(0, 1));
   B = tensordot(B.transpose(Axes(0, 2, 1, 3)), Z, Axes(2, 3), Axes(0, 1));
   B.multiply_vector(W, 2);
-  double max_error = max_abs(A-B);
+  double max_error = max_abs(A - B);
 
   time2.now();
 
-  if(mpiroot) {
+  if (mpiroot) {
     ostrm << "========================================\n"
-          << "eigh <complex> (A, Axes(1, 0), Axes(3, 2), B, Axes(0, 2), Axes(1, 3), W, Z)\n"
+          << "eigh <complex> (A, Axes(1, 0), Axes(3, 2), B, Axes(0, 2), "
+             "Axes(1, 3), W, Z)\n"
           << "[L,L,L,L] = " << Shape(L, L, L, L) << "\n"
           << "Error= " << max_error << "\n"
-          << "Time= " << time1-time0 << " [sec]\n"
-          << "Time(check)= " << time2-time1 << " [sec]\n"
+          << "Time= " << time1 - time0 << " [sec]\n"
+          << "Time(check)= " << time2 - time1 << " [sec]\n"
           << "----------------------------------------\n";
     ostrm << "A: ";
     A.print_info(ostrm);
@@ -227,15 +228,15 @@ void test_eigh_general_complex(const mpi_comm &comm, int L, std::ostream &ostrm)
     ostrm << "Z: ";
     Z.print_info(ostrm);
     ostrm << "----------------------------------------\n";
-    if(W.size() < 7) {
-      for(int i=0;i<W.size();++i) {
+    if (W.size() < 7) {
+      for (int i = 0; i < W.size(); ++i) {
         ostrm << "S[" << i << "]= " << W[i] << "\n";
       }
     } else {
-      for(int i=0;i<3;++i) {
+      for (int i = 0; i < 3; ++i) {
         ostrm << "S[" << i << "]= " << W[i] << "\n";
       }
-      for(int i=W.size()-3;i<W.size();++i) {
+      for (int i = W.size() - 3; i < W.size(); ++i) {
         ostrm << "S[" << i << "]= " << W[i] << "\n";
       }
     }
@@ -245,5 +246,4 @@ void test_eigh_general_complex(const mpi_comm &comm, int L, std::ostream &ostrm)
   mpi_barrier(comm);
 }
 
-
-} // namespace tests
+}  // namespace tests

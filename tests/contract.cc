@@ -25,20 +25,19 @@
   \brief  Test code of tensor contraction
 */
 
-#include <cmath>
-#include <vector>
-#include <iostream>
-#include <cstdlib>
 #include <cassert>
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <vector>
 
 #include <mptensor.hpp>
-#include "mpi_tool.hpp"
 #include "functions.hpp"
-#include "typedef.hpp"
+#include "mpi_tool.hpp"
 #include "timer.hpp"
+#include "typedef.hpp"
 
 namespace tests {
-
 
 //! Test for TensorD::contract (partial trace)
 /*! B = contract(A, Axes(0), Axes(2)),
@@ -58,13 +57,13 @@ void test_contract(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_info(comm, mpirank, mpisize, mpiroot);
 
   int N0 = L;
-  int N1 = L+1;
-  int N2 = L+2;
+  int N1 = L + 1;
+  int N2 = L + 2;
 
   TensorD A(Shape(N0, N1, N0, N2));
   Shape shape_A = A.shape();
 
-  for(size_t i=0;i<A.local_size();++i) {
+  for (size_t i = 0; i < A.local_size(); ++i) {
     Index index = A.global_index(i);
     double val = func4_1(index, shape_A);
     A.set_value(index, val);
@@ -77,30 +76,30 @@ void test_contract(const mpi_comm &comm, int L, std::ostream &ostrm) {
   time1.now();
 
   double error = 0.0;
-  for(size_t i=0;i<B.local_size();++i) {
+  for (size_t i = 0; i < B.local_size(); ++i) {
     Index index = B.global_index(i);
     double val;
     B.get_value(index, val);
 
-    double exact=0.0;
-    for(size_t m=0;m<N0;++m) {
-      exact += func4_1(Index(m,index[0],m,index[1]), shape_A);
+    double exact = 0.0;
+    for (size_t m = 0; m < N0; ++m) {
+      exact += func4_1(Index(m, index[0], m, index[1]), shape_A);
     }
 
-    if(error < fabs(val-exact) ) error = fabs(val-exact);
+    if (error < fabs(val - exact)) error = fabs(val - exact);
   }
 
   time2.now();
 
   double max_error = mpi_reduce_max(error, comm);
 
-  if(mpiroot) {
+  if (mpiroot) {
     ostrm << "========================================\n"
           << "Contract <double> ( A[N0, N1, N0, N2], Axes(0), Axes(2) )\n"
-          << "[N0, N1, N0, N2] = " <<  A.shape() << "\n"
+          << "[N0, N1, N0, N2] = " << A.shape() << "\n"
           << "Error=          " << max_error << "\n"
-          << "Time=           " << time1-time0 << " [sec]\n"
-          << "Time(check)=    " << time2-time1 << " [sec]\n"
+          << "Time=           " << time1 - time0 << " [sec]\n"
+          << "Time(check)=    " << time2 - time1 << " [sec]\n"
           << "----------------------------------------\n";
     ostrm << "A: ";
     A.print_info(ostrm);
@@ -109,7 +108,6 @@ void test_contract(const mpi_comm &comm, int L, std::ostream &ostrm) {
   assert(error < EPS);
   mpi_barrier(comm);
 }
-
 
 //! Test for TensorC::contract (partial trace)
 /*! B = contract(A, Axes(0), Axes(2)),
@@ -129,13 +127,13 @@ void test_contract_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_info(comm, mpirank, mpisize, mpiroot);
 
   int N0 = L;
-  int N1 = L+1;
-  int N2 = L+2;
+  int N1 = L + 1;
+  int N2 = L + 2;
 
   TensorC A(Shape(N0, N1, N0, N2));
   Shape shape_A = A.shape();
 
-  for(size_t i=0;i<A.local_size();++i) {
+  for (size_t i = 0; i < A.local_size(); ++i) {
     Index index = A.global_index(i);
     complex val = cfunc4_1(index, shape_A);
     A.set_value(index, val);
@@ -148,30 +146,30 @@ void test_contract_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   time1.now();
 
   double error = 0.0;
-  for(size_t i=0;i<B.local_size();++i) {
+  for (size_t i = 0; i < B.local_size(); ++i) {
     Index index = B.global_index(i);
     complex val;
     B.get_value(index, val);
 
-    complex exact=0.0;
-    for(size_t m=0;m<N0;++m) {
-      exact += cfunc4_1(Index(m,index[0],m,index[1]), shape_A);
+    complex exact = 0.0;
+    for (size_t m = 0; m < N0; ++m) {
+      exact += cfunc4_1(Index(m, index[0], m, index[1]), shape_A);
     }
 
-    if(error < std::abs(val-exact) ) error = std::abs(val-exact);
+    if (error < std::abs(val - exact)) error = std::abs(val - exact);
   }
 
   time2.now();
 
   double max_error = mpi_reduce_max(error, comm);
 
-  if(mpiroot) {
+  if (mpiroot) {
     ostrm << "========================================\n"
           << "Contract <complex> ( A[N0, N1, N0, N2], Axes(0), Axes(2) )\n"
-          << "[N0, N1, N0, N2] = " <<  A.shape() << "\n"
+          << "[N0, N1, N0, N2] = " << A.shape() << "\n"
           << "Error=          " << max_error << "\n"
-          << "Time=           " << time1-time0 << " [sec]\n"
-          << "Time(check)=    " << time2-time1 << " [sec]\n"
+          << "Time=           " << time1 - time0 << " [sec]\n"
+          << "Time(check)=    " << time2 - time1 << " [sec]\n"
           << "----------------------------------------\n";
     ostrm << "A: ";
     A.print_info(ostrm);
@@ -181,5 +179,4 @@ void test_contract_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_barrier(comm);
 }
 
-
-} // namespace tests
+}  // namespace tests

@@ -26,20 +26,19 @@
   \brief  Test code for arithmetic operators
 */
 
-#include <cmath>
-#include <vector>
-#include <iostream>
-#include <cstdlib>
 #include <cassert>
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <vector>
 
 #include <mptensor.hpp>
-#include "mpi_tool.hpp"
 #include "functions.hpp"
-#include "typedef.hpp"
+#include "mpi_tool.hpp"
 #include "timer.hpp"
+#include "typedef.hpp"
 
 namespace tests {
-
 
 //! Test for arithmetic operators
 /*!
@@ -57,9 +56,9 @@ void test_arithmetic(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_info(comm, mpirank, mpisize, mpiroot);
 
   int N0 = L;
-  int N1 = L+1;
-  int N2 = L+2;
-  int N3 = L+3;
+  int N1 = L + 1;
+  int N2 = L + 2;
+  int N3 = L + 3;
 
   TensorD A(Shape(N0, N1, N2, N3));
   TensorD B(Shape(N0, N1, N2, N3));
@@ -68,13 +67,13 @@ void test_arithmetic(const mpi_comm &comm, int L, std::ostream &ostrm) {
   Shape shape_A = A.shape();
   Shape shape_B = B.shape();
 
-  for(size_t i=0;i<A.local_size();++i) {
+  for (size_t i = 0; i < A.local_size(); ++i) {
     Index index = A.global_index(i);
     double val = func4_1(index, shape_A);
     A.set_value(index, val);
   }
 
-  for(size_t i=0;i<B.local_size();++i) {
+  for (size_t i = 0; i < B.local_size(); ++i) {
     Index index = B.global_index(i);
     double val = func4_2(index, shape_B);
     B.set_value(index, val);
@@ -101,26 +100,27 @@ void test_arithmetic(const mpi_comm &comm, int L, std::ostream &ostrm) {
   Index index_B;
   index_A.resize(4);
   index_B.resize(4);
-  for(size_t i=0;i<A.local_size();++i) {
+  for (size_t i = 0; i < A.local_size(); ++i) {
     Index index = A.global_index(i);
     double val;
     A.get_value(index, val);
 
-    double exact = -1.8*func4_1(index, shape_A) - 1.7*func4_2(index, shape_B);
+    double exact =
+        -1.8 * func4_1(index, shape_A) - 1.7 * func4_2(index, shape_B);
 
-    if(error < fabs(val-exact) ) error = fabs(val-exact);
+    if (error < fabs(val - exact)) error = fabs(val - exact);
   }
 
   time2.now();
 
   double max_error = mpi_reduce_max(error, comm);
-  if(mpiroot) {
+  if (mpiroot) {
     ostrm << "========================================\n"
           << "Arithmetic Operators <double> ( A[N0, N1, N2, N3] )\n"
-          << "[N0, N1, N2, N3] = " <<  A.shape() << "\n"
+          << "[N0, N1, N2, N3] = " << A.shape() << "\n"
           << "Error= " << max_error << "\n"
-          << "Time= " << time1-time0 << " [sec]\n"
-          << "Time(check)= " <<  time2-time1 << " [sec]\n"
+          << "Time= " << time1 - time0 << " [sec]\n"
+          << "Time(check)= " << time2 - time1 << " [sec]\n"
           << "----------------------------------------\n";
     ostrm << "A: ";
     A.print_info(ostrm);
@@ -129,7 +129,6 @@ void test_arithmetic(const mpi_comm &comm, int L, std::ostream &ostrm) {
   assert(error < EPS);
   mpi_barrier(comm);
 }
-
 
 //! Test for arithmetic operators (complex version)
 /*!
@@ -147,9 +146,9 @@ void test_arithmetic_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_info(comm, mpirank, mpisize, mpiroot);
 
   int N0 = L;
-  int N1 = L+1;
-  int N2 = L+2;
-  int N3 = L+3;
+  int N1 = L + 1;
+  int N2 = L + 2;
+  int N3 = L + 3;
 
   TensorC A(Shape(N0, N1, N2, N3));
   TensorC B(Shape(N0, N1, N2, N3));
@@ -158,13 +157,13 @@ void test_arithmetic_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   Shape shape_A = A.shape();
   Shape shape_B = B.shape();
 
-  for(size_t i=0;i<A.local_size();++i) {
+  for (size_t i = 0; i < A.local_size(); ++i) {
     Index index = A.global_index(i);
     complex val = cfunc4_1(index, shape_A);
     A.set_value(index, val);
   }
 
-  for(size_t i=0;i<B.local_size();++i) {
+  for (size_t i = 0; i < B.local_size(); ++i) {
     Index index = B.global_index(i);
     complex val = cfunc4_2(index, shape_B);
     B.set_value(index, val);
@@ -191,28 +190,29 @@ void test_arithmetic_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   Index index_B;
   index_A.resize(4);
   index_B.resize(4);
-  for(size_t i=0;i<A.local_size();++i) {
+  for (size_t i = 0; i < A.local_size(); ++i) {
     Index index = A.global_index(i);
     complex val;
     A.get_value(index, val);
 
-    complex exact = complex(1.8, -3.6)*cfunc4_1(index, shape_A) + complex(2.15, -3.3)*cfunc4_2(index, shape_B);
+    complex exact = complex(1.8, -3.6) * cfunc4_1(index, shape_A) +
+                    complex(2.15, -3.3) * cfunc4_2(index, shape_B);
 
-    if(error < abs(val-exact) ) error = abs(val-exact);
+    if (error < abs(val - exact)) error = abs(val - exact);
   }
 
   time2.now();
 
   double max_error = mpi_reduce_max(error, comm);
 
-  if(mpiroot) {
+  if (mpiroot) {
     ostrm << "========================================\n"
-              << "Arithmetic Operators <complex> ( A[N0, N1, N2, N3] )\n"
-              << "[N0, N1, N2, N3] = " <<  A.shape() << "\n"
-              << "Error= " << max_error << "\n"
-              << "Time= " << time1-time0 << " [sec]\n"
-              << "Time(check)= " << time2-time1 << " [sec]\n"
-              << "----------------------------------------\n";
+          << "Arithmetic Operators <complex> ( A[N0, N1, N2, N3] )\n"
+          << "[N0, N1, N2, N3] = " << A.shape() << "\n"
+          << "Error= " << max_error << "\n"
+          << "Time= " << time1 - time0 << " [sec]\n"
+          << "Time(check)= " << time2 - time1 << " [sec]\n"
+          << "----------------------------------------\n";
     ostrm << "A: ";
     A.print_info(ostrm);
     ostrm << "========================================" << std::endl;
@@ -221,5 +221,4 @@ void test_arithmetic_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   mpi_barrier(comm);
 }
 
-
-} // namespace tests
+}  // namespace tests

@@ -34,10 +34,10 @@ namespace examples {
 namespace Ising_2D {
 
 //! Tc of the Ising model on the square lattice
-const double Ising_Tc = 2.0/log(1.0 + sqrt(2.0));
+const double Ising_Tc = 2.0 / log(1.0 + sqrt(2.0));
 double exact_free_energy(double temp);
 
-} // namespace Ising_2D
-} // namespace examples
+}  // namespace Ising_2D
+}  // namespace examples
 
-#endif // _ISING_HPP_
+#endif  // _ISING_HPP_
