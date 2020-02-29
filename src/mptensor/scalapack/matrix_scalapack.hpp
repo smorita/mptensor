@@ -102,9 +102,9 @@ class Matrix {
   const Matrix transpose();
 
  private:
+  BlacsGrid grid;
   std::vector<C> V;       // local strage
   std::vector<int> desc;  // descriptor
-  BlacsGrid grid;
   static const size_t BLOCK_SIZE;
   size_t local_row_size_;
   size_t local_col_size_;

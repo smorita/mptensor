@@ -99,7 +99,7 @@ int rsvd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
   {
     Shape shape_omega;
     shape_omega.resize(rank_col + 1);
-    for (int i = 0; i < rank_col; ++i) shape_omega[i] = shape[i + rank_row];
+    for (size_t i = 0; i < rank_col; ++i) shape_omega[i] = shape[i + rank_row];
     shape_omega[rank_col] = target_rank + oversamp;
 
     // Tensor<Matrix,C> omega = random_tensor<C>(a.get_comm(), shape_omega);

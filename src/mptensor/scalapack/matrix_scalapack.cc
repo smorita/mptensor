@@ -156,9 +156,9 @@ int matrix_svd(Matrix<double> &A, Matrix<double> &U, std::vector<double> &S,
   assert(A.n_row() == U.n_row());
   assert(A.n_col() == VT.n_col());
   size_t size = (A.n_row() < A.n_col()) ? A.n_row() : A.n_col();
-  assert(U.n_col() == size);
+  assert(size_t(U.n_col()) == size);
   assert(S.size() == size);
-  assert(VT.n_row() == size);
+  assert(size_t(VT.n_row()) == size);
 #endif
 
   int M = A.n_row();
@@ -201,9 +201,9 @@ int matrix_svd(Matrix<complex> &A, Matrix<complex> &U, std::vector<double> &S,
   assert(A.n_row() == U.n_row());
   assert(A.n_col() == VT.n_col());
   size_t size = (A.n_row() < A.n_col()) ? A.n_row() : A.n_col();
-  assert(U.n_col() == size);
+  assert(size_t(U.n_col()) == size);
   assert(S.size() == size);
-  assert(VT.n_row() == size);
+  assert(size_t(VT.n_row()) == size);
 #endif
 
   int M = A.n_row();
@@ -427,7 +427,7 @@ int matrix_eigh(Matrix<double> &A, std::vector<double> &W, Matrix<double> &Z) {
   assert(A.n_row() == A.n_col());
   assert(A.n_row() == Z.n_row());
   assert(Z.n_row() == Z.n_col());
-  assert(W.size() == A.n_row());
+  assert(W.size() == size_t(A.n_row()));
 
   char jobz = 'V';
   char uplo = 'U';
@@ -459,7 +459,7 @@ int matrix_eigh(Matrix<complex> &A, std::vector<double> &W,
   assert(A.n_row() == A.n_col());
   assert(A.n_row() == Z.n_row());
   assert(Z.n_row() == Z.n_col());
-  assert(W.size() == A.n_row());
+  assert(W.size() == size_t(A.n_row()));
 
   char jobz = 'V';
   char uplo = 'U';
@@ -494,7 +494,7 @@ int matrix_eigh(Matrix<complex> &A, std::vector<double> &W,
 template <>
 int matrix_eigh(Matrix<double> &A, std::vector<double> &W) {
   assert(A.n_row() == A.n_col());
-  assert(W.size() == A.n_row());
+  assert(W.size() == size_t(A.n_row()));
 
   char jobz = 'N';
   char uplo = 'U';
@@ -525,7 +525,7 @@ int matrix_eigh(Matrix<double> &A, std::vector<double> &W) {
 template <>
 int matrix_eigh(Matrix<complex> &A, std::vector<double> &W) {
   assert(A.n_row() == A.n_col());
-  assert(W.size() == A.n_row());
+  assert(W.size() == size_t(A.n_row()));
 
   char jobz = 'N';
   char uplo = 'U';
@@ -565,7 +565,7 @@ int matrix_eigh(Matrix<double> &A, Matrix<double> &B, std::vector<double> &W,
   assert(Z.n_row() == Z.n_col());
   assert(A.n_row() == B.n_row());
   assert(A.n_row() == Z.n_row());
-  assert(W.size() == A.n_row());
+  assert(W.size() == size_t(A.n_row()));
 
   int ibtype = 1;
   char jobz = 'V';
@@ -589,9 +589,9 @@ int matrix_eigh(Matrix<double> &A, Matrix<double> &B, std::vector<double> &W,
   int iwork_size;
   ia = ja = ib = jb = iz = jz = 1;
   lwork = liwork = -1;
-  for (size_t i = 0; i < n; ++i) ifail[i] = 0;
-  for (size_t i = 0; i < A.get_comm_size() * 2; ++i) iclustr[i] = 0;
-  for (size_t i = 0; i < A.get_comm_size(); ++i) gap[i] = 0.0;
+  for (int i = 0; i < n; ++i) ifail[i] = 0;
+  for (int i = 0; i < A.get_comm_size() * 2; ++i) iclustr[i] = 0;
+  for (int i = 0; i < A.get_comm_size(); ++i) gap[i] = 0.0;
 
   /* Get the size of workspace */
   pdsygvx_(&ibtype, &jobz, &range, &uplo, &n, A.head(), &ia, &ja,
@@ -629,7 +629,7 @@ int matrix_eigh(Matrix<complex> &A, Matrix<complex> &B, std::vector<double> &W,
   assert(Z.n_row() == Z.n_col());
   assert(A.n_row() == B.n_row());
   assert(A.n_row() == Z.n_row());
-  assert(W.size() == A.n_row());
+  assert(W.size() == size_t(A.n_row()));
 
   int ibtype = 1;
   char jobz = 'V';
@@ -655,9 +655,9 @@ int matrix_eigh(Matrix<complex> &A, Matrix<complex> &B, std::vector<double> &W,
   int iwork_size;
   ia = ja = ib = jb = iz = jz = 1;
   lwork = lrwork = liwork = -1;
-  for (size_t i = 0; i < n; ++i) ifail[i] = 0;
-  for (size_t i = 0; i < A.get_comm_size() * 2; ++i) iclustr[i] = 0;
-  for (size_t i = 0; i < A.get_comm_size(); ++i) gap[i] = 0.0;
+  for (int i = 0; i < n; ++i) ifail[i] = 0;
+  for (int i = 0; i < A.get_comm_size() * 2; ++i) iclustr[i] = 0;
+  for (int i = 0; i < A.get_comm_size(); ++i) gap[i] = 0.0;
 
   /* Get the size of workspace */
   pzhegvx_(&ibtype, &jobz, &range, &uplo, &n, A.head(), &ia, &ja,

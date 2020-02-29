@@ -43,7 +43,7 @@ void Index::sort() { std::sort(idx.begin(), idx.end()); }
 Index Index::inverse() {
   Index inv;
   inv.resize(size());
-  for (int i = 0; i < size(); ++i) {
+  for (size_t i = 0; i < size(); ++i) {
     inv[(*this)[i]] = i;
   }
   return inv;
@@ -51,7 +51,7 @@ Index Index::inverse() {
 
 bool Index::operator==(const Index& rhs) const {
   if (size() != rhs.size()) return false;
-  for (int i = 0; i < size(); ++i) {
+  for (size_t i = 0; i < size(); ++i) {
     if (idx[i] != rhs[i]) return false;
   }
   return true;
@@ -70,7 +70,7 @@ Index& Index::operator+=(const Index& rhs) {
 std::ostream& operator<<(std::ostream& os, const Index& idx) {
   os << "[";
   if (idx.size() > 0) os << idx[0];
-  for (int i = 1; i < idx.size(); ++i) {
+  for (size_t i = 1; i < idx.size(); ++i) {
     os << ", " << idx[i];
   }
   os << "]";

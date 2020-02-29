@@ -402,8 +402,8 @@ void Tensor<Matrix, C>::init(const Shape &shape, size_t urank,
 
   size_t n_row = 1;
   size_t n_col = 1;
-  for (int i = 0; i < upper_rank; ++i) n_row *= shape[map[i]];
-  for (int i = upper_rank; i < rank; ++i) n_col *= shape[map[i]];
+  for (size_t i = 0; i < upper_rank; ++i) n_row *= shape[map[i]];
+  for (size_t i = upper_rank; i < rank; ++i) n_col *= shape[map[i]];
   Mat.init(n_row, n_col);
 }
 
@@ -1145,7 +1145,7 @@ Tensor<Matrix, C> transpose(const Tensor<Matrix, C> &T, const Axes &axes,
   Shape dim_old = T.shape();
   Shape dim_new;
   dim_new.resize(rank);
-  for (int r = 0; r < rank; ++r) {
+  for (size_t r = 0; r < rank; ++r) {
     dim_new[r] = dim_old[axes[r]];
   }
 
@@ -1607,8 +1607,8 @@ Tensor<Matrix, C> contract(const Tensor<Matrix, C> &T, const Axes &axes_1,
   {
     Axes v = axes_1 + axes_2;
     v.sort();
-    int k = 0;
-    for (int i = 0; i < T.rank(); ++i) {
+    size_t k = 0;
+    for (size_t i = 0; i < T.rank(); ++i) {
       if (i == v[k]) {
         ++k;
       } else {
@@ -1686,7 +1686,7 @@ Tensor<Matrix, C> tensordot(const Tensor<Matrix, C> &a,
   assert(a.get_comm() == b.get_comm());
   Shape shape_a = a.shape();
   Shape shape_b = b.shape();
-  for (int i = 0; i < axes_a.size(); ++i) {
+  for (size_t i = 0; i < axes_a.size(); ++i) {
     assert(shape_a[axes_a[i]] == shape_b[axes_b[i]]);
   }
 
@@ -1707,15 +1707,15 @@ Tensor<Matrix, C> tensordot(const Tensor<Matrix, C> &a,
     const size_t rank_row = rank - axes_a.size();
     const size_t rank_col = axes_a.size();
     size_t v[rank];
-    for (int i = 0; i < rank; ++i) v[i] = i;
-    for (int i = 0; i < rank_col; ++i) v[axes_a[i]] = rank;
+    for (size_t i = 0; i < rank; ++i) v[i] = i;
+    for (size_t i = 0; i < rank_col; ++i) v[axes_a[i]] = rank;
     std::sort(v, v + rank);
-    for (int i = 0; i < rank_col; ++i) v[rank_row + i] = axes_a[i];
+    for (size_t i = 0; i < rank_col; ++i) v[rank_row + i] = axes_a[i];
 
     trans_axes_a.assign(rank, v);
     urank_a = rank_row;
 
-    for (int i = 0; i < rank_row; ++i) shape_c[i] = shape_a[v[i]];
+    for (size_t i = 0; i < rank_row; ++i) shape_c[i] = shape_a[v[i]];
   }
 
   {
@@ -1723,15 +1723,15 @@ Tensor<Matrix, C> tensordot(const Tensor<Matrix, C> &a,
     const size_t rank_row = axes_b.size();
     const size_t rank_col = rank - axes_b.size();
     size_t v[rank];
-    for (int i = 0; i < rank; ++i) v[i] = i;
-    for (int i = 0; i < rank_row; ++i) v[axes_b[i]] = 0;
+    for (size_t i = 0; i < rank; ++i) v[i] = i;
+    for (size_t i = 0; i < rank_row; ++i) v[axes_b[i]] = 0;
     std::sort(v, v + rank);
-    for (int i = 0; i < rank_row; ++i) v[i] = axes_b[i];
+    for (size_t i = 0; i < rank_row; ++i) v[i] = axes_b[i];
 
     trans_axes_b.assign(rank, v);
     urank_b = rank_row;
 
-    for (int i = 0; i < rank_col; ++i)
+    for (size_t i = 0; i < rank_col; ++i)
       shape_c[i + rank_row_c] = shape_b[v[i + rank_row]];
   }
 
@@ -2523,16 +2523,16 @@ std::ostream &operator<<(std::ostream &out, const Tensor<Matrix, C> &t) {
     std::size_t size = t.local_size();
     Shape shape = t.shape();
     std::vector<std::size_t> accum(dim + 1, 1);
-    for (int d = dim - 1; d >= 0; --d) accum[d] = accum[d + 1] * shape[d];
+    for (size_t d = dim - 1; d >= 0; --d) accum[d] = accum[d + 1] * shape[d];
 
     std::vector<std::size_t> idx(dim);
-    for (int i = 0; i < size; ++i) {
-      for (int d = 0; d < dim; ++d) idx[d] = (i % accum[d]) / accum[d + 1];
+    for (size_t i = 0; i < size; ++i) {
+      for (size_t d = 0; d < dim; ++d) idx[d] = (i % accum[d]) / accum[d + 1];
       if (idx[dim - 1] == 0) {
-        int count = 0;
-        for (int d = dim - 1; d >= 0 && idx[d] == 0; --d) ++count;
-        for (int i = 0; i < dim - count; ++i) out << ' ';
-        for (int i = 0; i < count; ++i) out << '[';
+        size_t count = 0;
+        for (size_t d = dim - 1; d >= 0 && idx[d] == 0; --d) ++count;
+        for (size_t i = 0; i < dim - count; ++i) out << ' ';
+        for (size_t i = 0; i < count; ++i) out << '[';
       }
 
       C val;
@@ -2540,11 +2540,11 @@ std::ostream &operator<<(std::ostream &out, const Tensor<Matrix, C> &t) {
       out << ' ' << val << ' ';
 
       if (idx[dim - 1] == shape[dim - 1] - 1) {
-        int count = 0;
-        for (int d = dim - 1; d >= 0 && idx[d] == shape[d] - 1; --d) ++count;
-        for (int i = 0; i < count; ++i) out << ']';
+        size_t count = 0;
+        for (size_t d = dim - 1; d >= 0 && idx[d] == shape[d] - 1; --d) ++count;
+        for (size_t i = 0; i < count; ++i) out << ']';
         if (count < dim) {
-          for (int i = 0; i < count; ++i) out << '\n';
+          for (size_t i = 0; i < count; ++i) out << '\n';
         } else {
           out << '\n';
         }
@@ -2552,9 +2552,9 @@ std::ostream &operator<<(std::ostream &out, const Tensor<Matrix, C> &t) {
     }
   } else {
     if (t.get_comm_rank() == 0) {
-      for (int d = 0; d < dim; ++d) out << '[';
+      for (size_t d = 0; d < dim; ++d) out << '[';
       out << " distributed tensor ... ";
-      for (int d = 0; d < dim; ++d) out << ']';
+      for (size_t d = 0; d < dim; ++d) out << ']';
       out << '\n';
     }
   }

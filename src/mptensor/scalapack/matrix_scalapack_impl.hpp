@@ -181,7 +181,7 @@ inline bool Matrix<C>::local_index(size_t g_row, size_t g_col,
   size_t p_row = b_row % nprow;
   size_t b_col = g_col / BLOCK_SIZE;
   size_t p_col = b_col % npcol;
-  if (p_row != myprow || p_col != mypcol) return false;
+  if (p_row != size_t(myprow) || p_col != size_t(mypcol)) return false;
 
   size_t l_row = (b_row / nprow) * BLOCK_SIZE + g_row % BLOCK_SIZE;
   size_t l_col = (b_col / npcol) * BLOCK_SIZE + g_col % BLOCK_SIZE;
@@ -298,7 +298,7 @@ inline void Matrix<C>::prep_global_to_local() const {
     }
 
 #pragma omp for
-    for (size_t myprow = 0; myprow < nprow; ++myprow) {
+    for (size_t myprow = 0; myprow < size_t(nprow); ++myprow) {
       // inline expansion of numroc_()
       size_t locr = locr_offset;
       if (myprow < extra_blocks)
@@ -508,7 +508,7 @@ void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
                          recv_counts, recv_displs, comm);
 
   /* Unpack */
-  for (size_t i = 0; i < recv_size; ++i) {
+  for (int i = 0; i < recv_size; ++i) {
     mat_new[recv_pos[i]] = recv_value[i];
   }
 
@@ -585,7 +585,7 @@ void sum_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
                                     tag, comm, status);
 
       /* Unpack */
-      for (size_t i = 0; i < recv_size; ++i) {
+      for (int i = 0; i < recv_size; ++i) {
         mat_new[recv_pos[i]] += recv_value[i];
       }
     }

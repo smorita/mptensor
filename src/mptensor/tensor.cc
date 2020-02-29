@@ -48,9 +48,9 @@ namespace debug {
 
 bool check_total_size(const Shape& s1, const Shape& s2) {
   size_t n1 = 1;
-  for (int i = 0; i < s1.size(); ++i) n1 *= s1[i];
+  for (size_t i = 0; i < s1.size(); ++i) n1 *= s1[i];
   size_t n2 = 1;
-  for (int i = 0; i < s2.size(); ++i) n2 *= s2[i];
+  for (size_t i = 0; i < s2.size(); ++i) n2 *= s2[i];
   return n1 == n2;
 }
 
@@ -67,7 +67,7 @@ bool check_transpose_axes(const Axes& axes, size_t rank) {
   if (axes.size() != rank) return false;
   Axes v = axes;
   v.sort();
-  for (int i = 0; i < rank; ++i) {
+  for (size_t i = 0; i < rank; ++i) {
     if (v[i] != i) return false;
   }
   return true;
@@ -77,7 +77,7 @@ bool check_svd_axes(const Axes& a_row, const Axes& a_col, size_t rank) {
   if (a_row.size() + a_col.size() != rank) return false;
   Axes v = a_row + a_col;
   v.sort();
-  for (int i = 0; i < rank; ++i) {
+  for (size_t i = 0; i < rank; ++i) {
     if (v[i] != i) return false;
   }
   return true;
@@ -86,7 +86,7 @@ bool check_svd_axes(const Axes& a_row, const Axes& a_col, size_t rank) {
 bool check_trace_axes(const Axes& axes_1, const Axes& axes_2, size_t rank) {
   Axes v = axes_1 + axes_2;
   v.sort();
-  for (int i = 0; i < rank; ++i) {
+  for (size_t i = 0; i < rank; ++i) {
     if (v[i] != i) return false;
   }
   return true;

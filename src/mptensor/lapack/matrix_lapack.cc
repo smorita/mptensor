@@ -128,9 +128,9 @@ int matrix_svd(Matrix<double> &A, Matrix<double> &U, std::vector<double> &S,
   assert(A.n_row() == U.n_row());
   assert(A.n_col() == VT.n_col());
   size_t size = (A.n_row() < A.n_col()) ? A.n_row() : A.n_col();
-  assert(U.n_col() == size);
+  assert(size_t(U.n_col()) == size);
   assert(S.size() == size);
-  assert(VT.n_row() == size);
+  assert(size_t(VT.n_row()) == size);
 #endif
 
   int m = A.n_row();
@@ -165,9 +165,9 @@ int matrix_svd(Matrix<complex> &A, Matrix<complex> &U, std::vector<double> &S,
   assert(A.n_row() == U.n_row());
   assert(A.n_col() == VT.n_col());
   size_t size = (A.n_row() < A.n_col()) ? A.n_row() : A.n_col();
-  assert(U.n_col() == size);
+  assert(size_t(U.n_col()) == size);
   assert(S.size() == size);
-  assert(VT.n_row() == size);
+  assert(size_t(VT.n_row()) == size);
 
   int m = A.n_row();
   int n = A.n_col();
@@ -315,11 +315,10 @@ int matrix_qr(Matrix<complex> &A, Matrix<complex> &R) {
   int k = (m < n) ? m : n;
   int lda = A.n_row();
 
-  int ia, ja, lwork, info;
+  int lwork, info;
   std::vector<complex> tau(k);
   std::vector<complex> work;
   complex work_size_1, work_size_2;
-  ia = ja = 1;
   lwork = -1;
 
   /* Get the size of workspace */
@@ -353,7 +352,7 @@ int matrix_eigh(Matrix<double> &A, std::vector<double> &W, Matrix<double> &Z) {
   assert(A.n_row() == A.n_col());
   assert(A.n_row() == Z.n_row());
   assert(Z.n_row() == Z.n_col());
-  assert(W.size() == A.n_row());
+  assert(W.size() == size_t(A.n_row()));
 
   char jobz = 'V';
   char uplo = 'U';
@@ -390,7 +389,7 @@ int matrix_eigh(Matrix<complex> &A, std::vector<double> &W,
   assert(A.n_row() == A.n_col());
   assert(A.n_row() == Z.n_row());
   assert(Z.n_row() == Z.n_col());
-  assert(W.size() == A.n_row());
+  assert(W.size() == size_t(A.n_row()));
 
   char jobz = 'V';
   char uplo = 'U';
@@ -426,7 +425,7 @@ int matrix_eigh(Matrix<complex> &A, std::vector<double> &W,
 template <>
 int matrix_eigh(Matrix<double> &A, std::vector<double> &W) {
   assert(A.n_row() == A.n_col());
-  assert(W.size() == A.n_row());
+  assert(W.size() == size_t(A.n_row()));
 
   char jobz = 'N';
   char uplo = 'U';
@@ -458,7 +457,7 @@ int matrix_eigh(Matrix<double> &A, std::vector<double> &W) {
 template <>
 int matrix_eigh(Matrix<complex> &A, std::vector<double> &W) {
   assert(A.n_row() == A.n_col());
-  assert(W.size() == A.n_row());
+  assert(W.size() == size_t(A.n_row()));
 
   char jobz = 'N';
   char uplo = 'U';
