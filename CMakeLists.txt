@@ -67,7 +67,7 @@ endif()
 include_directories(${PROJECT_SOURCE_DIR}/src)
 add_subdirectory(src)
 
-if(NOT MPTENSOR_BUILD_LIBRARY_ONLY)
+if(NOT MPTENSOR_BUILD_LIBS_ONLY)
   add_subdirectory(tests EXCLUDE_FROM_ALL)
   add_subdirectory(examples EXCLUDE_FROM_ALL)
 endif()
