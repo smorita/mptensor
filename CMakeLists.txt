@@ -51,7 +51,6 @@ if(ENABLE_MPI)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${MPI_CXX_LINK_FLAGS}")
 
   find_package(ScaLAPACK REQUIRED)
-  string(REGEX REPLACE ";" " " SCALAPACK_LIBS "${SCALAPACK_LIBRARIES}")
 else()
   add_definitions(-D_NO_MPI)
 endif()

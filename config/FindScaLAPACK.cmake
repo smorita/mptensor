@@ -68,6 +68,7 @@ endif(DEFINED BLAS_mkl_core_LIBRARY)
 find_package_handle_standard_args(ScaLAPACK
   FOUND_VAR SCALAPACK_FOUND
   REQUIRED_VARS _SCALAPACK_LIBRARY
+  FAIL_MESSAGE "Could NOT find ScaLAPACK library.\nFor Intel MKL, try a option '-DBLA_VENDOR=Intel10_64lp'.\nSee also FindBLAS cmake-module.\n"
   )
 
 unset(_SCALAPACK_LIBRARIES)
