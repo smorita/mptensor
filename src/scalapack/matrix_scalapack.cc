@@ -26,11 +26,12 @@
 */
 
 #ifndef _NO_MPI
-#include "matrix_scalapack.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cfloat>
 #include <complex>
+
+#include "mptensor/scalapack/matrix_scalapack.hpp"
 
 typedef std::complex<double> complex;
 

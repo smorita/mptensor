@@ -25,8 +25,9 @@
   \brief  Some utilities for MPI
 */
 
-#include "mpi_tool.hpp"
 #include <cstdlib>
+
+#include "mpi_tool.hpp"
 
 #ifdef _NO_MPI
 

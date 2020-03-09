@@ -25,11 +25,12 @@
   \brief  Definition of functions which call LAPACK and BLAS routines.
 */
 
-#include "matrix_lapack.hpp"
 #include <algorithm>
 #include <cassert>
 #include <complex>
-#include "../complex.hpp"
+
+#include "mptensor/complex.hpp"
+#include "mptensor/lapack/matrix_lapack.hpp"
 
 typedef std::complex<double> complex;
 

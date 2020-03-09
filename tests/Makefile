@@ -1,6 +1,8 @@
 TARGET=tensor_test.out
 
 -include ../Makefile.option
+MPTENSOR_INCLUDE_DIR=../include
+CXXFLAGS += -I$(MPTENSOR_INCLUDE_DIR)
 
 .PHONY: all lib run test clean depend
 .SUFFIXES: .cc .hpp .o
@@ -9,7 +11,6 @@ HED=$(shell ls *.hpp)
 OBJ=$(SRC:.cc=.o)
 
 LIB=../src/libmptensor.a
-CXXFLAGS += -I../src
 
 all: lib $(TARGET)
 
@@ -30,6 +31,6 @@ clean:
 	@rm -vf Makefile.depend
 
 depend Makefile.depend:
-	g++ -MM -MG $(SRC) > Makefile.depend
+	g++ -MM -MG -I$(MPTENSOR_INCLUDE_DIR) $(SRC) > Makefile.depend
 
 -include Makefile.depend

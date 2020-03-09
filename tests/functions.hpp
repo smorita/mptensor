@@ -29,7 +29,8 @@
 #define _FUNCTIONS_HPP_
 
 #include <cmath>
-#include <mptensor.hpp>
+
+#include <mptensor/mptensor.hpp>
 
 using mptensor::complex;
 using mptensor::Index;

@@ -30,7 +30,7 @@
 #ifndef _TEST_TYPEDEF_HPP_
 #define _TEST_TYPEDEF_HPP_
 
-#include <mptensor.hpp>
+#include <mptensor/mptensor.hpp>
 namespace tests {
 using namespace mptensor;
 

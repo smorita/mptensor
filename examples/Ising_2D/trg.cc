@@ -32,12 +32,13 @@
   M. Levin and C. P. Nave: Phys. Rev. Lett. \b 99, 120601 (2007)
 */
 
-#include <mpi.h>
 #include <algorithm>
 #include <ctime>
 #include <iomanip>
 #include <iostream>
-#include <mptensor.hpp>
+
+#include <mpi.h>
+#include <mptensor/mptensor.hpp>
 
 #include "ising.hpp"
 

@@ -27,8 +27,8 @@
 */
 //! @cond
 
-#include "rsvd.hpp"
-#include "complex.hpp"
+#include "mptensor/rsvd.hpp"
+#include "mptensor/complex.hpp"
 
 #if defined(_USE_RANDOM_CPP11)
 #include <random>

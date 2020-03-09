@@ -26,9 +26,11 @@
   \brief  Benchmark of slice
 */
 
-#include <mpi.h>
 #include <iostream>
-#include <mptensor.hpp>
+
+#include <mpi.h>
+#include <mptensor/mptensor.hpp>
+
 #include "timer.hpp"
 
 #ifdef _OPENMP

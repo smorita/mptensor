@@ -25,10 +25,10 @@
 
   \brief  utility functions for Tensor class
 */
-
-#include "tensor.hpp"
 #include <algorithm>
 #include <vector>
+
+#include "mptensor/tensor.hpp"
 
 namespace mptensor {
 

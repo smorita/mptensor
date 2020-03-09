@@ -7,20 +7,21 @@ HED=$(shell ls *.hpp)
 OBJ=$(SRC:.cc=.o)
 TARGET=$(SRC:.cc=.out)
 
-MPTENSOR_DIR = ../../src
-MPTENSOR = -I$(MPTENSOR_DIR) -L$(MPTENSOR_DIR) -lmptensor
+MPTENSOR_SOURCE_DIR = ../../src
+MPTENSOR_INCLUDE_DIR = ../../include
+MPTENSOR_FLAGS = -I$(MPTENSOR_INCLUDE_DIR) -L$(MPTENSOR_SOURCE_DIR) -lmptensor
 
 
 all: $(TARGET)
 
 %.out : %.cc
-	$(CXX) -o $@ $< $(MPTENSOR) $(LDFLAGS) $(CXXFLAGS)
+	$(CXX) -o $@ $< $(MPTENSOR_FLAGS) $(LDFLAGS) $(CXXFLAGS)
 
 clean:
 	@rm -vf *.out *.o
 	@rm -vf Makefile.depend
 
 depend Makefile.depend:
-	g++ -MM -MG $(SRC) > Makefile.depend
+	g++ -MM -MG -I$(MPTENSOR_FLAGS) $(SRC) > Makefile.depend
 
 -include Makefile.depend

@@ -26,11 +26,13 @@
   \brief  Benchmark for RSVD.
 */
 
-#include <mpi.h>
 #include <ctime>
 #include <iomanip>
 #include <iostream>
-#include <mptensor.hpp>
+
+#include <mpi.h>
+#include <mptensor/mptensor.hpp>
+
 #include "timer.hpp"
 
 #ifdef _OPENMP

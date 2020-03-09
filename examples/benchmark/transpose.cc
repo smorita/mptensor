@@ -25,9 +25,11 @@
   \brief  Benchmark of transpose
 */
 
-#include <mpi.h>
 #include <iostream>
-#include <mptensor.hpp>
+
+#include <mpi.h>
+#include <mptensor/mptensor.hpp>
+
 #include "timer.hpp"
 
 #ifdef _OPENMP

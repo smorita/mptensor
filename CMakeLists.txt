@@ -63,7 +63,6 @@ else()
   add_definitions(-D_USE_RANDOM_BOOST)
 endif()
 
-include_directories(${PROJECT_SOURCE_DIR}/src)
 add_subdirectory(src)
 
 if(NOT MPTENSOR_BUILD_LIBS_ONLY)

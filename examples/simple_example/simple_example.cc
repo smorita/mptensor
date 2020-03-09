@@ -25,9 +25,10 @@
   \brief  Simple example of mptensor
 */
 
-#include <mpi.h>
 #include <iostream>
-#include <mptensor.hpp>
+
+#include <mpi.h>
+#include "mptensor/mptensor.hpp"
 
 /* Main function */
 int main(int argc, char **argv) {

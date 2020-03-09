@@ -26,10 +26,11 @@
   \brief  Index class
 */
 
-#include "index.hpp"
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+
+#include "mptensor/index.hpp"
 
 namespace mptensor {
 

@@ -25,8 +25,9 @@
   \brief  Two-dimensional Ising model
 */
 
-#include "ising.hpp"
 #include <cmath>
+
+#include "ising.hpp"
 
 namespace examples {
 namespace Ising_2D {

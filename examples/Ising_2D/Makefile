@@ -7,22 +7,23 @@ TARGET = trg.out hotrg.out
 SRC = ising.cc trg.cc hotrg.cc
 OBJS = ising.o
 
-MPTENSOR_DIR = ../../src
-MPTENSOR = -I$(MPTENSOR_DIR) -L$(MPTENSOR_DIR) -lmptensor
+MPTENSOR_SOURCE_DIR = ../../src
+MPTENSOR_INCLUDE_DIR = ../../include
+MPTENSOR_FLAGS = -I$(MPTENSOR_INCLUDE_DIR) -L$(MPTENSOR_SOURCE_DIR) -lmptensor
 
 
 all: $(TARGET)
 
 %.out : %.o $(OBJS)
-	$(CXX) -o $@ $< $(OBJS) $(MPTENSOR) $(LDFLAGS) $(CXXFLAGS)
+	$(CXX) -o $@ $< $(OBJS) $(MPTENSOR_FLAGS) $(LDFLAGS) $(CXXFLAGS)
 
 %.o : %.cc
-	$(CXX) -c $< $(MPTENSOR) $(LDFLAGS) $(CXXFLAGS)
+	$(CXX) -c $< $(MPTENSOR_FLAGS) $(LDFLAGS) $(CXXFLAGS)
 
 clean:
 	rm -vf *.out *.o
 
 depend Makefile.depend:
-	g++ -MM -MG $(SRC) > Makefile.depend
+	g++ -MM -MG $(MPTENSOR_FLAGS) $(SRC) > Makefile.depend
 
 -include Makefile.depend

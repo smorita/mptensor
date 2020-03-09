@@ -27,9 +27,10 @@
 */
 
 #ifndef _NO_MPI
-#include "mpi_wrapper.hpp"
 #include <mpi.h>
-#include "complex.hpp"
+
+#include "mptensor/complex.hpp"
+#include "mptensor/mpi_wrapper.hpp"
 
 namespace mptensor {
 namespace mpi_wrapper {

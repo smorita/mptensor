@@ -33,12 +33,13 @@
   Z. Y. Xie, et al.: Phys. Rev. B \b 86, 045139 (2012)
 */
 
-#include <mpi.h>
 #include <algorithm>
 #include <ctime>
 #include <iomanip>
 #include <iostream>
-#include <mptensor.hpp>
+
+#include <mpi.h>
+#include <mptensor/mptensor.hpp>
 
 #include "ising.hpp"
 

@@ -1,5 +1,5 @@
-set(PROGS example)
+set(PROGS simple_example)
 foreach(name ${PROGS})
   add_executable(${name} ${name}.cc)
-  target_link_libraries(${name} mptensor)
+  target_link_libraries(${name} PRIVATE mptensor)
 endforeach(name ${PROGS})

@@ -31,7 +31,8 @@
 #include <iostream>
 #include <vector>
 
-#include <mptensor.hpp>
+#include <mptensor/mptensor.hpp>
+
 #include "functions.hpp"
 #include "mpi_tool.hpp"
 #include "timer.hpp"

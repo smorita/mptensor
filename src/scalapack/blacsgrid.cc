@@ -28,12 +28,13 @@
 
 #ifndef _NO_MPI
 
-#include "blacsgrid.hpp"
 #include <mpi.h>
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+
+#include "mptensor/scalapack/blacsgrid.hpp"
 
 /* BLACS */
 extern "C" {

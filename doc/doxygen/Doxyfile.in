@@ -771,9 +771,10 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT  = @PROJECT_SOURCE_DIR@/src 
-INPUT += @PROJECT_SOURCE_DIR@/examples 
-INPUT += @PROJECT_SOURCE_DIR@/tests 
+INPUT  = @PROJECT_SOURCE_DIR@/include
+INPUT += @PROJECT_SOURCE_DIR@/src
+INPUT += @PROJECT_SOURCE_DIR@/examples
+INPUT += @PROJECT_SOURCE_DIR@/tests
 INPUT += @PROJECT_SOURCE_DIR@/README.md
 
 # This tag can be used to specify the character encoding of the source files
@@ -814,7 +815,7 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                = @PROJECT_SOURCE_DIR@/src/mptensor/index_constructor.py
+EXCLUDE                = @PROJECT_SOURCE_DIR@/include/mptensor/index_constructor.py
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
