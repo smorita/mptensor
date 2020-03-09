@@ -2523,14 +2523,14 @@ std::ostream &operator<<(std::ostream &out, const Tensor<Matrix, C> &t) {
     std::size_t size = t.local_size();
     Shape shape = t.shape();
     std::vector<std::size_t> accum(dim + 1, 1);
-    for (size_t d = dim - 1; d >= 0; --d) accum[d] = accum[d + 1] * shape[d];
+    for (size_t d = dim; d != 0; --d) accum[d - 1] = accum[d] * shape[d - 1];
 
     std::vector<std::size_t> idx(dim);
     for (size_t i = 0; i < size; ++i) {
       for (size_t d = 0; d < dim; ++d) idx[d] = (i % accum[d]) / accum[d + 1];
       if (idx[dim - 1] == 0) {
         size_t count = 0;
-        for (size_t d = dim - 1; d >= 0 && idx[d] == 0; --d) ++count;
+        for (size_t d = dim; d != 0 && idx[d - 1] == 0; --d) ++count;
         for (size_t i = 0; i < dim - count; ++i) out << ' ';
         for (size_t i = 0; i < count; ++i) out << '[';
       }
@@ -2541,7 +2541,7 @@ std::ostream &operator<<(std::ostream &out, const Tensor<Matrix, C> &t) {
 
       if (idx[dim - 1] == shape[dim - 1] - 1) {
         size_t count = 0;
-        for (size_t d = dim - 1; d >= 0 && idx[d] == shape[d] - 1; --d) ++count;
+        for (size_t d = dim; d != 0 && idx[d - 1] == shape[d - 1] - 1; --d) ++count;
         for (size_t i = 0; i < count; ++i) out << ']';
         if (count < dim) {
           for (size_t i = 0; i < count; ++i) out << '\n';
