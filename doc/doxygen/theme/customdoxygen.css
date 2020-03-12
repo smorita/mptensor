@@ -13,6 +13,9 @@ font-size: 1.15em !important;
 .navbar{
  border: 0px solid #222 !important;
 }
+.navbar-brand a{
+  text-decoration: none !important;
+}
 table{
     white-space:pre-wrap !important;
 }
