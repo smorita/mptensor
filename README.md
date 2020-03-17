@@ -9,10 +9,9 @@ It provides similar interfaces as Numpy and Scipy in Python.
 
 ## Requirements
 
+- C++11 compiler
 - MPI Library
 - [ScaLAPACK](http://www.netlib.org/scalapack/)
-- (For RSVD) C++11 std::random, [Boost C++ library](http://www.boost.org/),
-  or [dSFMT](http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/)
 
 ## How to Use
 
