@@ -19,20 +19,19 @@
 */
 
 /*!
-  \file   mptensor.hpp
+  \file   version.hpp
   \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
-  \date   Jun 26 2016
+  \date   Mar 17 2020
 
-  \brief  Top header file of mptensor.
+  \brief  Version of mptensor.
 */
 
-#ifndef _MPTENSOR_HPP_
-#define _MPTENSOR_HPP_
+#ifndef _MPTENSOR_VERSION_HPP_
+#define _MPTENSOR_VERSION_HPP_
 
-#include "mptensor/version.hpp"
-#include "mptensor/complex.hpp"
-#include "mptensor/index.hpp"
-#include "mptensor/tensor.hpp"
-#include "mptensor/rsvd.hpp"
+#define MPTENSOR_VERSION_MAJOR 0
+#define MPTENSOR_VERSION_MINOR 3
+#define MPTENSOR_VERSION_PATCH 0
+#define MPTENSOR_VERSION_STRING "0.3.0"
 
-#endif  // _MPTENSOR_HPP_
+#endif  // _MPTENSOR_VERSION_HPP_
