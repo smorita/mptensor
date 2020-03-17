@@ -77,7 +77,7 @@ void send_recv_vector(const std::vector<double> &send_vec, int dest,
   MPI_Sendrecv(const_cast<double *>(&(send_vec[0])),
                static_cast<int>(send_vec.size()), MPI_DOUBLE, dest, sendtag,
                &(recv_vec[0]), static_cast<int>(recv_vec.size()), MPI_DOUBLE,
-               source, sendtag, comm, &status);
+               source, recvtag, comm, &status);
 };
 
 template <>
@@ -87,7 +87,7 @@ void send_recv_vector(const std::vector<complex> &send_vec, int dest,
   MPI_Sendrecv(const_cast<complex *>(&(send_vec[0])),
                static_cast<int>(send_vec.size()), MPI_DOUBLE_COMPLEX, dest,
                sendtag, &(recv_vec[0]), static_cast<int>(recv_vec.size()),
-               MPI_DOUBLE_COMPLEX, source, sendtag, comm, &status);
+               MPI_DOUBLE_COMPLEX, source, recvtag, comm, &status);
 };
 
 template <>

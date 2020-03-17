@@ -1,10 +1,11 @@
-cmake_minimum_required(VERSION 2.8.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.6.0 FATAL_ERROR)
 
 message(STATUS "Start configuration of mptesnor")
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 
-project(mptensor NONE)
-set(mptensor_version "v0.2")
+project(mptensor
+        VERSION 0.2.1
+        LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
 if(CONFIG)
@@ -16,14 +17,11 @@ if(NOT CMAKE_BUILD_TYPE)
 endif(NOT CMAKE_BUILD_TYPE)
 message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 
-
 option(MPTENSOR_BUILD_LIBS_ONLY "Build only library" OFF)
 option(BUILD_SHARED_LIBS "Build as shared library" OFF)
 option(BUILD_DOCS "Build documents" OFF)
 option(ENABLE_CXX11 "use c++11" ON)
 option(ENABLE_MPI "use MPI and ScaLAPACK" ON)
-
-enable_language(C CXX)
 
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 set(CMAKE_SKIP_BUILD_RPATH FALSE)
@@ -31,11 +29,13 @@ set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 set(CMAKE_MACOSX_RPATH 1)
 
-
-set(ENABLED_CXX11 OFF)
 if(ENABLE_CXX11)
-  include(${PROJECT_SOURCE_DIR}/config/cxx11.cmake)
-  cxx11()
+  set(CMAKE_CXX_STANDARD 11)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+  set(ENABLED_CXX11 ON)
+else()
+  set(ENABLED_CXX11 OFF)
 endif()
 
 find_package(OpenMP)
