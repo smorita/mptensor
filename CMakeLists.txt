@@ -4,7 +4,7 @@ message(STATUS "Start configuration of mptesnor")
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 
 project(mptensor
-        VERSION 0.2.1
+        VERSION 0.3.0
         LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)

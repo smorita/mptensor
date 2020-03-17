@@ -1,4 +1,4 @@
-# mptensor v0.2
+# mptensor v0.3
 
 [![GitHub](https://img.shields.io/github/license/smorita/mptensor)][License]
 [![Build Status](https://travis-ci.org/smorita/mptensor.svg?branch=master)][TravisCI]
