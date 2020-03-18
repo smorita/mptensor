@@ -43,7 +43,12 @@ if(OpenMP_CXX_FOUND OR OPENMP_FOUND)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif(OpenMP_CXX_FOUND OR OPENMP_FOUND)
 
-find_package(LAPACK REQUIRED)
+find_package(LAPACK)
+if(NOT LAPACK_FOUND)
+  message(STATUS "Could NOT find LAPACK library. Retry a search with C language.")
+  enable_language(C)
+  find_package(LAPACK REQUIRED)
+endif()
 
 if(ENABLE_MPI)
   find_package(MPI REQUIRED)
