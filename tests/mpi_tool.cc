@@ -37,7 +37,7 @@ void mpi_finalize() {}
 void mpi_init(int argc, char **argv) {}
 void mpi_info(const mpi_comm &comm, int &rank, int &size, bool &is_root) {
   rank = 0;
-  rank = 1;
+  size = 1;
   is_root = true;
 }
 void mpi_barrier(const mpi_comm &comm) {}

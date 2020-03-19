@@ -25,70 +25,44 @@
   \brief  Test code for load function
 */
 
-#include <cstdio>
 #include <ctime>
 #include <iomanip>
 #include <iostream>
+#include <string>
 
-#include <mpi.h>
+// #include <mpi.h>
 #include <mptensor/mptensor.hpp>
 
-#include "initialize.hpp"
+#include "../mpi_tool.hpp"
+#include "common.hpp"
 
 template <typename tensor>
-void load(const char* tag, int proc_size, const tensor& t0) {
-  using namespace mptensor;
-  char filename[256];
+void load(const std::string& tag, int proc_size, const tensor& t0) {
   tensor t;
-  std::sprintf(filename, "%s_mpi%04d", tag, proc_size);
-  t.load(filename);
+  std::string fname = filename(tag, proc_size);
+  t.load(fname);
 
-  // if (t.get_comm_rank() == 0) {
-  //   std::cout << filename << std::endl;
-  //   t.print_info(std::cout);
-  // }
-  // return;
   double val = max_abs(t - t0);
   if (t.get_comm_rank() == 0) {
-    std::cout << filename << " error= " << val << std::endl;
+    std::cout << fname << " is loaded. error= " << val << std::endl;
   }
 }
 
 /* Main function */
 int main(int argc, char** argv) {
-  using namespace mptensor;
-  typedef Tensor<scalapack::Matrix, double> pdtensor;
-  typedef Tensor<scalapack::Matrix, complex> pztensor;
-  typedef Tensor<lapack::Matrix, double> sdtensor;
-  typedef Tensor<lapack::Matrix, complex> sztensor;
-
   /* Start */
-  MPI_Init(&argc, &argv);
-  MPI_Comm comm = MPI_COMM_WORLD;
+  mpi_init(argc, argv);
   int mpirank;
   int mpisize;
   bool mpiroot;
-  MPI_Comm_rank(comm, &mpirank);
-  MPI_Comm_size(comm, &mpisize);
-  mpiroot = (mpirank == 0);
-
-  char filename[256];
+  mpi_comm comm = MPI_COMM_WORLD;
+  mpi_info(comm, mpirank, mpisize, mpiroot);
 
   size_t n = 6;
-  pdtensor pd_0 = initialize2<pdtensor>(n);
-  pztensor pz_0 = initialize2<pztensor>(n);
-  sdtensor sd_0 = initialize2<sdtensor>(n);
-  sztensor sz_0 = initialize2<sztensor>(n);
 
-  pdtensor pdt_0(comm, Shape(n, n + 1, n + 2, n + 3));
-  pztensor pzt_0(comm, Shape(n, n + 1, n + 2, n + 3));
-  sdtensor sdt_0(0, Shape(n, n + 1, n + 2, n + 3));
-  sztensor szt_0(0, Shape(n, n + 1, n + 2, n + 3));
-  initialize(pdt_0);
-  initialize(pzt_0);
-  initialize(sdt_0);
-  initialize(szt_0);
-
+#ifndef _NO_MPI
+  pdtensor pd_0 = initialize<pdtensor>(n);
+  pztensor pz_0 = initialize<pztensor>(n);
   for (int proc_size = 1; proc_size <= 4; proc_size++) {
     load<pdtensor>("pd", proc_size, pd_0);
     load<pztensor>("pz", proc_size, pz_0);
@@ -97,7 +71,10 @@ int main(int argc, char** argv) {
   load<pztensor>("sz", 1, pz_0);
 
   if (mpisize == 1) {
-    std::cout << "# load as non-distributed tensor" << "\n";
+    std::cout << "# load as non-distributed tensor"
+              << "\n";
+    sdtensor sd_0 = initialize<sdtensor>(n);
+    sztensor sz_0 = initialize<sztensor>(n);
     for (int proc_size = 1; proc_size <= 4; proc_size++) {
       load<sdtensor>("pd", proc_size, sd_0);
       load<sztensor>("pz", proc_size, sz_0);
@@ -105,7 +82,14 @@ int main(int argc, char** argv) {
     load<sdtensor>("sd", 1, sd_0);
     load<sztensor>("sz", 1, sz_0);
   }
+#else
+  sdtensor sd_0 = initialize<sdtensor>(n);
+  sztensor sz_0 = initialize<sztensor>(n);
+  load<sdtensor>("sd", 1, sd_0);
+  load<sztensor>("sz", 1, sz_0);
+#endif
 
   /* End */
-  MPI_Finalize();
+  /* automatically called by std::atexit() in mpi_tool. */
+  // MPI_Finalize();
 }

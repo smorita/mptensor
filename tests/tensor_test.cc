@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
   if (argc < 2) {
     if (mpiroot)
       std::cerr << "Usage: a.out N\n"
-                << "waring: assuming N=10" << std::endl;
+                << "Warning: assuming N=10" << std::endl;
     n = 10;
   } else {
     n = atoi(argv[1]);
@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
   test_qr_rank2(comm, n, out);
   test_eigh(comm, n, out);
   test_eigh_rank2(comm, n, out);
-  test_eigh_general(comm, n, out);
+  // test_eigh_general(comm, n, out);
   test_arithmetic(comm, n, out);
   test_trace(comm, n, out);
   test_trace2(comm, n, out);
@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
   test_qr_rank2_complex(comm, n, out);
   test_eigh_complex(comm, n, out);
   test_eigh_rank2_complex(comm, n, out);
-  test_eigh_general_complex(comm, n, out);
+  // test_eigh_general_complex(comm, n, out);
   test_arithmetic_complex(comm, n, out);
   test_trace_complex(comm, n, out);
   test_trace2_complex(comm, n, out);
