@@ -1,0 +1,5 @@
+set(PROGS save load)
+foreach(name ${PROGS})
+  add_executable(test_${name} ${name}.cc)
+  target_link_libraries(test_${name} mptensor)
+endforeach(name ${PROGS})

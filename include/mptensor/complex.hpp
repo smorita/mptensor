@@ -37,6 +37,28 @@ namespace mptensor {
 //! \ingroup Complex
 typedef std::complex<double> complex;
 
+template <typename C>
+constexpr size_t value_type_tag();
+template <>
+constexpr size_t value_type_tag<double>() {
+  return 0;
+};
+template <>
+constexpr size_t value_type_tag<complex>() {
+  return 1;
+};
+
+template <typename C>
+constexpr char* value_type_name();
+template <>
+constexpr char* value_type_name<double>() {
+  return (char*)"double";
+};
+template <>
+constexpr char* value_type_name<complex>() {
+  return (char*)"complex";
+};
+
 }  // namespace mptensor
 
 #endif  // _COMPLEX_HPP_

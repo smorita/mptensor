@@ -30,8 +30,11 @@
 
 #include <algorithm>
 #include <cassert>
+#include <fstream>
 #include <iostream>
 #include <vector>
+#include <string>
+
 #include "../complex.hpp"
 
 namespace mptensor {
@@ -293,6 +296,27 @@ inline void Matrix<C>::prep_global_to_local() const {
   return;
 }
 
+template <typename C>
+void Matrix<C>::save_index(const std::string &filename) const {
+  std::ofstream fout(filename);
+  fout << "local_size= " << local_size() << "\n";
+  fout << "local_n_row= " << n_row_ << "\n";
+  fout << "local_n_col= " << n_col_ << "\n";
+  fout << "[global_row]\n";
+  for (size_t i = 0; i < n_row_; ++i) {
+    fout << " " << i;
+    if (i % 10 == 9) fout << "\n";
+  }
+  fout << "\n";
+  fout << "[global_col]\n";
+  for (size_t i = 0; i < n_col_; ++i) {
+    fout << " " << i;
+    if (i % 10 == 9) fout << "\n";
+  }
+  fout << "\n";
+  fout.close();
+}
+
 /* ---------- non-member functions ---------- */
 
 template <typename C>
@@ -306,6 +330,23 @@ void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
   C* mat_new = M_new.head();
 
   for (size_t i = 0; i < M.local_size(); i++) {
+    if (dest_rank[i] == 0) {
+      mat_new[local_position[i]] = mat[i];
+    }
+  }
+}
+
+template <typename C>
+void replace_matrix_data(const std::vector<C>& V, const std::vector<int>& dest_rank,
+                         const std::vector<size_t>& local_position,
+                         Matrix<C>& M_new) {
+  assert(dest_rank.size() == V.size());
+  assert(local_position.size() == V.size());
+
+  const C* mat = &(V[0]);
+  C* mat_new = M_new.head();
+
+  for (size_t i = 0; i < V.size(); i++) {
     if (dest_rank[i] == 0) {
       mat_new[local_position[i]] = mat[i];
     }

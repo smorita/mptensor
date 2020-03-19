@@ -30,6 +30,10 @@
 #ifndef _MATRIX_HPP_
 #define _MATRIX_HPP_
 
+constexpr size_t MATRIX_TYPE_TAG_INTERFACE = 0;
+constexpr size_t MATRIX_TYPE_TAG_LAPACK = 1;
+constexpr size_t MATRIX_TYPE_TAG_SCALAPACK = 2;
+
 #ifndef _NO_MPI
 #include "scalapack/matrix_scalapack.hpp"
 #endif  // _NO_MPI

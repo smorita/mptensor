@@ -31,9 +31,11 @@
 #include <cfloat>
 #include <complex>
 
+#include "mptensor/complex.hpp"
+#include "mptensor/matrix.hpp"
 #include "mptensor/scalapack/matrix_scalapack.hpp"
 
-typedef std::complex<double> complex;
+typedef mptensor::complex complex;
 
 /* PBLAS, SCALAPACK */
 extern "C" {

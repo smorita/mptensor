@@ -30,6 +30,8 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
+
 #include "../complex.hpp"
 
 namespace mptensor {
@@ -43,6 +45,9 @@ class Matrix {
  public:
   typedef C value_type;
   typedef int comm_type;
+
+  constexpr static size_t matrix_type_tag = MATRIX_TYPE_TAG_LAPACK;
+  constexpr static char* matrix_type_name = (char*)"LAPACK";
 
   Matrix();
   explicit Matrix(const comm_type& comm_dummy);
@@ -97,6 +102,7 @@ class Matrix {
   int n_col() const;
 
   const Matrix transpose();
+  void save_index(const std::string &filename) const;
 
  private:
   std::vector<C> V;  //!< Local strage.
@@ -109,6 +115,11 @@ class Matrix {
 //! \{
 template <typename C>
 void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
+                         const std::vector<size_t>& local_position,
+                         Matrix<C>& M_new);
+template <typename C>
+void replace_matrix_data(const std::vector<C>& V,
+                         const std::vector<int>& dest_rank,
                          const std::vector<size_t>& local_position,
                          Matrix<C>& M_new);
 template <typename C>

@@ -94,8 +94,8 @@ class Tensor {
   void print_info(std::ostream &out, const std::string &tag = "") const;
   void print_info_mpi(std::ostream &, const std::string &tag = "") const;
 
-  void save(const char *filename) const;
-  void load(const char *filename);
+  void save(const std::string &filename) const;
+  void load(const std::string &filename);
 
   Tensor<Matrix, C> &transpose(const Axes &axes);
 
@@ -165,6 +165,9 @@ class Tensor {
 
   mutable std::vector<size_t> l2g_map_row;
   mutable std::vector<size_t> l2g_map_col;
+
+  void save_ver_0_2(const char *filename) const;
+  void load_ver_0_2(const char *filename);
 };
 
 /* Operations */
@@ -320,5 +323,7 @@ std::ostream &operator<<(std::ostream &out, const Tensor<Matrix, C> &t);
 }  // namespace mptensor
 
 #include "tensor_impl.hpp"
+#include "file_io/save.hpp"
+#include "file_io/load.hpp"
 
 #endif  // _TENSOR_HPP_

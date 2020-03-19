@@ -28,13 +28,17 @@
 #ifndef _MATRIX_SCALAPACK_IMPL_HPP_
 #define _MATRIX_SCALAPACK_IMPL_HPP_
 
-#include <mpi.h>
 #include <algorithm>
 #include <cassert>
 #include <cfloat>
 #include <complex>
 #include <iostream>
+#include <fstream>
 #include <vector>
+#include <string>
+
+#include <mpi.h>
+
 #include "../complex.hpp"
 #include "../mpi_wrapper.hpp"
 #include "blacsgrid.hpp"
@@ -438,6 +442,30 @@ inline void Matrix<C>::bcast(D* buffer, int count, int root) const {
   mpi_wrapper::bcast(buffer, count, root, get_comm());
 }
 
+template <typename C>
+void Matrix<C>::save_index(const std::string &filename) const {
+  const size_t size_row = get_lld();
+  const size_t size_col = local_size() / size_row;
+  prep_local_to_global();
+  std::ofstream fout(filename);
+  fout << "local_size= " << local_size() << "\n";
+  fout << "local_n_row= " << size_row << "\n";
+  fout << "local_n_col= " << size_col << "\n";
+  fout << "[global_row]\n";
+  for (size_t i = 0; i < size_row; ++i) {
+    fout << " " << global_row[i];
+    if (i % BLOCK_SIZE == BLOCK_SIZE - 1) fout << "\n";
+  }
+  fout << "\n";
+  fout << "[global_col]\n";
+  for (size_t i = 0; i < size_col; ++i) {
+    fout << " " << global_col[i];
+    if (i % BLOCK_SIZE == BLOCK_SIZE - 1) fout << "\n";
+  }
+  fout << "\n";
+  fout.close();
+}
+
 /* ---------- non-member functions ---------- */
 
 template <typename C>
@@ -450,6 +478,89 @@ void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
   const size_t local_size = M.local_size();
 
   const C* mat = M.head();
+  C* mat_new = M_new.head();
+
+  // assert(send_size_list.size() == mpisize);
+  assert(dest_rank.size() == local_size);
+  assert(local_position.size() == local_size);
+
+  const int proc_size = mpisize + 1;
+  int* send_counts = new int[proc_size];
+  int* send_displs = new int[proc_size];
+  int* recv_counts = new int[proc_size];
+  int* recv_displs = new int[proc_size];
+  for (int rank = 0; rank < proc_size; ++rank) {
+    send_counts[rank] = 0;
+    send_displs[rank] = 0;
+    recv_counts[rank] = 0;
+    recv_displs[rank] = 0;
+  }
+
+  for (size_t i = 0; i < local_size; ++i) {
+    send_counts[dest_rank[i]] += 1;
+  }
+
+  MPI_Alltoall(send_counts, 1, MPI_INT, recv_counts, 1, MPI_INT, comm);
+
+  for (int rank = 0; rank < mpisize; ++rank) {
+    send_displs[rank + 1] = send_counts[rank] + send_displs[rank];
+    recv_displs[rank + 1] = recv_counts[rank] + recv_displs[rank];
+  }
+
+  const int send_size = local_size;  // send_displs[mpisize];
+  const int recv_size = recv_displs[mpisize];
+  unsigned long int* send_pos = new unsigned long int[send_size];
+  unsigned long int* recv_pos = new unsigned long int[recv_size];
+  C* send_value = new C[send_size];
+  C* recv_value = new C[recv_size];
+
+  /* Pack */
+  // std::vector<int> pack_idx = send_displs;
+  int* pack_idx = new int[proc_size];
+  for (int rank = 0; rank < proc_size; ++rank) {
+    pack_idx[rank] = send_displs[rank];
+  }
+  for (size_t i = 0; i < local_size; ++i) {
+    const int rank = dest_rank[i];
+    const int idx = pack_idx[rank];
+    send_value[idx] = mat[i];
+    send_pos[idx] = local_position[i];
+    pack_idx[rank] += 1;
+  }
+  delete[] pack_idx;
+
+  /* Send and Recieve */
+  mpi_wrapper::alltoallv(send_pos, send_counts, send_displs, recv_pos,
+                         recv_counts, recv_displs, comm);
+  mpi_wrapper::alltoallv(send_value, send_counts, send_displs, recv_value,
+                         recv_counts, recv_displs, comm);
+
+  /* Unpack */
+  for (int i = 0; i < recv_size; ++i) {
+    mat_new[recv_pos[i]] = recv_value[i];
+  }
+
+  delete[] send_pos;
+  delete[] send_value;
+  delete[] recv_pos;
+  delete[] recv_value;
+
+  delete[] send_counts;
+  delete[] send_displs;
+  delete[] recv_counts;
+  delete[] recv_displs;
+}
+
+template <typename C>
+void replace_matrix_data(const std::vector<C>& V, const std::vector<int>& dest_rank,
+                         const std::vector<size_t>& local_position,
+                         Matrix<C>& M_new) {
+  const MPI_Comm comm = M_new.get_comm();
+  const int mpisize = M_new.get_comm_size();
+  // const int mpirank = M.get_comm_rank();
+  const size_t local_size = V.size();
+
+  const C* mat = &(V[0]);
   C* mat_new = M_new.head();
 
   // assert(send_size_list.size() == mpisize);

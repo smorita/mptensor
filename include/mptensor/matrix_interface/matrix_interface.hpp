@@ -40,6 +40,9 @@ class Matrix {
   typedef C value_type;   //!< \c double or \c complex
   typedef int comm_type;  //!< Set \c MPI_Comm for MPI programm.
 
+  constexpr static size_t matrix_type_tag = MATRIX_TYPE_TAG_INTERFACE;
+  constexpr static char* matrix_type_name = (char*)"Interface";
+
   Matrix();
   explicit Matrix(const comm_type& comm);
   Matrix(size_t n_row, size_t n_col);
@@ -88,10 +91,17 @@ class Matrix {
 
   void prep_local_to_global() const;
   void prep_global_to_local() const;
+
+  void save_index(const std::string &filename) const;
 };
 
 template <typename C>
 void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
+                         const std::vector<size_t>& local_position,
+                         Matrix<C>& M_new);
+template <typename C>
+void replace_matrix_data(const std::vector<C>& V,
+                         const std::vector<int>& dest_rank,
                          const std::vector<size_t>& local_position,
                          Matrix<C>& M_new);
 template <typename C>
