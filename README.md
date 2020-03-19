@@ -1,4 +1,4 @@
-# mptensor v0.3
+# mptensor
 
 [![GitHub](https://img.shields.io/github/license/smorita/mptensor)][License]
 [![Build Status](https://travis-ci.org/smorita/mptensor.svg?branch=master)][TravisCI]
@@ -7,25 +7,43 @@
 "mptensor" is parallel C++ libarary for tensor calculations.
 It provides similar interfaces as Numpy and Scipy in Python.
 
-## Requirements
+## Prerequisites
 
 - C++11 compiler
+- CMake (>= 3.6)
+- [LAPACK](https://www.netlib.org/lapack/)
+
+### For parallel computing
+
 - MPI Library
-- [ScaLAPACK](http://www.netlib.org/scalapack/)
+- [ScaLAPACK](https://www.netlib.org/scalapack/)
+
+### For document generation
+
+- Doxygen (< 1.8.12)
 
 ## How to Use
 
-1. Compile mptensor
-    - Modify `Makefile.option` as your environment and then `make`.
-    - or use `cmake`
-2. Include `src/mptensor.hpp` in your codes.
-3. Complie your applications with `src/libmptensor.a` .
+1. Build and install mptensor library
+
+        mkdir build
+        cd build
+        cmake ../
+        make
+        sudo cmake install
+
+2. Include the header file `mptensor/mptensor.hpp` in your codes.
+3. Complie your applications with link option `-lmptensor` .
+
+The default install directory is `/usr/local`. It can be changed by `-DCMAKE_INSTALL_PREFIX` option.
+
+    $ cmake -DCMAKE_INSTALL_PREFIX=/home/smorita/.local ../
+
+See also the [cmake page](https://cmake.org/cmake/help/v3.6/variable/CMAKE_INSTALL_PREFIX.html).
 
 ## Documents
 
 The HTML documents are available in [here][Documents].
-
-By `make doc`, HTML and LaTeX documents are generated in `doc/doxygen`.
 
 ## Examples
 
@@ -42,6 +60,7 @@ GNU Lesser General Public License v3.0 (see [LICENSE][License])
 
 ## Links
 
+- [TeNeS](https://www.pasums.issp.u-tokyo.ac.jp/tenes/en): Parallel tensor network solver for 2D quantum lattice systems
 - [Tensordot](https://github.com/smorita/Tensordot): Code generator for tensor contraction
 - [cuscalapack](https://github.com/smorita/cuscalapack): pdgemm and pzgemm with cuBLAS
 
