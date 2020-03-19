@@ -21,16 +21,16 @@ jobs:
     - name: "CMake with MPI"
       script:
         - mkdir build && cd build
-        - cmake ../
-        - make tensor_test
-        - mpiexec -np 2 tests/tensor_test
+        - cmake -DENABLE_TEST=ON ../
+        - make
+        - ctest
 
     - name: "CMake without MPI"
       script:
         - mkdir build && cd build
-        - cmake -DENABLE_MPI=OFF ../
-        - make tensor_test
-        - ./tests/tensor_test
+        - cmake -DENABLE_MPI=OFF -DENABLE_TEST=ON ../
+        - make
+        - ctest
 
     - stage: deploy
       name: "Doxygen"
