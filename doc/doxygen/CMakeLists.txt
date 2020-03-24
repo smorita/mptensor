@@ -1,5 +1,5 @@
 set(MPTENSOR_DOC_INSTALL_DIR share/mptensor/${mptensor_version})
-set(MPTENSOR_PDF_FILE ${PROJECT_BINARY_DIR}/mptensor.pdf)
+set(MPTENSOR_PDF_FILE ${mptensor_BINARY_DIR}/mptensor.pdf)
 
 find_package(Doxygen REQUIRED)
 configure_file(Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
