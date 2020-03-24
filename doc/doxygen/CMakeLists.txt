@@ -1,11 +1,11 @@
-set(MPTENSOR_DOC_INSTALL_DIR share/mptensor/${mptensor_version})
+set(MPTENSOR_DOC_INSTALL_DIR share/mptensor/v${mptensor_VERSION})
 set(MPTENSOR_PDF_FILE ${mptensor_BINARY_DIR}/mptensor.pdf)
 
 find_package(Doxygen REQUIRED)
 configure_file(Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 
 add_custom_target(doxygen ALL COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile)
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html DESTINATION ${MPTENSOR_DOC_INSTALL_DIR}/html)
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html DESTINATION ${MPTENSOR_DOC_INSTALL_DIR})
 
 find_package(LATEX)
 if(LATEX_FOUND)
