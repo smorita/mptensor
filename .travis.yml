@@ -21,25 +21,27 @@ jobs:
     - name: "CMake with MPI"
       script:
         - mkdir build && cd build
-        - cmake -DENABLE_TEST=ON ../
-        - make
-        - ctest
+        - cmake -DBUILD_TESTS=ON ../
+        - VERBOSE=1 make
+        - ctest -V
 
     - name: "CMake without MPI"
       script:
         - mkdir build && cd build
-        - cmake -DENABLE_MPI=OFF -DENABLE_TEST=ON ../
-        - make
-        - ctest
+        - cmake -DENABLE_MPI=OFF -DBUILD_TESTS=ON ../
+        - VERBOSE=1 make
+        - ctest -V
 
     - stage: deploy
       name: "Doxygen"
       script:
-        - make doc
+        - mkdir build && cd build
+        - cmake -DBUILD_DOCS=ON ../
+        - make doxygen
       deploy:
         provider: pages
         skip_cleanup: true
         github_token: $GITHUB_TOKEN
-        local_dir: doc/doxygen/html
+        local_dir: build/doc/doxygen/html
         on:
           branch: master
