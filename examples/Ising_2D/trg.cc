@@ -37,7 +37,6 @@
 #include <iomanip>
 #include <iostream>
 
-#include <mpi.h>
 #include <mptensor/mptensor.hpp>
 
 #include "ising.hpp"
@@ -46,7 +45,6 @@ namespace examples {
 namespace Ising_2D {
 
 using namespace mptensor;
-typedef Tensor<scalapack::Matrix, double> tensor;
 
 //! class for TRG
 class Trg {
@@ -57,13 +55,13 @@ class Trg {
   void update(size_t chi);
 
   double temp;
-  tensor a;  // 4-leg tensor. [Top][Right][Down][Left]
+  DTensor a;  // 4-leg tensor. [Top][Right][Down][Left]
   double log_factor;
   double log_n_spin;
 };
 
 Trg::Trg(double t) : temp(t) {
-  a = tensor(Shape(2, 2, 2, 2));
+  a = DTensor(Shape(2, 2, 2, 2));
   const double c = cosh(1.0 / temp);
   const double s = sinh(1.0 / temp);
   Index idx;
@@ -94,8 +92,8 @@ inline double Trg::n_spin() const { return exp(log_n_spin); }
 void Trg::update(size_t chi) {
   Shape shape = a.shape();
   size_t size = std::min(chi, shape[0] * shape[1]);
-  tensor c0, c1, c2, c3;
-  tensor u, v;
+  DTensor c0, c1, c2, c3;
+  DTensor u, v;
   std::vector<double> s, sqrt_s(size);
 
   // SVD (top,right) - (bottom,left)
@@ -127,13 +125,10 @@ void Trg::update(size_t chi) {
 
 namespace {
 
-MPI_Comm comm;
-int mpirank;
-int mpisize;
-bool mpiroot;
-
 void output(int step, double n_spin, double f, double f_exact) {
-  if (mpiroot) {
+  using namespace mptensor;
+  // if (mpiroot) {
+  if (mpi::is_root) {
     std::cout << step << "\t" << std::scientific << std::setprecision(6)
               << n_spin << "\t" << std::scientific << std::setprecision(10) << f
               << "\t" << (f - f_exact) / std::abs(f_exact) << std::endl;
@@ -145,15 +140,13 @@ void output(int step, double n_spin, double f, double f_exact) {
 /* Main function */
 int main(int argc, char **argv) {
   using namespace examples::Ising_2D;
+  using namespace mptensor;
+
   /* Start */
-  MPI_Init(&argc, &argv);
-  comm = MPI_COMM_WORLD;
-  MPI_Comm_rank(comm, &mpirank);
-  MPI_Comm_size(comm, &mpisize);
-  mpiroot = (mpirank == 0);
+  mpi::initialize(argc, argv);
 
   /* Get arguments */
-  if (mpiroot) {
+  if (mpi::is_root) {
     if (argc < 4) std::cerr << "Usage: trg.out chi step T\n";
     if (argc < 2) std::cerr << "Warning: Assuming chi = 8\n";
     if (argc < 3) std::cerr << "Warning: Assuming step = 16\n";
@@ -164,7 +157,7 @@ int main(int argc, char **argv) {
   const double temp = (argc < 4) ? Ising_Tc : atof(argv[3]);
   const double f_exact = exact_free_energy(temp);
 
-  if (mpiroot) {
+  if (mpi::is_root) {
     std::cout << "##### parameters #####\n"
               << "# T= " << std::setprecision(10) << temp << "\n"
               << "# chi= " << chi << "\n"
@@ -190,5 +183,4 @@ int main(int argc, char **argv) {
   }
 
   /* End */
-  MPI_Finalize();
 }

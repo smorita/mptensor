@@ -29,72 +29,63 @@
 #include <iomanip>
 #include <iostream>
 
-#include <mpi.h>
 #include <mptensor/mptensor.hpp>
 
 /* Main function */
 int main(int argc, char **argv) {
   using namespace mptensor;
-  // typedef Tensor<scalapack::Matrix,double> ptensor;
-  typedef Tensor<scalapack::Matrix, complex> ptensor;
 
   /* Start */
-  MPI_Init(&argc, &argv);
-  MPI_Comm comm = MPI_COMM_WORLD;
-  int mpirank;
-  int mpisize;
-  bool mpiroot;
-  MPI_Comm_rank(comm, &mpirank);
-  MPI_Comm_size(comm, &mpisize);
-  mpiroot = (mpirank == 0);
+  mpi::initialize(argc, argv);
+  mpi::comm_type comm = MPI_COMM_WORLD;
 
   /* Get arguments */
   int n;
   if (argc < 2) {
-    if (mpiroot)
+    if (mpi::is_root) {
       std::cerr << "Usage: a.out N\n"
                 << "waring: assuming N=10" << std::endl;
+    }
     n = 10;
   } else {
     n = atoi(argv[1]);
   }
 
   /* Construct a tensor */
-  ptensor A(Shape(n, n + 1, n + 2, n + 3));
+  DTensor A(Shape(n, n + 1, n + 2, n + 3));
 
   /* Do something here */
-  set_seed(std::time(NULL) + mpirank);
+  set_seed(std::time(NULL) + mpi::rank);
   random_tensor::fill(A);
   A.transpose(Axes(3, 1, 0, 2));
   A.save("A.dat");
 
-  ptensor B;
+  DTensor B;
   B.load("A.dat");
 
   /* Output */
-  if (mpiroot) std::cout << "########## Saved Tensor ##########\n";
-  for (int i = 0; i < mpisize; ++i) {
-    if (i == mpirank) {
+  if (mpi::is_root) std::cout << "########## Saved Tensor ##########\n";
+  for (int i = 0; i < mpi::size; ++i) {
+    if (i == mpi::rank) {
       std::cout << "rank=" << i << ": ";
       A.print_info(std::cout);
     }
-    MPI_Barrier(comm);
+    mpi::barrier(comm);
   }
-  if (mpiroot) std::cout << "########## Loaded Tensor ##########\n";
-  for (int i = 0; i < mpisize; ++i) {
-    if (i == mpirank) {
+  if (mpi::is_root) std::cout << "########## Loaded Tensor ##########\n";
+  for (int i = 0; i < mpi::size; ++i) {
+    if (i == mpi::rank) {
       std::cout << "rank=" << i << ": ";
       B.print_info(std::cout);
     }
-    MPI_Barrier(comm);
+    mpi::barrier(comm);
   }
 
   double val = max_abs(B - A);
-  if (mpiroot) {
+  if (mpi::is_root) {
     std::cout << "########## Error ##########\n"
               << std::scientific << std::setprecision(10) << val << std::endl;
   }
 
   /* End */
-  MPI_Finalize();
 }

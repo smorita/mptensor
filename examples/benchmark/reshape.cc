@@ -27,7 +27,6 @@
 
 #include <iostream>
 
-#include <mpi.h>
 #include <mptensor/mptensor.hpp>
 
 #include "timer.hpp"
@@ -48,22 +47,14 @@ inline double elem(mptensor::Index index) {
 int main(int argc, char **argv) {
   using namespace mptensor;
   using examples::benchmark::Timer;
-  typedef Tensor<scalapack::Matrix, double> ptensor;
 
   /* Start */
-  MPI_Init(&argc, &argv);
-  MPI_Comm comm = MPI_COMM_WORLD;
-  int mpirank;
-  int mpisize;
-  bool mpiroot;
-  MPI_Comm_rank(comm, &mpirank);
-  MPI_Comm_size(comm, &mpisize);
-  mpiroot = (mpirank == 0);
+  mpi::initialize(argc, argv);
 
   /* Get arguments */
   int n;
   if (argc < 2) {
-    if (mpiroot)
+    if (mpi::is_root)
       std::cerr << "Usage: a.out N\n"
                 << "waring: assuming N=10" << std::endl;
     n = 10;
@@ -76,13 +67,13 @@ int main(int argc, char **argv) {
 
   Shape shape4(n, n + 1, n + 2, n + 3);
   Shape shape2(n * (n + 1), (n + 2) * (n + 3));
-  ptensor A(shape4);
+  DTensor A(shape4);
   Index index;
   for (int i = 0; i < A.local_size(); ++i) {
     index = A.global_index(i);
     A[i] = elem(index);
   }
-  ptensor T = A;
+  DTensor T = A;
 
   timer_all.start();
   {
@@ -96,18 +87,12 @@ int main(int argc, char **argv) {
   }
   timer_all.stop();
 
-  double error = 0.0;
-  for (int i = 0; i < T.local_size(); ++i) {
-    double diff = A[i] - T[i];
-    if (error < std::abs(diff)) error = diff;
-  }
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+  double max_error = max_abs(A - T);
 
-  if (mpiroot) {
+  if (mpi::is_root) {
     std::cout << "# ";
     T.print_info(std::cout);
-    std::cout << "# mpisize= " << mpisize << "\n";
+    std::cout << "# mpisize= " << mpi::size << "\n";
     std::cout << "# num_threads= " << omp_get_max_threads() << "\n";
     std::cout << "# error= " << max_error << "\n";
     std::cout << "all: " << timer_all.result() << "\n";
@@ -116,8 +101,7 @@ int main(int argc, char **argv) {
     std::cout << "time[1]: " << timer[1].result() << "\t" << shape2 << " -> "
               << shape4 << "\n";
   }
-  assert(error < 1.0e-10);
+  assert(max_error < 1.0e-10);
 
   /* End */
-  MPI_Finalize();
 }

@@ -25,51 +25,63 @@
   \brief  Simple example of mptensor
 */
 
+#include <cstdlib>
 #include <iostream>
 
-#include <mpi.h>
 #include "mptensor/mptensor.hpp"
 
 /* Main function */
 int main(int argc, char **argv) {
   using namespace mptensor;
-  typedef Tensor<scalapack::Matrix, double> ptensor;
 
   /* Start */
-  MPI_Init(&argc, &argv);
-  MPI_Comm comm = MPI_COMM_WORLD;
-  int mpirank;
-  int mpisize;
-  bool mpiroot;
-  MPI_Comm_rank(comm, &mpirank);
-  MPI_Comm_size(comm, &mpisize);
-  mpiroot = (mpirank == 0);
+  mpi::initialize(argc, argv);
+  // This helper function initializes the MPI environment and
+  // registers MPI_Finalize at the end of this program.
+  // In addition, mpi::rank, mpi::size, and mpi::is_root are set.
 
   /* Get arguments */
   int n;
   if (argc < 2) {
-    if (mpiroot)
+    if (mpi::is_root) {
       std::cerr << "Usage: a.out N\n"
                 << "waring: assuming N=10" << std::endl;
+    }
     n = 10;
   } else {
-    n = atoi(argv[1]);
+    n = std::atoi(argv[1]);
   }
 
   /* Construct a tensor */
-  ptensor A(Shape(n, n + 1, n + 2, n + 3));
+  DTensor A(Shape(n, n + 1, n, n + 1));
+
+  // Initializer lists instead of Index, Shape and Axes class are also possible.
+  // DTensor A({n, n + 1, n, n + 1});
+
+  /* Initialize a tensor */
+  for (size_t i=0; i < A.local_size(); ++i) {
+    // Get a global index form a local index.
+    Index idx = A.global_index(i);
+
+    // Set elements of A based on the global index.
+    A[i] = double(idx[0] + idx[1] + idx[2] + idx[3]);
+  }
 
   /* Do something here */
+  double trace_A = trace(A, {0, 1}, {2, 3});
 
   /* Output */
-  for (int i = 0; i < mpisize; ++i) {
-    if (i == mpirank) {
-      std::cout << "rank=" << i << ": ";
-      A.print_info(std::cout);
-    }
-    MPI_Barrier(comm);
+  A.print_info_mpi(std::cout);
+
+  if (mpi::is_root) {
+    std::cout << "trace(A)= " << trace_A << std::endl;
+
+    // Note that the below line does not work in parallel.
+    // Since trace(A) requires communication between processes,
+    // it should be called from all the process at the same time.
+    // std::cout << "trace(A)= " << trace(A) << std::endl;
   }
 
   /* End */
-  MPI_Finalize();
+  // MPI_Finalize() is automatically called if you use mpi::initialize().
 }

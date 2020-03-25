@@ -28,7 +28,6 @@
 
 #include <iostream>
 
-#include <mpi.h>
 #include <mptensor/mptensor.hpp>
 
 #include "timer.hpp"
@@ -48,23 +47,16 @@ inline double elem(mptensor::Index index) {
 /* Main function */
 int main(int argc, char **argv) {
   using namespace mptensor;
-  typedef Tensor<scalapack::Matrix, double> ptensor;
+  using ptensor = DTensor;
   using examples::benchmark::Timer;
 
   /* Start */
-  MPI_Init(&argc, &argv);
-  MPI_Comm comm = MPI_COMM_WORLD;
-  int mpirank;
-  int mpisize;
-  bool mpiroot;
-  MPI_Comm_rank(comm, &mpirank);
-  MPI_Comm_size(comm, &mpisize);
-  mpiroot = (mpirank == 0);
+  mpi::initialize(argc, argv);
 
   /* Get arguments */
   int n;
   if (argc < 2) {
-    if (mpiroot)
+    if (mpi::is_root)
       std::cerr << "Usage: a.out N\n"
                 << "waring: assuming N=10" << std::endl;
     n = 10;
@@ -106,15 +98,13 @@ int main(int argc, char **argv) {
     double diff = elem(index) - T[i];
     if (error < std::abs(diff)) error = diff;
   }
-  double max_error;
-  MPI_Reduce(&error, &max_error, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
 
-  if (mpiroot) {
+  if (mpi::is_root) {
     std::cout << "# ";
     T.print_info(std::cout);
-    std::cout << "# mpisize= " << mpisize << "\n";
+    std::cout << "# mpisize= " << mpi::size << "\n";
     std::cout << "# num_threads= " << omp_get_max_threads() << "\n";
-    std::cout << "# error= " << max_error << "\n";
+    std::cout << "# error= " << error << "\n";
     std::cout << "all: " << timer_all.result() << "\n";
     std::cout << "time[0]: " << timer[0].result() << "\t" << shape0 << " -> "
               << shape1 << "\n";
@@ -124,5 +114,4 @@ int main(int argc, char **argv) {
   assert(error < 1.0e-10);
 
   /* End */
-  MPI_Finalize();
 }

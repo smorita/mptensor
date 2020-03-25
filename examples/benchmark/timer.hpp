@@ -25,24 +25,28 @@
   \brief  Timer class
 */
 
-#include <mpi.h>
-
 #ifndef _TIMER_HPP_
 #define _TIMER_HPP_
+
+#include <chrono>
 
 namespace examples {
 namespace benchmark {
 
+using namespace std::chrono;
+
 class Timer {
  public:
   Timer(){};
-  void start() { t_start = MPI_Wtime(); };
-  void stop() { t_end = MPI_Wtime(); };
-  double result() { return t_end - t_start; };
+  void start() { t_start = system_clock::now(); };
+  void stop() { t_end = system_clock::now(); };
+  double result() {
+    return double(duration_cast<microseconds>(t_end - t_start).count()) * 1.0e-6;
+  };
 
  private:
-  double t_start;
-  double t_end;
+  system_clock::time_point t_start;
+  system_clock::time_point t_end;
 };
 
 }  // namespace benchmark
