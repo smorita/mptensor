@@ -323,6 +323,7 @@ std::ostream &operator<<(std::ostream &out, const Tensor<Matrix, C> &t);
 }  // namespace mptensor
 
 #include "tensor_impl.hpp"
+#include "rsvd.hpp"
 #include "file_io/save.hpp"
 #include "file_io/load.hpp"
 

@@ -39,8 +39,8 @@
 
 #include <mpi.h>
 
-#include "../complex.hpp"
-#include "../mpi_wrapper.hpp"
+#include "mptensor/complex.hpp"
+#include "mptensor/mpi/mpi_wrapper.hpp"
 #include "blacsgrid.hpp"
 
 /* ---------- PBLAS, SCALAPACK ---------- */

@@ -19,32 +19,44 @@
 */
 
 /*!
-  \file   mptensor.hpp
+  \file   mpi.hpp
   \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
-  \date   Jun 26 2016
+  \date   Mar 24 2020
 
-  \brief  Top header file of mptensor.
+  \brief  Helper functions for MPI
 */
 
-#ifndef _MPTENSOR_HPP_
-#define _MPTENSOR_HPP_
+#ifndef _MPTENSOR_MPI_HPP_
+#define _MPTENSOR_MPI_HPP_
 
-#include "mptensor/version.hpp"
-#include "mptensor/mpi/mpi.hpp"
-#include "mptensor/complex.hpp"
-#include "mptensor/index.hpp"
-#include "mptensor/tensor.hpp"
-
-namespace mptensor {
-
-#ifdef _NO_MPI
-using DTensor = Tensor<lapack::Matrix, double>;
-using ZTensor = Tensor<lapack::Matrix, complex>;
-#else
-using DTensor = Tensor<scalapack::Matrix, double>;
-using ZTensor = Tensor<scalapack::Matrix, complex>;
+#ifndef _NO_MPI
+#include <mpi.h>
 #endif
 
-}
+namespace mptensor {
+namespace mpi {
 
-#endif  // _MPTENSOR_HPP_
+#ifdef _NO_MPI
+using comm_type = int;
+extern const comm_type MPI_COMM_WORLD;
+#else
+using comm_type = MPI_Comm;
+#endif
+
+extern int rank;
+extern int size;
+extern bool is_root;
+
+void initialize(int argc, char **argv);
+void finalize();
+void barrier(const comm_type &comm);
+void get_info(const comm_type &comm, int &rank, int &size, bool &is_root);
+
+}  // namespace mpi
+}  // namespace mptensor
+
+#ifdef _NO_MPI
+extern const mptensor::mpi::comm_type MPI_COMM_WORLD;
+#endif
+
+#endif  // _MPTENSOR_MPI_HPP_
