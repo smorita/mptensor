@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
   if (argc < 2) {
     if (mpi::is_root)
       std::cerr << "Usage: a.out N\n"
-                << "waring: assuming N=10" << std::endl;
+                << "Warning: assuming N=10" << std::endl;
     n = 10;
   } else {
     n = atoi(argv[1]);

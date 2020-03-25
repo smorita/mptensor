@@ -115,7 +115,7 @@ int main(int argc, char** argv) {
   if (argc < 2) {
     if (mpi::is_root)
       std::cerr << "Usage: a.out [N [target_rank [oversamp [seed]]]]\n"
-                << "waring: assuming N=10" << std::endl;
+                << "Warning: assuming N=10" << std::endl;
   }
   n = (argc > 1) ? atoi(argv[1]) : 10;
   target = (argc > 2) ? atoi(argv[2]) : n;
