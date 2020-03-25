@@ -24,6 +24,8 @@
   \date   Mar 24 2020
 
   \brief  Helper functions for MPI
+
+  This header file supports build without the MPI environment.
 */
 
 #ifndef _MPTENSOR_MPI_HPP_
@@ -38,7 +40,6 @@ namespace mpi {
 
 #ifdef _NO_MPI
 using comm_type = int;
-extern const comm_type MPI_COMM_WORLD;
 #else
 using comm_type = MPI_Comm;
 #endif
