@@ -30,7 +30,6 @@
 #include <iomanip>
 #include <iostream>
 
-#include <mpi.h>
 #include <mptensor/mptensor.hpp>
 
 #include "timer.hpp"
@@ -44,14 +43,14 @@ int omp_get_max_threads() { return 1; }
 #endif
 
 using namespace mptensor;
-typedef Tensor<scalapack::Matrix, double> ptensor;
+using ptensor = DTensor;;
 
 namespace {
 
 double singular_value(size_t i) { return std::pow(1.0 + i, -2.0); }
 
 ptensor test_tensor(size_t n) {
-  MPI_Comm comm = MPI_COMM_WORLD;
+  mpi::comm_type comm = MPI_COMM_WORLD;
   ptensor D(Shape(n * n, n * n));
   {
     const int m = D.local_size();
@@ -108,20 +107,13 @@ int main(int argc, char** argv) {
   using examples::benchmark::Timer;
 
   /* Start */
-  MPI_Init(&argc, &argv);
-  MPI_Comm comm = MPI_COMM_WORLD;
-  int mpirank;
-  int mpisize;
-  bool mpiroot;
-  MPI_Comm_rank(comm, &mpirank);
-  MPI_Comm_size(comm, &mpisize);
-  mpiroot = (mpirank == 0);
+  mpi::initialize(argc, argv);
 
   /* Get arguments */
   int n, target, oversamp;
   unsigned int seed;
   if (argc < 2) {
-    if (mpiroot)
+    if (mpi::is_root)
       std::cerr << "Usage: a.out [N [target_rank [oversamp [seed]]]]\n"
                 << "waring: assuming N=10" << std::endl;
   }
@@ -129,7 +121,7 @@ int main(int argc, char** argv) {
   target = (argc > 2) ? atoi(argv[2]) : n;
   oversamp = (argc > 3) ? atoi(argv[3]) : target;
   seed = (argc > 4) ? atoi(argv[4]) : std::time(NULL);
-  set_seed(seed + mpirank);
+  set_seed(seed + mpi::rank);
 
   Timer timer_full, timer_rsvd, timer_rsvd_func;
 
@@ -160,10 +152,10 @@ int main(int argc, char** argv) {
   }
   timer_rsvd_func.stop();
 
-  if (mpiroot) {
+  if (mpi::is_root) {
     std::cout << "# ";
     A.print_info(std::cout);
-    std::cout << "# mpisize= " << mpisize << "\n"
+    std::cout << "# mpisize= " << mpi::size << "\n"
               << "# num_threads= " << omp_get_max_threads() << "\n"
               << "# n= " << n << "\n"
               << "# target_rank= " << target << "\n"
@@ -172,8 +164,13 @@ int main(int argc, char** argv) {
               << "# time_full= " << timer_full.result() << "\n"
               << "# time_rsvd= " << timer_rsvd.result() << "\n"
               << "# time_rsvd_func= " << timer_rsvd_func.result() << "\n";
-    std::cout << "# index s_exact s_full s_rsvd s_rsvd_f s_full-s_rsvd "
-                 "s_full-s_rsvd_f\n";
+    std::cout << "# $1 : index\n"
+              << "# $2 : s_exact (Exact singular values)\n"
+              << "# $3 : s_full (full SVD)\n"
+              << "# $4 : s_rsvd (randomized SVD)\n"
+              << "# $5 : s_rsvd_f (RSVD with linear operators)\n"
+              << "# $6 : s_full-s_rsvd\n"
+              << "# $7 : s_full-s_rsvd_f\n";
     for (size_t i = 0; i < target; ++i) {
       std::cout << i << " " << std::scientific << std::setprecision(10)
                 << singular_value(i) << " " << s0[i] << " " << s1[i] << " "
@@ -183,5 +180,5 @@ int main(int argc, char** argv) {
   }
 
   /* End */
-  MPI_Finalize();
+  // MPI_Finalize();
 }

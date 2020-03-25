@@ -30,7 +30,7 @@
 #include <mpi.h>
 
 #include "mptensor/complex.hpp"
-#include "mptensor/mpi_wrapper.hpp"
+#include "mptensor/mpi/mpi_wrapper.hpp"
 
 namespace mptensor {
 namespace mpi_wrapper {

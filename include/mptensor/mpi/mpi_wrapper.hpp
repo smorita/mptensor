@@ -24,6 +24,8 @@
   \date   Jun 2 2015
 
   \brief  Wrapper functions of MPI communications
+
+  This header file assumes the MPI environment.
 */
 
 #ifndef _MPI_WRAPPER_HPP_
