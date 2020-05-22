@@ -1507,8 +1507,9 @@ Tensor<Matrix, C> contract(const Tensor<Matrix, C> &T, const Axes &axes_1,
     Axes v = axes_1 + axes_2;
     v.sort();
     size_t k = 0;
+    size_t n = v.size();
     for (size_t i = 0; i < T.rank(); ++i) {
-      if (i == v[k]) {
+      if (k < n && i == v[k]) {
         ++k;
       } else {
         shape_new.push(shape[i]);
