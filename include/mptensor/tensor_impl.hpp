@@ -939,6 +939,23 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::set_slice(const Tensor<Matrix, C> &a,
   return (*this);
 }
 
+
+//! Gather all elements into a non-distributed tensor.
+/*!
+  \return A non-distributed global tensor.
+  \attention A non-distributed global tensor may require huge memory.
+*/
+template <template <typename> class Matrix, typename C>
+Tensor<lapack::Matrix, C> Tensor<Matrix, C>::gather() {
+  const size_t n = rank();
+  if (!(axes_map == range(n))) {
+    change_configuration(n / 2, range(n));
+  }
+  Tensor<lapack::Matrix, C> T(get_comm(), get_matrix().flatten());
+  return reshape(T, Dim);
+}
+
+
 //! Return a copy of the flattened vector.
 /*!
   \return A flattened vector, which is global (not distriuted).
@@ -2215,6 +2232,159 @@ int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row_a,
 
   return info;
 };
+
+//! Compute the eigenvalues and eigenvectors of a general matrix (rank-2 tensor)
+/*!
+  \param[in] a Rank-2 tensor
+  \param[out] w Eigenvalues
+  \param[out] z Eigenvectors
+
+  \return Information from linear-algebra library.
+  \warning This function may require huge memory because it uses LAPACK routines.
+*/
+template <template <typename> class Matrix, typename C>
+int eig(const Tensor<Matrix, C> &a, std::vector<complex> &w,
+        Tensor<Matrix, complex> &z) {
+  assert(a.rank() == 2);
+  Shape shape = a.shape();
+  assert(shape[0] == shape[1]);
+
+  Tensor<lapack::Matrix, C> a_t = transpose(a, Axes(0, 1), 1).gather();
+
+  size_t n = shape[0];
+  w.resize(n);
+
+  Tensor<lapack::Matrix, complex> z_t(a.get_comm(), Shape(n, n), 1);
+
+  int info;
+  info = matrix_eig(a_t.get_matrix(), w, z_t.get_matrix());
+
+  z = Tensor<Matrix, complex>(a.get_comm(), z_t);
+
+  return info;
+};
+
+//! Compute only the eigenvalues of a general matrix (rank-2 tensor)
+/*!
+  \param[in] a Rank-2 tensor
+  \param[out] w Eigenvalues
+
+  \return Information from linear-algebra library.
+  \warning This function may require huge memory because it uses LAPACK routines.
+*/
+template <template <typename> class Matrix, typename C>
+int eig(const Tensor<Matrix, C> &a, std::vector<complex> &w) {
+  assert(a.rank() == 2);
+  Shape shape = a.shape();
+  assert(shape[0] == shape[1]);
+
+  Tensor<lapack::Matrix, C> a_t = transpose(a, Axes(0, 1), 1).gather();
+
+  size_t n = shape[0];
+  w.resize(n);
+
+  int info;
+  info = matrix_eig(a_t.get_matrix(), w);
+  return info;
+};
+
+//! Compute the eigenvalues and eigenvectors of a general tensor
+/*!
+  For example,
+  \code
+  eig(A, Axes(0,3), Axes(1,2), w, U)
+  \endcode
+  calculates the following decomposition.
+  \f[
+  A_{abcd} = A_{(ad)(bc)} = \sum_i U_{adi} w_i (U^\dagger)_{ibc}.
+  \f]
+
+  \param[in] a A tensor
+  \param[in] axes_row Axes for left singular vectors.
+  \param[in] axes_col Axes for right singular vectors.
+  \param[out] w Eigenvalues
+  \param[out] z Tensor corresponds to Eigenvectors
+
+  \return Information from linear-algebra library.
+
+  \warning This function may require huge memory because it uses LAPACK routines.
+*/
+template <template <typename> class Matrix, typename C>
+int eig(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
+        std::vector<complex> &w, Tensor<Matrix, complex> &z) {
+  assert(axes_row.size() > 0);
+  assert(axes_col.size() > 0);
+
+  const size_t rank = a.rank();
+  const size_t urank = axes_row.size();
+
+  Axes axes = axes_row + axes_col;
+
+  Tensor<lapack::Matrix, C> a_t = transpose(a, axes, urank).gather();
+  const Shape &shape = a_t.shape();
+
+  size_t d_row(1), d_col(1);
+  for (size_t i = 0; i < urank; ++i) d_row *= shape[i];
+  for (size_t i = urank; i < rank; ++i) d_col *= shape[i];
+  size_t size = (d_row < d_col) ? d_row : d_col;
+
+  assert(d_row == d_col);
+
+  Shape shape_z;
+  shape_z.resize(urank + 1);
+  for (size_t i = 0; i < urank; ++i) shape_z[i] = shape[i];
+  shape_z[urank] = size;
+
+  Tensor<lapack::Matrix, complex> z_t(a.get_comm(), shape_z, urank);
+
+  w.resize(size);
+
+  int info;
+  info = matrix_eig(a_t.get_matrix(), w, z_t.get_matrix());
+
+  z = Tensor<Matrix, complex>(a.get_comm(), z_t);
+
+  return info;
+};
+
+//! Compute the eigenvalues of a general tensor
+/*!
+  \param[in] a A tensor
+  \param[in] axes_row Axes for left singular vectors.
+  \param[in] axes_col Axes for right singular vectors.
+  \param[out] w Eigenvalues
+
+  \return Information from linear-algebra library.
+
+  \warning This function may require huge memory because it uses LAPACK routines.
+*/
+template <template <typename> class Matrix, typename C>
+int eig(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
+        std::vector<complex> &w) {
+  assert(axes_row.size() > 0);
+  assert(axes_col.size() > 0);
+
+  const size_t rank = a.rank();
+  const size_t urank = axes_row.size();
+
+  Axes axes = axes_row + axes_col;
+
+  Tensor<lapack::Matrix, C> a_t = transpose(a, axes, urank).gather();
+  const Shape &shape = a_t.shape();
+
+  size_t d_row(1), d_col(1);
+  for (size_t i = 0; i < urank; ++i) d_row *= shape[i];
+  for (size_t i = urank; i < rank; ++i) d_col *= shape[i];
+  size_t size = (d_row < d_col) ? d_row : d_col;
+  w.resize(size);
+
+  assert(d_row == d_col);
+
+  int info;
+  info = matrix_eig(a_t.get_matrix(), w);
+  return info;
+};
+
 
 //! Solve linear equation \f$ A\vec{x}=\vec{b}\f$.
 /*!
