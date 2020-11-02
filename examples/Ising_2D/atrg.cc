@@ -58,8 +58,8 @@ class Atrg {
   void update(int chi, int direction);
 
   double temp;
-  tensor a_up;  // 3-leg tensor. [Top][Right][Middle]
-  tensor a_down; // 3-leg tensor. [Middle][Left][Down]
+  tensor a_up;    // 3-leg tensor. [Top][Right][Middle]
+  tensor a_down;  // 3-leg tensor. [Middle][Left][Down]
   double log_factor;
   double log_n_spin;
 
@@ -74,22 +74,22 @@ class Atrg {
 Atrg::Atrg(double t) : temp(t) {
   a_up = tensor(Shape(2, 2, 2));
   a_down = tensor(Shape(2, 2, 2));
-  const double c = sqrt(cosh(1.0/temp));
-  const double s = sqrt(sinh(1.0/temp));
+  const double c = sqrt(cosh(1.0 / temp));
+  const double s = sqrt(sinh(1.0 / temp));
   Index idx;
-  for(size_t i=0; i<a_up.local_size(); ++i){
+  for (size_t i = 0; i < a_up.local_size(); ++i) {
     idx = a_up.global_index(i);
     a_up[i] = 1.0;
-    idx[0]==0 ? a_up[i] *= c : a_up[i] *= s;
-    idx[1]==0 ? a_up[i] *= c : a_up[i] *= s;
-    if(idx[0]*idx[2] + idx[1]*idx[2]==1) a_up[i] *= -1;
+    idx[0] == 0 ? a_up[i] *= c : a_up[i] *= s;
+    idx[1] == 0 ? a_up[i] *= c : a_up[i] *= s;
+    if (idx[0] * idx[2] + idx[1] * idx[2] == 1) a_up[i] *= -1;
   }
-  for(size_t i=0; i<a_down.local_size(); ++i){
+  for (size_t i = 0; i < a_down.local_size(); ++i) {
     idx = a_down.global_index(i);
     a_down[i] = 1.0;
-    idx[1]==0 ? a_down[i] *= c : a_down[i] *= s;
-    idx[2]==0 ? a_down[i] *= c : a_down[i] *= s;
-    if(idx[0]*idx[1] + idx[0]*idx[2]==1) a_down[i] *= -1;
+    idx[1] == 0 ? a_down[i] *= c : a_down[i] *= s;
+    idx[2] == 0 ? a_down[i] *= c : a_down[i] *= s;
+    if (idx[0] * idx[1] + idx[0] * idx[2] == 1) a_down[i] *= -1;
   }
 
   double val = trace(a_up, a_down, Axes(0, 1, 2), Axes(2, 1, 0));
@@ -101,7 +101,8 @@ Atrg::Atrg(double t) : temp(t) {
 }
 
 inline double Atrg::free_energy() const {
-  return -temp * (log_factor + log(trace(a_up, a_down, Axes(0, 1, 2), Axes(2, 1, 0)))) /
+  return -temp *
+         (log_factor + log(trace(a_up, a_down, Axes(0, 1, 2), Axes(2, 1, 0)))) /
          exp(log_n_spin);
 }
 
@@ -131,7 +132,7 @@ void Atrg::initialize_up(tensor& A, tensor& B) {
   return;
 }
 
-void Atrg::initialize_down(tensor& C, tensor& D){
+void Atrg::initialize_down(tensor& C, tensor& D) {
   tensor u, vt;
   std::vector<double> s;
   svd(a_down, Axes(0), Axes(1, 2), u, s, vt);
@@ -140,36 +141,40 @@ void Atrg::initialize_down(tensor& C, tensor& D){
   return;
 }
 
-void Atrg::swap(int chi, tensor& B, tensor& C){
+void Atrg::swap(int chi, tensor& B, tensor& C) {
   Shape shape = B.shape();
-  size_t size = std::min(size_t(chi), shape[0]*shape[0]);
+  size_t size = std::min(size_t(chi), shape[0] * shape[0]);
   tensor u, vt;
   std::vector<double> s, sqrt_s(size);
 
   svd(tensordot(B, C, Axes(2), Axes(0)), Axes(0, 2), Axes(1, 3), u, s, vt);
-  if(s.size() > size){
+  if (s.size() > size) {
     u = slice(u, 2, 0, size);
     vt = slice(vt, 0, 0, size);
   }
-  for(size_t i=0; i<size; ++i) sqrt_s[i] = sqrt(s[i]);
+  for (size_t i = 0; i < size; ++i) sqrt_s[i] = sqrt(s[i]);
   B = u.multiply_vector(sqrt_s, 2);
   C = vt.multiply_vector(sqrt_s, 0);
   return;
 }
 
-void Atrg::update_from_ABCD(int chi, tensor& A, tensor& B, tensor& C, tensor& D){
+void Atrg::update_from_ABCD(int chi, tensor& A, tensor& B, tensor& C,
+                            tensor& D) {
   Shape shape = A.shape();
   size_t size = std::min(size_t(chi), shape[0] * shape[0]);
   tensor u, vt;
   std::vector<double> s, sqrt_s(size);
 
-  //truncated svd without outer tensordot should be implemented for O(chi^5) algorithm
-  svd(tensordot(tensordot(A, B, Axes(2), Axes(0)), tensordot(C, D, Axes(2), Axes(0)), Axes(1, 2), Axes(1, 2)), Axes(0, 1), Axes(2, 3), u, s, vt);
-  if(s.size() > size){
+  // truncated svd without outer tensordot should be implemented for O(chi^5)
+  // algorithm
+  svd(tensordot(tensordot(A, B, Axes(2), Axes(0)),
+                tensordot(C, D, Axes(2), Axes(0)), Axes(1, 2), Axes(1, 2)),
+      Axes(0, 1), Axes(2, 3), u, s, vt);
+  if (s.size() > size) {
     u = slice(u, 2, 0, size);
     vt = slice(vt, 0, 0, size);
   }
-  for(size_t i=0; i<size; ++i) sqrt_s[i] = sqrt(s[i]);
+  for (size_t i = 0; i < size; ++i) sqrt_s[i] = sqrt(s[i]);
   a_up = u.multiply_vector(sqrt_s, 2);
   a_down = vt.multiply_vector(sqrt_s, 0);
   a_up.transpose(Axes(0, 2, 1));
@@ -180,9 +185,13 @@ void Atrg::update_from_ABCD(int chi, tensor& A, tensor& B, tensor& C, tensor& D)
 void Atrg::update_child(int chi) {
   Shape shape = a_up.shape();
   tensor A, B, C, D;
-  initialize_up(A, B); // create A[Top][Right][Middle] & B[Middle][Left][Bottom]
-  initialize_down(C, D); // create C[Top][Right][Middle] & D[Middle][Left][Bottom]
-  swap(chi, B, C); // swap tensors: B[Middle][Left][Bottom] & C[Top][Right][Middle] -> B[Middle][Right][Bottom] & C[Middle][Left][Top]
+  initialize_up(A,
+                B);  // create A[Top][Right][Middle] & B[Middle][Left][Bottom]
+  initialize_down(C,
+                  D);  // create C[Top][Right][Middle] & D[Middle][Left][Bottom]
+  swap(chi, B,
+       C);  // swap tensors: B[Middle][Left][Bottom] & C[Top][Right][Middle] ->
+            // B[Middle][Right][Bottom] & C[Middle][Left][Top]
   update_from_ABCD(chi, A, B, C, D);
 
   log_factor *= 2.0;       // factor_new = factor_old^2
@@ -216,7 +225,7 @@ void output(int step, double n_spin, double f, double f_exact) {
 }  // namespace
 
 /* Main function */
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   using namespace examples::Ising_2D;
   /* Start */
   MPI_Init(&argc, &argv);

@@ -1,4 +1,4 @@
-set(PROGS trg hotrg)
+set(PROGS trg hotrg atrg)
 foreach(name ${PROGS})
   add_executable(${name} ${name}.cc ising.cc)
   target_link_libraries(${name} mptensor)
