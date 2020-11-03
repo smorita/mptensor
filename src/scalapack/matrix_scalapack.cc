@@ -730,44 +730,12 @@ int matrix_solve(Matrix<complex> &A, Matrix<complex> &B) {
 };
 
 template <>
-double matrix_trace(const Matrix<double> &A) {
-  const size_t n = A.local_size();
-  size_t g_row, g_col;
-  double val = 0.0;
-
-  for (size_t i = 0; i < n; ++i) {
-    A.global_index(i, g_row, g_col);
-    if (g_row == g_col) val += A[i];
-  }
-
-  double recv;
-  MPI_Allreduce(&val, &recv, 1, MPI_DOUBLE, MPI_SUM, A.get_comm());
-  return recv;
-};
-
-template <>
-complex matrix_trace(const Matrix<complex> &A) {
-  const size_t n = A.local_size();
-  size_t g_row, g_col;
-  complex val = 0.0;
-
-  for (size_t i = 0; i < n; ++i) {
-    A.global_index(i, g_row, g_col);
-    if (g_row == g_col) val += A[i];
-  }
-
-  complex recv;
-  MPI_Allreduce(&val, &recv, 1, MPI_DOUBLE_COMPLEX, MPI_SUM, A.get_comm());
-  return recv;
-};
-
-template <>
 double max(const Matrix<double> &a) {
   const size_t n = a.local_size();
   double send = -DBL_MAX;
   double recv;
   if (n > 0) send = *(std::max_element(a.head(), a.head() + n));
-  MPI_Allreduce(&send, &recv, 1, MPI_DOUBLE, MPI_MAX, a.get_comm());
+  mpi_wrapper::allreduce(&send, &recv, 1, MPI_MAX, a.get_comm());
   return recv;
 };
 
@@ -777,7 +745,7 @@ double min(const Matrix<double> &a) {
   double send = DBL_MAX;
   double recv;
   if (n > 0) send = *(std::min_element(a.head(), a.head() + n));
-  MPI_Allreduce(&send, &recv, 1, MPI_DOUBLE, MPI_MIN, a.get_comm());
+  mpi_wrapper::allreduce(&send, &recv, 1, MPI_MIN, a.get_comm());
   return recv;
 };
 

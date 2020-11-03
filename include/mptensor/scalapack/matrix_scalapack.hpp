@@ -160,6 +160,8 @@ template <typename C>
 double max_abs(const Matrix<C>& a);
 template <typename C>
 double min_abs(const Matrix<C>& a);
+template <typename C>
+C matrix_trace(const Matrix<C>& a);
 
 // defined in matrix_scalapack.cc
 template <typename C>
@@ -184,8 +186,6 @@ int matrix_eigh(Matrix<C>& a, Matrix<C>& b, std::vector<double>& s,
 // int matrix_eig(Matrix<C>& a, std::vector<complex>& s);
 template <typename C>
 int matrix_solve(Matrix<C>& a, Matrix<C>& b);
-template <typename C>
-C matrix_trace(const Matrix<C>& a);
 template <typename C>
 double max(const Matrix<C>& a);
 template <typename C>
