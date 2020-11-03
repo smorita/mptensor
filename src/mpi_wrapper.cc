@@ -71,6 +71,26 @@ std::vector<complex> allreduce_vec(const std::vector<complex> &vec,
 }
 
 template <>
+void send_recv_vector(const std::vector<unsigned int> &send_vec, int dest,
+                      int sendtag, std::vector<unsigned int> &recv_vec, int source,
+                      int recvtag, const MPI_Comm &comm, MPI_Status &status) {
+  MPI_Sendrecv(const_cast<unsigned int *>(&(send_vec[0])),
+               static_cast<int>(send_vec.size()), MPI_UNSIGNED, dest, sendtag,
+               &(recv_vec[0]), static_cast<int>(recv_vec.size()), MPI_UNSIGNED,
+               source, recvtag, comm, &status);
+};
+
+template <>
+void send_recv_vector(const std::vector<unsigned long int> &send_vec, int dest,
+                      int sendtag, std::vector<unsigned long int> &recv_vec, int source,
+                      int recvtag, const MPI_Comm &comm, MPI_Status &status) {
+  MPI_Sendrecv(const_cast<unsigned long int *>(&(send_vec[0])),
+               static_cast<int>(send_vec.size()), MPI_UNSIGNED_LONG, dest, sendtag,
+               &(recv_vec[0]), static_cast<int>(recv_vec.size()), MPI_UNSIGNED_LONG,
+               source, recvtag, comm, &status);
+};
+
+template <>
 void send_recv_vector(const std::vector<double> &send_vec, int dest,
                       int sendtag, std::vector<double> &recv_vec, int source,
                       int recvtag, const MPI_Comm &comm, MPI_Status &status) {
@@ -98,6 +118,17 @@ void alltoallv(const int *sendbuf, const int *sendcounts, const int *sdispls,
                 const_cast<int *>(sdispls), MPI_INT, recvbuf,
                 const_cast<int *>(recvcounts), const_cast<int *>(rdispls),
                 MPI_INT, comm);
+};
+
+template <>
+void alltoallv(const unsigned int *sendbuf, const int *sendcounts,
+               const int *sdispls, unsigned int *recvbuf,
+               const int *recvcounts, const int *rdispls,
+               const MPI_Comm &comm) {
+  MPI_Alltoallv(const_cast<unsigned int *>(sendbuf),
+                const_cast<int *>(sendcounts), const_cast<int *>(sdispls),
+                MPI_UNSIGNED, recvbuf, const_cast<int *>(recvcounts),
+                const_cast<int *>(rdispls), MPI_UNSIGNED, comm);
 };
 
 template <>
@@ -132,7 +163,12 @@ void alltoallv(const complex *sendbuf, const int *sendcounts,
 };
 
 template <>
-void bcast(size_t *buffer, int count, int root, const MPI_Comm &comm) {
+void bcast(unsigned int *buffer, int count, int root, const MPI_Comm &comm) {
+  MPI_Bcast(buffer, count, MPI_UNSIGNED, root, comm);
+};
+
+template <>
+void bcast(unsigned long int *buffer, int count, int root, const MPI_Comm &comm) {
   MPI_Bcast(buffer, count, MPI_UNSIGNED_LONG, root, comm);
 };
 

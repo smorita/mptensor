@@ -623,7 +623,7 @@ void Tensor<Matrix, C>::change_configuration(const size_t new_upper_rank,
   /* create lists of local position and destination rank */
   const size_t local_size = T_old.local_size();
   std::vector<int> dest_mpirank(local_size);
-  std::vector<unsigned long int> local_position(local_size);
+  std::vector<size_t> local_position(local_size);
 
   T_old.prep_local_to_global();
   this->prep_global_to_local();
@@ -850,7 +850,7 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::set_slice(const Tensor<Matrix, C> &a,
   /* create lists of local position and destination rank */
   const size_t local_size = a.local_size();
   std::vector<int> dest_mpirank(local_size);
-  std::vector<unsigned long int> local_position(local_size);
+  std::vector<size_t> local_position(local_size);
 
   a.prep_local_to_global();
   prep_global_to_local();
@@ -907,7 +907,7 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::set_slice(const Tensor<Matrix, C> &a,
   /* create lists of local position and destination rank */
   const size_t local_size = a.local_size();
   std::vector<int> dest_mpirank(local_size);
-  std::vector<unsigned long int> local_position(local_size);
+  std::vector<size_t> local_position(local_size);
 
   a.prep_local_to_global();
   prep_global_to_local();
@@ -1071,7 +1071,7 @@ Tensor<Matrix, C> transpose(const Tensor<Matrix, C> &T, const Axes &axes,
   /* create lists of local position and destination rank */
   const size_t local_size = T.local_size();
   std::vector<int> dest_mpirank(local_size);
-  std::vector<unsigned long int> local_position(local_size);
+  std::vector<size_t> local_position(local_size);
 
   T.make_l2g_map();
   T_new.prep_global_to_local();
@@ -1152,7 +1152,7 @@ Tensor<Matrix, C> reshape(const Tensor<Matrix, C> &T, const Shape &shape_new) {
   /* create lists of local position and destination rank */
   const size_t local_size = T.local_size();
   std::vector<int> dest_mpirank(local_size);
-  std::vector<unsigned long int> local_position(local_size);
+  std::vector<size_t> local_position(local_size);
 
   T.prep_local_to_global();
   T_new.prep_global_to_local();
@@ -1222,7 +1222,7 @@ Tensor<Matrix, C> slice(const Tensor<Matrix, C> &T, size_t n_axes,
   /* create lists of local position and destination rank */
   const size_t local_size = T.local_size();
   std::vector<int> dest_mpirank(local_size);
-  std::vector<unsigned long int> local_position(local_size);
+  std::vector<size_t> local_position(local_size);
 
   T.prep_local_to_global();
   T_new.prep_global_to_local();
@@ -1295,7 +1295,7 @@ Tensor<Matrix, C> slice(const Tensor<Matrix, C> &T, const Index &index_begin,
   /* create lists of local position and destination rank */
   const size_t local_size = T.local_size();
   std::vector<int> dest_mpirank(local_size);
-  std::vector<unsigned long int> local_position(local_size);
+  std::vector<size_t> local_position(local_size);
 
   T.prep_local_to_global();
   T_new.prep_global_to_local();
@@ -1363,7 +1363,7 @@ Tensor<Matrix, C> extend(const Tensor<Matrix, C> &T, const Shape &shape_new) {
   /* create lists of local position and destination rank */
   const size_t local_size = T.local_size();
   std::vector<int> dest_mpirank(local_size);
-  std::vector<unsigned long int> local_position(local_size);
+  std::vector<size_t> local_position(local_size);
 
   T.prep_local_to_global();
   T_new.prep_global_to_local();
@@ -1540,7 +1540,7 @@ Tensor<Matrix, C> contract(const Tensor<Matrix, C> &T, const Axes &axes_1,
 
   /* create lists of local position and destination rank */
   std::vector<int> dest_mpirank(T.local_size());
-  std::vector<unsigned long int> local_position(T.local_size());
+  std::vector<size_t> local_position(T.local_size());
 
   Index index, index_new;
   index.resize(T.rank());

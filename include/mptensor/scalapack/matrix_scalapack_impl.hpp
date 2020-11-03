@@ -394,7 +394,7 @@ const Matrix<C> Matrix<C>::transpose() {
 
   /* create lists of local position and destination rank */
   std::vector<int> dest_rank(local_size());
-  std::vector<unsigned long int> local_position(local_size());
+  std::vector<size_t> local_position(local_size());
 
   for (size_t i = 0; i < local_size(); i++) {
     int dest;
@@ -509,8 +509,8 @@ void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
 
   const int send_size = local_size;  // send_displs[mpisize];
   const int recv_size = recv_displs[mpisize];
-  unsigned long int* send_pos = new unsigned long int[send_size];
-  unsigned long int* recv_pos = new unsigned long int[recv_size];
+  size_t* send_pos = new size_t[send_size];
+  size_t* recv_pos = new size_t[recv_size];
   C* send_value = new C[send_size];
   C* recv_value = new C[recv_size];
 
@@ -592,8 +592,8 @@ void replace_matrix_data(const std::vector<C>& V, const std::vector<int>& dest_r
 
   const int send_size = local_size;  // send_displs[mpisize];
   const int recv_size = recv_displs[mpisize];
-  unsigned long int* send_pos = new unsigned long int[send_size];
-  unsigned long int* recv_pos = new unsigned long int[recv_size];
+  size_t* send_pos = new size_t[send_size];
+  size_t* recv_pos = new size_t[recv_size];
   C* send_value = new C[send_size];
   C* recv_value = new C[recv_size];
 
@@ -675,7 +675,7 @@ void sum_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
                    source, tag, comm, &status);
 
       /* Pack */
-      std::vector<unsigned long int> send_pos(send_size);
+      std::vector<size_t> send_pos(send_size);
       std::vector<C> send_value(send_size);
       size_t k = 0;
       for (size_t i = 0; i < local_size; i++) {
@@ -687,11 +687,13 @@ void sum_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
       }
 
       /* Send and Recieve */
-      std::vector<unsigned long int> recv_pos(recv_size);
+      std::vector<size_t> recv_pos(recv_size);
       std::vector<C> recv_value(recv_size);
-      MPI_Sendrecv(&(send_pos[0]), send_size, MPI_UNSIGNED_LONG, dest, tag,
-                   &(recv_pos[0]), recv_size, MPI_UNSIGNED_LONG, source, tag,
-                   comm, &status);
+      // MPI_Sendrecv(&(send_pos[0]), send_size, MPI_UNSIGNED_LONG, dest, tag,
+      //              &(recv_pos[0]), recv_size, MPI_UNSIGNED_LONG, source, tag,
+      //              comm, &status);
+      mpi_wrapper::send_recv_vector(send_pos, dest, tag, recv_pos, source, tag,
+                                    comm, status);
       mpi_wrapper::send_recv_vector(send_value, dest, tag, recv_value, source,
                                     tag, comm, status);
 

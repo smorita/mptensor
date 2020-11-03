@@ -81,14 +81,16 @@ void send_recv_vector(const std::vector<C> &send_vec, int dest, int sendtag,
 /*!
   \param[in] sendbuf Starting address of send buffer.
   \param[in] sendcounts Integer array, where entry i specifies the number of
-  elements to send to rank i. \param[in] sdispls Integer array, where entry i
-  specifies the displacement (offset from sendbuf, in units of sendtype) from
-  which to send data to rank i. \param[out] recvbuf Address of receive buffer.
+  elements to send to rank i.
+  \param[in] sdispls Integer array, where entry i specifies the displacement
+  (offset from sendbuf, in units of sendtype) from which to send data to rank i.
+  \param[out] recvbuf Address of receive buffer.
   \param[in] recvcounts Integer array, where entry j specifies the number of
-  elements to receive from rank j. \param[in] rdispls Integer array, where entry
-  j specifies the displacement (offset from recvbuf, in units of recvtype) to
-  which data from rank j should be written. \param[in] comm Communicator over
-  which data is to be exchanged.
+  elements to receive from rank j.
+  \param[in] rdispls Integer array, where entry j specifies the displacement
+  (offset from recvbuf, in units of recvtype) to which data from rank j should
+  be written.
+  \param[in] comm Communicator over which data is to be exchanged.
 */
 template <typename C>
 void alltoallv(const C *sendbuf, const int *sendcounts, const int *sdispls,
