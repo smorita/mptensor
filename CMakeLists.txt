@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.6.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.6...3.17)
+
+message(STATUS "Start configuration of mptesnor")
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 
 set(VERSION_REGEX "#define[ \t]+MPTENSOR_VERSION_STRING[ \t]+\"(.+)\"")

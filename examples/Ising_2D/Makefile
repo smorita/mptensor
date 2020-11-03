@@ -3,8 +3,8 @@
 .PHONY: all clean depend
 .SUFFIXES: .cc .hpp .o .out
 
-TARGET = trg.out hotrg.out
-SRC = ising.cc trg.cc hotrg.cc
+TARGET = trg.out hotrg.out atrg.out
+SRC = ising.cc trg.cc hotrg.cc atrg.cc
 OBJS = ising.o
 
 MPTENSOR_SOURCE_DIR = ../../src
