@@ -1,9 +1,26 @@
 var searchData=
 [
-  ['has_5fglobal_5fto_5flocal',['has_global_to_local',['../classmptensor_1_1scalapack_1_1Matrix.html#acc71220434a56d57c3a3fa371d4d611c',1,'mptensor::scalapack::Matrix']]],
-  ['has_5flocal_5fto_5fglobal',['has_local_to_global',['../classmptensor_1_1scalapack_1_1Matrix.html#a4e825494484cbc7aa09589b08704ab39',1,'mptensor::scalapack::Matrix']]],
-  ['head',['head',['../classmptensor_1_1lapack_1_1Matrix.html#a4abb3a838ba1e6a48a8b8dfc70265096',1,'mptensor::lapack::Matrix::head() const '],['../classmptensor_1_1lapack_1_1Matrix.html#a87c48d922b946c430c9519c81e2ccd0f',1,'mptensor::lapack::Matrix::head()'],['../classmptensor_1_1matrix__interface_1_1Matrix.html#acb04549eae202b45d5311eb5b231298d',1,'mptensor::matrix_interface::Matrix::head() const '],['../classmptensor_1_1matrix__interface_1_1Matrix.html#a83c8b392d63f33f10d12676183daaf0c',1,'mptensor::matrix_interface::Matrix::head()'],['../classmptensor_1_1scalapack_1_1Matrix.html#acc2a07382cc4a0b1618e43804cb02ce6',1,'mptensor::scalapack::Matrix::head() const '],['../classmptensor_1_1scalapack_1_1Matrix.html#a1c198b2166b8f96b8f9847e9bdf5a2b6',1,'mptensor::scalapack::Matrix::head()']]],
-  ['hotrg',['Hotrg',['../classexamples_1_1Ising__2D_1_1Hotrg.html#a519af376e49b8542308b22187d5a7265',1,'examples::Ising_2D::Hotrg']]],
-  ['hotrg',['Hotrg',['../classexamples_1_1Ising__2D_1_1Hotrg.html',1,'examples::Ising_2D']]],
-  ['hotrg_2ecc',['hotrg.cc',['../hotrg_8cc.html',1,'']]]
+  ['ictxt_120',['ictxt',['../classmptensor_1_1scalapack_1_1BlacsGrid.html#addb312e44f442bc066b46d124b230e00',1,'mptensor::scalapack::BlacsGrid']]],
+  ['idx_121',['idx',['../classmptensor_1_1Index.html#a6500cc1a1ca7c692bcf0ae1001336eff',1,'mptensor::Index']]],
+  ['index_122',['Index',['../index__constructor_8hpp.html#a489dd767db33611030cd8e37b6a2ecb1',1,'Index(size_t j0, size_t j1, size_t j2):&#160;index_constructor.hpp'],['../index__constructor_8hpp.html#a49f369ac73d93af2e57f2452ce948a3e',1,'Index(size_t j0, size_t j1):&#160;index_constructor.hpp'],['../index__constructor_8hpp.html#a0a012a4e297b6c520c9ed919f374ebe5',1,'Index(size_t j0):&#160;index_constructor.hpp'],['../classmptensor_1_1Index.html#a1b83486104bed4a8f779f78158f92685',1,'mptensor::Index::Index(const index_t &amp;index)'],['../classmptensor_1_1Index.html#afc1e5973651d069640d567f44bb52d02',1,'mptensor::Index::Index()'],['../classmptensor_1_1Index.html',1,'mptensor::Index']]],
+  ['index_20class_123',['Index class',['../group__Index.html',1,'']]],
+  ['index_2ecc_124',['index.cc',['../index_8cc.html',1,'']]],
+  ['index_2ehpp_125',['index.hpp',['../index_8hpp.html',1,'']]],
+  ['index_5fconstructor_126',['index_constructor',['../namespaceindex__constructor.html',1,'']]],
+  ['index_5fconstructor_2ehpp_127',['index_constructor.hpp',['../index__constructor_8hpp.html',1,'']]],
+  ['index_5fconstructor_2epy_128',['index_constructor.py',['../index__constructor_8py.html',1,'']]],
+  ['index_5ffilename_129',['index_filename',['../namespacemptensor_1_1io__helper.html#a73da736db907c0138bc8c12f1040f0ba',1,'mptensor::io_helper']]],
+  ['index_5ft_130',['index_t',['../classmptensor_1_1Index.html#a6b5e4ac16f3ede47ffcf02075ae3aaa7',1,'mptensor::Index']]],
+  ['init_131',['init',['../classmptensor_1_1scalapack_1_1Matrix.html#a848f9d35c35a622e0cae84d9f98c82c7',1,'mptensor::scalapack::Matrix::init()'],['../classmptensor_1_1Tensor.html#ace94ef44e8ed46fa274361d59cf3cc04',1,'mptensor::Tensor::init(const Shape &amp;, size_t upper_rank)'],['../classmptensor_1_1Tensor.html#a8cf7c223ef445b957fcd50115a232d9c',1,'mptensor::Tensor::init(const Shape &amp;, size_t upper_rank, const Axes &amp;map)'],['../classmptensor_1_1scalapack_1_1BlacsGrid.html#ae61a7abb9d9ed4aa717e38993f271cd0',1,'mptensor::scalapack::BlacsGrid::init()'],['../classmptensor_1_1matrix__interface_1_1Matrix.html#a9559f143ed41b9ec39a64230c010e424',1,'mptensor::matrix_interface::Matrix::init()'],['../classmptensor_1_1lapack_1_1Matrix.html#aa46c1f3293b50a45b31036fbd5b3af6e',1,'mptensor::lapack::Matrix::init()']]],
+  ['init_5fgrid_132',['init_grid',['../classmptensor_1_1scalapack_1_1BlacsGrid.html#ae84cb2833142e2cc5c97f0cd303580e4',1,'mptensor::scalapack::BlacsGrid']]],
+  ['initialize_133',['initialize',['../common_8hpp.html#ab04ba437eb1ba7d0efb265e1eb3b0dcc',1,'common.hpp']]],
+  ['initialize_5fdown_134',['initialize_down',['../classexamples_1_1Ising__2D_1_1Atrg.html#a03f2e44a03cd21ca832c300432fcc34f',1,'examples::Ising_2D::Atrg']]],
+  ['initialize_5fup_135',['initialize_up',['../classexamples_1_1Ising__2D_1_1Atrg.html#a6aa1c504b4f62ea6ece6735b61b7925d',1,'examples::Ising_2D::Atrg']]],
+  ['inverse_136',['inverse',['../classmptensor_1_1Index.html#aa5e24e89580cd48cbd9625b4731c551e',1,'mptensor::Index']]],
+  ['io_5fhelper_2ehpp_137',['io_helper.hpp',['../io__helper_8hpp.html',1,'']]],
+  ['is_5finitialized_138',['is_initialized',['../classmptensor_1_1scalapack_1_1BlacsGrid.html#a3544838bcd933ab8dd3489fe5f6c9289',1,'mptensor::scalapack::BlacsGrid']]],
+  ['is_5fno_5ftranspose_139',['is_no_transpose',['../namespacemptensor.html#adc7d3e151ee43903aa658faf936cd861',1,'mptensor']]],
+  ['ising_2ecc_140',['ising.cc',['../ising_8cc.html',1,'']]],
+  ['ising_2ehpp_141',['ising.hpp',['../ising_8hpp.html',1,'']]],
+  ['ising_5ftc_142',['Ising_Tc',['../namespaceexamples_1_1Ising__2D.html#acfded3c6d5ec016bd944d0e056f8e67d',1,'examples::Ising_2D']]]
 ];

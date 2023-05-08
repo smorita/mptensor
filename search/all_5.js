@@ -1,21 +1,12 @@
 var searchData=
 [
-  ['benchmark',['benchmark',['../namespaceexamples_1_1benchmark.html',1,'examples']]],
-  ['eig',['eig',['../group__Decomposition.html#ga53c476ed1cd1b7795585c852c90c95ad',1,'mptensor::eig(const Tensor&lt; Matrix, C &gt; &amp;a, std::vector&lt; complex &gt; &amp;w, Tensor&lt; Matrix, complex &gt; &amp;z)'],['../group__Decomposition.html#gac00fb4ce5eb900a01a20d75b129daa7a',1,'mptensor::eig(const Tensor&lt; Matrix, C &gt; &amp;a, std::vector&lt; complex &gt; &amp;w)'],['../group__Decomposition.html#gabae404694a0409c2e169c0ad93a25a47',1,'mptensor::eig(const Tensor&lt; Matrix, C &gt; &amp;a, const Axes &amp;axes_row, const Axes &amp;axes_col, std::vector&lt; complex &gt; &amp;w, Tensor&lt; Matrix, complex &gt; &amp;z)'],['../group__Decomposition.html#gae057e6272fb2aefd3d11bfb4e7ed0dd7',1,'mptensor::eig(const Tensor&lt; Matrix, C &gt; &amp;a, const Axes &amp;axes_row, const Axes &amp;axes_col, std::vector&lt; complex &gt; &amp;w)']]],
-  ['eigh',['eigh',['../group__Decomposition.html#ga83976ad80aa80b83babb4710ed391cca',1,'mptensor::eigh(const Tensor&lt; Matrix, C &gt; &amp;a, std::vector&lt; double &gt; &amp;eigval, Tensor&lt; Matrix, C &gt; &amp;eigvec)'],['../group__Decomposition.html#gad76979034f8099aab378538e0fb918c3',1,'mptensor::eigh(const Tensor&lt; Matrix, C &gt; &amp;a, std::vector&lt; double &gt; &amp;eigval)'],['../group__Decomposition.html#ga3bc245f63d5e2097a2cd569ad8c94ce7',1,'mptensor::eigh(const Tensor&lt; Matrix, C &gt; &amp;a, const Axes &amp;axes_row, const Axes &amp;axes_col, std::vector&lt; double &gt; &amp;eigval, Tensor&lt; Matrix, C &gt; &amp;eigvec)'],['../group__Decomposition.html#ga341d29d7535735e9ae810b00fb7f1d56',1,'mptensor::eigh(const Tensor&lt; Matrix, C &gt; &amp;a, const Axes &amp;axes_row, const Axes &amp;axes_col, std::vector&lt; double &gt; &amp;w)'],['../group__Decomposition.html#ga9cddaa4d5f97266f74bbac0e399331d2',1,'mptensor::eigh(const Tensor&lt; Matrix, C &gt; &amp;a, const Axes &amp;axes_row_a, const Axes &amp;axes_col_a, const Tensor&lt; Matrix, C &gt; &amp;b, const Axes &amp;axes_row_b, const Axes &amp;axes_col_b, std::vector&lt; double &gt; &amp;eigval, Tensor&lt; Matrix, C &gt; &amp;eigvec)']]],
-  ['eigh_2ecc',['eigh.cc',['../eigh_8cc.html',1,'']]],
-  ['eigh_5fgeneral_2ecc',['eigh_general.cc',['../eigh__general_8cc.html',1,'']]],
-  ['eigh_5frank2_2ecc',['eigh_rank2.cc',['../eigh__rank2_8cc.html',1,'']]],
-  ['elem',['elem',['../examples_2benchmark_2reshape_8cc.html#aa0a976c33241fa8fd2f8160dce3d81f6',1,'elem(mptensor::Index index):&#160;reshape.cc'],['../examples_2benchmark_2slice_8cc.html#aa0a976c33241fa8fd2f8160dce3d81f6',1,'elem(mptensor::Index index):&#160;slice.cc'],['../examples_2benchmark_2transpose_8cc.html#aa0a976c33241fa8fd2f8160dce3d81f6',1,'elem(mptensor::Index index):&#160;transpose.cc']]],
-  ['exact_5ffree_5fenergy',['exact_free_energy',['../namespaceexamples_1_1Ising__2D.html#a1960295c169310f39753b2a4c02bcff3',1,'examples::Ising_2D']]],
-  ['exact_5ffree_5fenergy_5fintegrand',['exact_free_energy_integrand',['../namespaceexamples_1_1Ising__2D.html#acce179c31cc18ab3a40fb73d159e3753',1,'examples::Ising_2D']]],
-  ['examples',['examples',['../namespaceexamples.html',1,'']]],
-  ['exit',['exit',['../classmptensor_1_1scalapack_1_1BlacsGrid.html#a31fc27f4d175d4521febaa886cddaf7d',1,'mptensor::scalapack::BlacsGrid']]],
-  ['extend',['extend',['../group__ShapeChange.html#gad746f307b8713434af5d8c2694ce80e9',1,'mptensor']]],
-  ['ising_5f2d',['Ising_2D',['../namespaceexamples_1_1Ising__2D.html',1,'examples']]],
-  ['reshape_2ecc',['reshape.cc',['../examples_2benchmark_2reshape_8cc.html',1,'']]],
-  ['rsvd_2ecc',['rsvd.cc',['../examples_2benchmark_2rsvd_8cc.html',1,'']]],
-  ['slice_2ecc',['slice.cc',['../examples_2benchmark_2slice_8cc.html',1,'']]],
-  ['timer_2ehpp',['timer.hpp',['../examples_2benchmark_2timer_8hpp.html',1,'']]],
-  ['transpose_2ecc',['transpose.cc',['../examples_2benchmark_2transpose_8cc.html',1,'']]]
+  ['filename_88',['filename',['../common_8hpp.html#ae2ad82de546906671630bd9bc3c9c294',1,'common.hpp']]],
+  ['fill_89',['fill',['../namespacemptensor_1_1random__tensor.html#aab673206e377b8ae3d26c6fcb28f8d2c',1,'mptensor::random_tensor']]],
+  ['flatten_90',['flatten',['../classmptensor_1_1lapack_1_1Matrix.html#a7a2cc9dd42f7d2f1a17819851b3390ae',1,'mptensor::lapack::Matrix::flatten()'],['../classmptensor_1_1matrix__interface_1_1Matrix.html#a01a0d92c4ed66656075f14e8c4149642',1,'mptensor::matrix_interface::Matrix::flatten()'],['../classmptensor_1_1scalapack_1_1Matrix.html#a98f2d9c9a420ee0726350b68abe42149',1,'mptensor::scalapack::Matrix::flatten()'],['../classmptensor_1_1Tensor.html#a6b5b26896d5d1ae5794c9c1eeb122b6e',1,'mptensor::Tensor::flatten()']]],
+  ['free_5fenergy_91',['free_energy',['../classexamples_1_1Ising__2D_1_1Atrg.html#a37e553ee3ccfc08dd6331e668b84403a',1,'examples::Ising_2D::Atrg::free_energy()'],['../classexamples_1_1Ising__2D_1_1Hotrg.html#abfef8d0455009b4b8aa0c4ab728c0cfb',1,'examples::Ising_2D::Hotrg::free_energy()'],['../classexamples_1_1Ising__2D_1_1Trg.html#a564d1260fa1ef34144d8e726599b9183',1,'examples::Ising_2D::Trg::free_energy()']]],
+  ['func_92',['func',['../namespaceindex__constructor.html#a10b921ef74f528995365b03e0ff408b4',1,'index_constructor']]],
+  ['func2_5f1_93',['func2_1',['../namespacetests.html#a3ed10fb0dd137b5bb3648eff50b6762f',1,'tests']]],
+  ['func4_5f1_94',['func4_1',['../namespacetests.html#ab6f9229f4848aad0de42685f2ff7d0a8',1,'tests']]],
+  ['func4_5f2_95',['func4_2',['../namespacetests.html#a8576a4c02821b333d7718f6a391365cf',1,'tests']]],
+  ['functions_2ehpp_96',['functions.hpp',['../functions_8hpp.html',1,'']]]
 ];
