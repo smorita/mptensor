@@ -1,9 +1,7 @@
 var searchData=
 [
-  ['value_5ftype_5fname_732',['value_type_name',['../namespacemptensor.html#ad40e0b8fbafa16cb3389095a12463f79',1,'mptensor']]],
-  ['value_5ftype_5fname_3c_20complex_20_3e_733',['value_type_name&lt; complex &gt;',['../namespacemptensor.html#a888744782dee8b639b257ceb991cd3ff',1,'mptensor']]],
-  ['value_5ftype_5fname_3c_20double_20_3e_734',['value_type_name&lt; double &gt;',['../namespacemptensor.html#a6f936593f82f84b7c0a23edbb2974533',1,'mptensor']]],
-  ['value_5ftype_5ftag_735',['value_type_tag',['../namespacemptensor.html#a336ca8e604697cd1fa8089ff987c7c21',1,'mptensor']]],
-  ['value_5ftype_5ftag_3c_20complex_20_3e_736',['value_type_tag&lt; complex &gt;',['../namespacemptensor.html#acac4079b16de566d0a85e22ac5370b38',1,'mptensor']]],
-  ['value_5ftype_5ftag_3c_20double_20_3e_737',['value_type_tag&lt; double &gt;',['../namespacemptensor.html#a85e28c38892ef30bd419805b753b633e',1,'mptensor']]]
+  ['uniform_5fdist_736',['uniform_dist',['../namespacemptensor_1_1random__tensor.html#a03d43c121e83de3f14c5bbcc2e42d49c',1,'mptensor::random_tensor']]],
+  ['update_737',['update',['../classexamples_1_1Ising__2D_1_1Atrg.html#ae27d7e34f9c3f59766670af0f984d9e7',1,'examples::Ising_2D::Atrg::update()'],['../classexamples_1_1Ising__2D_1_1Hotrg.html#aee8d0bd0b2afeb11b8033a492f705a53',1,'examples::Ising_2D::Hotrg::update()'],['../classexamples_1_1Ising__2D_1_1Trg.html#ab7c8e3397f89922b3cbf0b3896bbd858',1,'examples::Ising_2D::Trg::update()']]],
+  ['update_5fchild_738',['update_child',['../classexamples_1_1Ising__2D_1_1Atrg.html#ae9d4877c9fa087770af95a8c905c8e85',1,'examples::Ising_2D::Atrg::update_child()'],['../classexamples_1_1Ising__2D_1_1Hotrg.html#a4ed6e23bc7bd609bec9223b8af82cfb6',1,'examples::Ising_2D::Hotrg::update_child()']]],
+  ['update_5ffrom_5fabcd_739',['update_from_ABCD',['../classexamples_1_1Ising__2D_1_1Atrg.html#a29611e450f1a42ab78b9a8728f4a4db0',1,'examples::Ising_2D::Atrg']]]
 ];

@@ -1,16 +1,10 @@
 var searchData=
 [
-  ['reshape_2ecc_493',['reshape.cc',['../tests_2reshape_8cc.html',1,'']]],
-  ['slice_2ecc_494',['slice.cc',['../tests_2slice_8cc.html',1,'']]],
-  ['tensor_2ecc_495',['tensor.cc',['../tensor_8cc.html',1,'']]],
-  ['tensor_2ehpp_496',['tensor.hpp',['../tensor_8hpp.html',1,'']]],
-  ['tensor_5fimpl_2ehpp_497',['tensor_impl.hpp',['../tensor__impl_8hpp.html',1,'']]],
-  ['tensor_5ftest_2ecc_498',['tensor_test.cc',['../tensor__test_8cc.html',1,'']]],
-  ['tensor_5ftest_2ehpp_499',['tensor_test.hpp',['../tensor__test_8hpp.html',1,'']]],
-  ['tensordot_2ecc_500',['tensordot.cc',['../tensordot_8cc.html',1,'']]],
-  ['timer_2ehpp_501',['timer.hpp',['../tests_2timer_8hpp.html',1,'']]],
-  ['trace_2ecc_502',['trace.cc',['../trace_8cc.html',1,'']]],
-  ['transpose_2ecc_503',['transpose.cc',['../tests_2transpose_8cc.html',1,'']]],
-  ['trg_2ecc_504',['trg.cc',['../trg_8cc.html',1,'']]],
-  ['typedef_2ehpp_505',['typedef.hpp',['../typedef_8hpp.html',1,'']]]
+  ['rsvd_2ecc_491',['rsvd.cc',['../src_2rsvd_8cc.html',1,'']]],
+  ['save_2ecc_492',['save.cc',['../save_8cc.html',1,'']]],
+  ['save_2ehpp_493',['save.hpp',['../save_8hpp.html',1,'']]],
+  ['save_5fload_2ecc_494',['save_load.cc',['../save__load_8cc.html',1,'']]],
+  ['set_5fslice_2ecc_495',['set_slice.cc',['../set__slice_8cc.html',1,'']]],
+  ['simple_5fexample_2ecc_496',['simple_example.cc',['../simple__example_8cc.html',1,'']]],
+  ['svd_2ecc_497',['svd.cc',['../svd_8cc.html',1,'']]]
 ];

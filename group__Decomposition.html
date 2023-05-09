@@ -264,7 +264,7 @@ template&lt;template&lt; typename &gt; class Matrix, typename C &gt; </div>
 
 <p>Compute the eigenvalues and eigenvectors of a general tensor. </p>
 <p>For example, </p><div class="fragment"><div class="line"><a class="code" href="group__Decomposition.html#ga53c476ed1cd1b7795585c852c90c95ad">eig</a>(A, <a class="code" href="namespacemptensor.html#ada198dc45d2bc41ae74ffda8e4ef1137">Axes</a>(0,3), <a class="code" href="namespacemptensor.html#ada198dc45d2bc41ae74ffda8e4ef1137">Axes</a>(1,2), w, U)</div>
-<div class="ttc" id="agroup__Decomposition_html_ga53c476ed1cd1b7795585c852c90c95ad"><div class="ttname"><a href="group__Decomposition.html#ga53c476ed1cd1b7795585c852c90c95ad">mptensor::eig</a></div><div class="ttdeci">int eig(const Tensor&lt; Matrix, C &gt; &amp;a, std::vector&lt; complex &gt; &amp;eigval, Tensor&lt; Matrix, complex &gt; &amp;eigvec)</div><div class="ttdoc">Compute the eigenvalues and eigenvectors of a general matrix (rank-2 tensor)</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:2246</div></div>
+<div class="ttc" id="agroup__Decomposition_html_ga53c476ed1cd1b7795585c852c90c95ad"><div class="ttname"><a href="group__Decomposition.html#ga53c476ed1cd1b7795585c852c90c95ad">mptensor::eig</a></div><div class="ttdeci">int eig(const Tensor&lt; Matrix, C &gt; &amp;a, std::vector&lt; complex &gt; &amp;eigval, Tensor&lt; Matrix, complex &gt; &amp;eigvec)</div><div class="ttdoc">Compute the eigenvalues and eigenvectors of a general matrix (rank-2 tensor)</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:2282</div></div>
 <div class="ttc" id="anamespacemptensor_html_ada198dc45d2bc41ae74ffda8e4ef1137"><div class="ttname"><a href="namespacemptensor.html#ada198dc45d2bc41ae74ffda8e4ef1137">mptensor::Axes</a></div><div class="ttdeci">Index Axes</div><div class="ttdef"><b>Definition:</b> tensor.hpp:45</div></div>
 </div><!-- fragment --><p> calculates the following decomposition. </p><p class="formulaDsp">
 \[ A_{abcd} = A_{(ad)(bc)} = \sum_i U_{adi} w_i (U^\dagger)_{ibc}. \]
@@ -420,7 +420,7 @@ template&lt;template&lt; typename &gt; class Matrix, typename C &gt; </div>
 </div><div class="memdoc">
 <p>Compute the eigenvalues and eigenvectors of a complex Hermitian or real symmetric tensor</p>
 <p>For example, </p><div class="fragment"><div class="line"><a class="code" href="group__Decomposition.html#ga83976ad80aa80b83babb4710ed391cca">eigh</a>(A, <a class="code" href="namespacemptensor.html#ada198dc45d2bc41ae74ffda8e4ef1137">Axes</a>(0,3), <a class="code" href="namespacemptensor.html#ada198dc45d2bc41ae74ffda8e4ef1137">Axes</a>(1,2), w, U)</div>
-<div class="ttc" id="agroup__Decomposition_html_ga83976ad80aa80b83babb4710ed391cca"><div class="ttname"><a href="group__Decomposition.html#ga83976ad80aa80b83babb4710ed391cca">mptensor::eigh</a></div><div class="ttdeci">int eigh(const Tensor&lt; Matrix, C &gt; &amp;a, std::vector&lt; double &gt; &amp;eigval, Tensor&lt; Matrix, C &gt; &amp;eigvec)</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:2022</div></div>
+<div class="ttc" id="agroup__Decomposition_html_ga83976ad80aa80b83babb4710ed391cca"><div class="ttname"><a href="group__Decomposition.html#ga83976ad80aa80b83babb4710ed391cca">mptensor::eigh</a></div><div class="ttdeci">int eigh(const Tensor&lt; Matrix, C &gt; &amp;a, std::vector&lt; double &gt; &amp;eigval, Tensor&lt; Matrix, C &gt; &amp;eigvec)</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:2058</div></div>
 </div><!-- fragment --><p> calculates the following decomposition. </p><p class="formulaDsp">
 \[ A_{abcd} = A_{(ad)(bc)} = \sum_i U_{adi} w_i (U^\dagger)_{ibc}. \]
 </p>
@@ -793,7 +793,7 @@ template&lt;template&lt; typename &gt; class Matrix, typename C &gt; </div>
 
 <p>Partial SVD for tensor. </p>
 <p>This may be useful for creation of an isometry. For example, </p><div class="fragment"><div class="line"><a class="code" href="group__Decomposition.html#gaaf4b4b47041fe7ccad6873fa48f47b2d">psvd</a>(A, <a class="code" href="namespacemptensor.html#ada198dc45d2bc41ae74ffda8e4ef1137">Axes</a>(0,3), <a class="code" href="namespacemptensor.html#ada198dc45d2bc41ae74ffda8e4ef1137">Axes</a>(1,2), U, S, VT, n)</div>
-<div class="ttc" id="agroup__Decomposition_html_gaaf4b4b47041fe7ccad6873fa48f47b2d"><div class="ttname"><a href="group__Decomposition.html#gaaf4b4b47041fe7ccad6873fa48f47b2d">mptensor::psvd</a></div><div class="ttdeci">int psvd(const Tensor&lt; Matrix, C &gt; &amp;a, std::vector&lt; double &gt; &amp;s, const size_t target_rank)</div><div class="ttdoc">Partial SVD for rank-2 tensor (matrix)</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:1817</div></div>
+<div class="ttc" id="agroup__Decomposition_html_gaaf4b4b47041fe7ccad6873fa48f47b2d"><div class="ttname"><a href="group__Decomposition.html#gaaf4b4b47041fe7ccad6873fa48f47b2d">mptensor::psvd</a></div><div class="ttdeci">int psvd(const Tensor&lt; Matrix, C &gt; &amp;a, std::vector&lt; double &gt; &amp;s, const size_t target_rank)</div><div class="ttdoc">Partial SVD for rank-2 tensor (matrix)</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:1853</div></div>
 </div><!-- fragment --><p> calculates the following decomposition. </p><p class="formulaDsp">
 \[ A_{abcd} \simeq \sum_{i=0}^{n-1} U_{adi} S_i (V^\dagger)_{ibc}. \]
 </p>
@@ -976,7 +976,7 @@ template&lt;template&lt; typename &gt; class Matrix, typename C &gt; </div>
 
 <p>QR decomposition of tensor. </p>
 <p>This may be useful for creation of an isometry. For example, </p><div class="fragment"><div class="line"><a class="code" href="group__Decomposition.html#ga91f42750da9a74ce9cc131c536bfd082">qr</a>(A, <a class="code" href="namespacemptensor.html#ada198dc45d2bc41ae74ffda8e4ef1137">Axes</a>(0,3), <a class="code" href="namespacemptensor.html#ada198dc45d2bc41ae74ffda8e4ef1137">Axes</a>(1,2), Q, R)</div>
-<div class="ttc" id="agroup__Decomposition_html_ga91f42750da9a74ce9cc131c536bfd082"><div class="ttname"><a href="group__Decomposition.html#ga91f42750da9a74ce9cc131c536bfd082">mptensor::qr</a></div><div class="ttdeci">int qr(const Tensor&lt; Matrix, C &gt; &amp;a, Tensor&lt; Matrix, C &gt; &amp;q, Tensor&lt; Matrix, C &gt; &amp;r)</div><div class="ttdoc">QR decomposition of matrix (rank-2 tensor)</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:1925</div></div>
+<div class="ttc" id="agroup__Decomposition_html_ga91f42750da9a74ce9cc131c536bfd082"><div class="ttname"><a href="group__Decomposition.html#ga91f42750da9a74ce9cc131c536bfd082">mptensor::qr</a></div><div class="ttdeci">int qr(const Tensor&lt; Matrix, C &gt; &amp;a, Tensor&lt; Matrix, C &gt; &amp;q, Tensor&lt; Matrix, C &gt; &amp;r)</div><div class="ttdoc">QR decomposition of matrix (rank-2 tensor)</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:1961</div></div>
 </div><!-- fragment --><p> calculates the following decomposition, </p><p class="formulaDsp">
 \[ A_{abcd} = \sum_i Q_{adi} R_{ibc}, \]
 </p>
@@ -1155,7 +1155,7 @@ template&lt;template&lt; typename &gt; class Matrix, typename C &gt; </div>
 
 <p>Singular value decomposition for tensor. </p>
 <p>This may be useful for creation of an isometry. For example, </p><div class="fragment"><div class="line"><a class="code" href="group__Decomposition.html#ga6f352770092d715ebc5614b706de4ade">svd</a>(A, <a class="code" href="namespacemptensor.html#ada198dc45d2bc41ae74ffda8e4ef1137">Axes</a>(0,3), <a class="code" href="namespacemptensor.html#ada198dc45d2bc41ae74ffda8e4ef1137">Axes</a>(1,2), U, S, VT)</div>
-<div class="ttc" id="agroup__Decomposition_html_ga6f352770092d715ebc5614b706de4ade"><div class="ttname"><a href="group__Decomposition.html#ga6f352770092d715ebc5614b706de4ade">mptensor::svd</a></div><div class="ttdeci">int svd(const Tensor&lt; Matrix, C &gt; &amp;a, std::vector&lt; double &gt; &amp;s)</div><div class="ttdoc">Singular value decomposition for rank-2 tensor (matrix)</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:1673</div></div>
+<div class="ttc" id="agroup__Decomposition_html_ga6f352770092d715ebc5614b706de4ade"><div class="ttname"><a href="group__Decomposition.html#ga6f352770092d715ebc5614b706de4ade">mptensor::svd</a></div><div class="ttdeci">int svd(const Tensor&lt; Matrix, C &gt; &amp;a, std::vector&lt; double &gt; &amp;s)</div><div class="ttdoc">Singular value decomposition for rank-2 tensor (matrix)</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:1709</div></div>
 </div><!-- fragment --><p> calculates the following decomposition. </p><p class="formulaDsp">
 \[ A_{abcd} = \sum_i U_{adi} S_i (V^\dagger)_{ibc}. \]
 </p>
@@ -1281,7 +1281,7 @@ template&lt;template&lt; typename &gt; class Matrix, typename C &gt; </div>
 </div>
 </div>
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon May 8 2023 08:52:09 for mptensor by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue May 9 2023 05:30:46 for mptensor by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.9.1
 </small></address>

@@ -130,6 +130,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a77a00e3d9bfd54cbc3a0873744fccbb7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetests.html#a77a00e3d9bfd54cbc3a0873744fccbb7">test_eigh_rank2_complex</a> (const <a class="el" href="mpi__tool_8hpp.html#a8c49328dc6c2ab39524c9ff794e92963">mpi_comm</a> &amp;comm, int L, std::ostream &amp;ostrm)</td></tr>
 <tr class="memdesc:a77a00e3d9bfd54cbc3a0873744fccbb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for TensorC::eigh.  <a href="namespacetests.html#a77a00e3d9bfd54cbc3a0873744fccbb7">More...</a><br /></td></tr>
 <tr class="separator:a77a00e3d9bfd54cbc3a0873744fccbb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5ca7fc1d43132683c6c606809d9151a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetests.html#ad5ca7fc1d43132683c6c606809d9151a">test_kron</a> (const <a class="el" href="mpi__tool_8hpp.html#a8c49328dc6c2ab39524c9ff794e92963">mpi_comm</a> &amp;comm, int L, std::ostream &amp;ostrm)</td></tr>
+<tr class="memdesc:ad5ca7fc1d43132683c6c606809d9151a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for TensorD::kron.  <a href="namespacetests.html#ad5ca7fc1d43132683c6c606809d9151a">More...</a><br /></td></tr>
+<tr class="separator:ad5ca7fc1d43132683c6c606809d9151a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d4514a8bbe51826cf98a48f7243c5eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetests.html#a0d4514a8bbe51826cf98a48f7243c5eb">test_kron_complex</a> (const <a class="el" href="mpi__tool_8hpp.html#a8c49328dc6c2ab39524c9ff794e92963">mpi_comm</a> &amp;comm, int L, std::ostream &amp;ostrm)</td></tr>
+<tr class="memdesc:a0d4514a8bbe51826cf98a48f7243c5eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for TensorC::kron.  <a href="namespacetests.html#a0d4514a8bbe51826cf98a48f7243c5eb">More...</a><br /></td></tr>
+<tr class="separator:a0d4514a8bbe51826cf98a48f7243c5eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af47dc0c0b218c5c14c7cec835d6411ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetests.html#af47dc0c0b218c5c14c7cec835d6411ff">test_qr</a> (const <a class="el" href="mpi__tool_8hpp.html#a8c49328dc6c2ab39524c9ff794e92963">mpi_comm</a> &amp;comm, int L, std::ostream &amp;ostrm)</td></tr>
 <tr class="memdesc:af47dc0c0b218c5c14c7cec835d6411ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for TensorD::qr.  <a href="namespacetests.html#af47dc0c0b218c5c14c7cec835d6411ff">More...</a><br /></td></tr>
 <tr class="separator:af47dc0c0b218c5c14c7cec835d6411ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -893,6 +899,96 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">comm</td><td>MPI communicator </td></tr>
     <tr><td class="paramname">L</td><td>size of tensor, A.shape = (L*L, L*L) </td></tr>
+    <tr><td class="paramname">ostrm</td><td>output stream for results </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad5ca7fc1d43132683c6c606809d9151a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5ca7fc1d43132683c6c606809d9151a">&#9670;&nbsp;</a></span>test_kron()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tests::test_kron </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="mpi__tool_8hpp.html#a8c49328dc6c2ab39524c9ff794e92963">mpi_comm</a> &amp;&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>L</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>ostrm</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Test for TensorD::kron. </p>
+<p>C = kron(A, B)</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">comm</td><td>MPI communicator </td></tr>
+    <tr><td class="paramname">L</td><td>size of tensor, A.shape = (L, L+1), B.shape = (L+2, L+3) </td></tr>
+    <tr><td class="paramname">ostrm</td><td>output stream for results </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0d4514a8bbe51826cf98a48f7243c5eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d4514a8bbe51826cf98a48f7243c5eb">&#9670;&nbsp;</a></span>test_kron_complex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tests::test_kron_complex </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="mpi__tool_8hpp.html#a8c49328dc6c2ab39524c9ff794e92963">mpi_comm</a> &amp;&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>L</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>ostrm</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Test for TensorC::kron. </p>
+<p>C = kron(A, B)</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">comm</td><td>MPI communicator </td></tr>
+    <tr><td class="paramname">L</td><td>size of tensor, A.shape = (L, L+1), B.shape = (L+2, L+3) </td></tr>
     <tr><td class="paramname">ostrm</td><td>output stream for results </td></tr>
   </table>
   </dd>
@@ -1840,7 +1936,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon May 8 2023 08:52:09 for mptensor by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue May 9 2023 05:30:46 for mptensor by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.9.1
 </small></address>
