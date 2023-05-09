@@ -80,6 +80,7 @@ int main(int argc, char **argv) {
   test_trace(comm, n, out);
   test_trace2(comm, n, out);
   test_contract(comm, n, out);
+  test_kron(comm, n, out);
 
   if (mpiroot) out << "\n";
 
@@ -98,6 +99,7 @@ int main(int argc, char **argv) {
   test_trace_complex(comm, n, out);
   test_trace2_complex(comm, n, out);
   test_contract_complex(comm, n, out);
+  test_kron_complex(comm, n, out);
 
   /* End */
   /* automatically called by std::atexit() in mpi_tool. */

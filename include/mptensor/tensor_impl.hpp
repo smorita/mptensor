@@ -1583,6 +1583,42 @@ Tensor<Matrix, C> contract(const Tensor<Matrix, C> &T, const Axes &axes_1,
   return T_new;
 }
 
+//! Compute the Kronecker product
+/*!
+  \param A Tensor to product.
+  \param B Tensor to product.
+
+  \return The Kronecker product of A and B.
+
+  If A.shape() = A[r0,...,rN] and B.shape() = B[s0,...,sN], the Kronecker product has shape [r0*s0,..., rN*sN].
+  kron(A, B)[k0,...,kN] = A[i0,...,iN] * B[j0,...,jN] where kt = it * st + jt.
+
+  \note The rank of \c a and \c b should be the same.
+*/
+template <template <typename> class Matrix, typename C>
+Tensor<Matrix, C> kron(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b) {
+  assert(a.rank() == b.rank());
+  assert(a.get_comm() == b.get_comm());
+
+  Shape shape_a = a.shape();
+  Shape shape_b = b.shape();
+  Shape shape_c = shape_a;
+  size_t n = shape_a.size();
+  Axes axes_trans;
+  axes_trans.resize(2 * n);
+  for (size_t i = 0; i < shape_b.size(); ++i) {
+    shape_c[i] *= shape_b[i];
+    axes_trans[2 * i] = i + n;
+    axes_trans[2 * i + 1] = i;
+  }
+
+  return reshape(
+      transpose(tensordot(reshape(a, shape_a + Shape(1)),
+                          reshape(b, Shape(1) + shape_b), Axes(n), Axes(0)),
+                axes_trans),
+      shape_c);
+};
+
 //! Compute tensor dot product.
 /*!
   For example, \f$ T_{abcd} = \sum_{ij} A_{iajb} B_{cjdi} \f$ is

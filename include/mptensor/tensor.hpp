@@ -207,6 +207,9 @@ template <template <typename> class Matrix, typename C>
 Tensor<Matrix, C> tensordot(const Tensor<Matrix, C> &a,
                             const Tensor<Matrix, C> &b, const Axes &axes_a,
                             const Axes &axes_b);
+template <template <typename> class Matrix, typename C>
+Tensor<Matrix, C> kron(const Tensor<Matrix, C> &a,
+                       const Tensor<Matrix, C> &b);
 //! \}
 
 //! \ingroup Decomposition

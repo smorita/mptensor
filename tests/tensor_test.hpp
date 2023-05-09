@@ -49,6 +49,7 @@ void test_arithmetic(const mpi_comm &comm, int L, std::ostream &ostrm);
 void test_trace(const mpi_comm &comm, int L, std::ostream &ostrm);
 void test_trace2(const mpi_comm &comm, int L, std::ostream &ostrm);
 void test_contract(const mpi_comm &comm, int L, std::ostream &ostrm);
+void test_kron(const mpi_comm &comm, int L, std::ostream &ostrm);
 
 void test_transpose_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
 void test_reshape_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
@@ -66,6 +67,7 @@ void test_arithmetic_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
 void test_trace_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
 void test_trace2_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
 void test_contract_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
+void test_kron_complex(const mpi_comm &comm, int L, std::ostream &ostrm);
 
 }  // namespace tests
 
