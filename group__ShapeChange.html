@@ -214,6 +214,7 @@ template&lt;template&lt; typename &gt; class Matrix, typename C &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reshaped tensor.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>The new shape should be compatible with the original shape. The total size of tensor does not change. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>mptensor uses the column major, unlike NumPy. </dd></dl>
 
 </div>
 </div>
@@ -253,7 +254,7 @@ template&lt;template&lt; typename &gt; class Matrix, typename C &gt; </div>
 
 <p>Slice a tensor. </p>
 <p>This function mimics slicing in python such as <code></code>[start:end]. If <code>index_begin[r]==index_end[r]</code>, this rank is not sliced. For example, </p><div class="fragment"><div class="line"><a class="code" href="group__ShapeChange.html#ga88ef46dc65d28517de99cfa0df1e350d">slice</a>(T, <a class="code" href="index__constructor_8hpp.html#a0a012a4e297b6c520c9ed919f374ebe5">Index</a>(1,0,3), <a class="code" href="index__constructor_8hpp.html#a0a012a4e297b6c520c9ed919f374ebe5">Index</a>(4,0,6)); </div>
-<div class="ttc" id="agroup__ShapeChange_html_ga88ef46dc65d28517de99cfa0df1e350d"><div class="ttname"><a href="group__ShapeChange.html#ga88ef46dc65d28517de99cfa0df1e350d">mptensor::slice</a></div><div class="ttdeci">Tensor&lt; Matrix, C &gt; slice(const Tensor&lt; Matrix, C &gt; &amp;a, size_t n_axes, size_t i_begin, size_t i_end)</div><div class="ttdoc">Slice a tensor.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:1208</div></div>
+<div class="ttc" id="agroup__ShapeChange_html_ga88ef46dc65d28517de99cfa0df1e350d"><div class="ttname"><a href="group__ShapeChange.html#ga88ef46dc65d28517de99cfa0df1e350d">mptensor::slice</a></div><div class="ttdeci">Tensor&lt; Matrix, C &gt; slice(const Tensor&lt; Matrix, C &gt; &amp;a, size_t n_axes, size_t i_begin, size_t i_end)</div><div class="ttdoc">Slice a tensor.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:1209</div></div>
 <div class="ttc" id="aindex__constructor_8hpp_html_a0a012a4e297b6c520c9ed919f374ebe5"><div class="ttname"><a href="index__constructor_8hpp.html#a0a012a4e297b6c520c9ed919f374ebe5">Index</a></div><div class="ttdeci">Index(size_t j0)</div><div class="ttdef"><b>Definition:</b> index_constructor.hpp:11</div></div>
 </div><!-- fragment --><p> will return T[1:4, :, 3:6].</p>
 <dl class="params"><dt>Parameters</dt><dd>
