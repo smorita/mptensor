@@ -1,52 +1,58 @@
-<!-- HTML header for doxygen 1.8.8-->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- HTML header for doxygen 1.9.1-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <!-- For Mobile Devices -->
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-        <meta name="generator" content="Doxygen 1.9.1"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <title>mptensor: matrix_scalapack.hpp Source File</title>
-        <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
-        <script type="text/javascript" src="dynsections.js"></script>
-        <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>mptensor: /home/runner/work/mptensor/mptensor/include/mptensor/scalapack/matrix_scalapack.hpp Source File</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-        <script type="text/x-mathjax-config">
+<script type="text/x-mathjax-config">
   MathJax.Hub.Config({
     extensions: ["tex2jax.js"],
     jax: ["input/TeX","output/HTML-CSS"],
 });
 </script>
-<script type="text/javascript" async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js"></script>
-        <link href="doxygen.css" rel="stylesheet" type="text/css" />
-        <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
-        <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="doxy-boot.js"></script>
-    </head>
-    <body>
-        <nav class="navbar navbar-default" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <div class="navbar-brand">
-                        <a href="index.html">
-                            <img src=mptensor_logo_w200.png height="30" class="d-inline-block align-top" alt="mptensor">
-                        </a>
-                        <small>v0.3.0</small>
-                    </div>
-                </div>
-            </div>
-        </nav>
-        <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-            <div class="content" id="content">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-12 panel " style="padding-bottom: 15px;">
-                            <div style="margin-bottom: 15px;">
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<!-- ... other metadata & script includes ... -->
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init();
+    DoxygenAwesomeFragmentCopyButton.init();
+    DoxygenAwesomeParagraphLink.init();
+</script>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="mptensor_logo_w200.png"/></td>
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">mptensor
+   &#160;<span id="projectnumber">v0.3.0</span>
+   </div>
+   <div id="projectbrief">Parallel Library for Tensor Network Methods</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
 <!-- end header part -->
 <!-- Generated by Doxygen 1.9.1 -->
 <script type="text/javascript">
@@ -64,6 +70,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('matrix__scalapack_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -78,11 +101,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_8a9c5dbf120b6aa8a5646a47ef1c5afa.html">mptensor</a></li><li class="navelem"><a class="el" href="dir_39ed1537a25321a84ddf2111c6d4ade3.html">scalapack</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">matrix_scalapack.hpp</div>  </div>
@@ -190,35 +208,35 @@ $(function() {
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#acd7e3b7ec524b0a510ebea7bec7a6dbd">save_index</a>(<span class="keyword">const</span> std::string &amp;<a class="code" href="common_8hpp.html#ae2ad82de546906671630bd9bc3c9c294">filename</a>) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00112"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#a3a590e0136d84e59fc7cb84f20f27bf9">  112</a></span>&#160;  <a class="code" href="classmptensor_1_1scalapack_1_1BlacsGrid.html">BlacsGrid</a> <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a3a590e0136d84e59fc7cb84f20f27bf9">grid</a>;</div>
-<div class="line"><a name="l00113"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#a1218e41f7a2113cfab2bac0ed98fe730">  113</a></span>&#160;  std::vector&lt;C&gt; <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a1218e41f7a2113cfab2bac0ed98fe730">V</a>;       <span class="comment">// local strage</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#a3d987fa28c624f0cefeeeab6e9bbcd1c">  114</a></span>&#160;  std::vector&lt;int&gt; <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a3d987fa28c624f0cefeeeab6e9bbcd1c">desc</a>;  <span class="comment">// descriptor</span></div>
-<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#aac4a41324b41ae0ac67c554ffba68908">  115</a></span>&#160;  <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#aac4a41324b41ae0ac67c554ffba68908">BLOCK_SIZE</a>;</div>
-<div class="line"><a name="l00116"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#a28eec8d5f36b68805d42efc38daf7370">  116</a></span>&#160;  <span class="keywordtype">size_t</span> <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a28eec8d5f36b68805d42efc38daf7370">local_row_size_</a>;</div>
-<div class="line"><a name="l00117"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#a0dceed1fff47dfd0cc6f914ca0fdfdf0">  117</a></span>&#160;  <span class="keywordtype">size_t</span> <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a0dceed1fff47dfd0cc6f914ca0fdfdf0">local_col_size_</a>;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  <a class="code" href="classmptensor_1_1scalapack_1_1BlacsGrid.html">BlacsGrid</a> grid;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  std::vector&lt;C&gt; V;       <span class="comment">// local strage</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  std::vector&lt;int&gt; desc;  <span class="comment">// descriptor</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">size_t</span> BLOCK_SIZE;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  <span class="keywordtype">size_t</span> local_row_size_;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  <span class="keywordtype">size_t</span> local_col_size_;</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  <span class="keywordtype">int</span> <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a956ffe587c64cdf7d0039d2b6aea24bb">get_lld</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  <span class="keywordtype">int</span> get_lld() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  <span class="comment">// void set(C (*element)(size_t g_row, size_t g_col));</span></div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  <span class="comment">// const BlacsGrid &amp;get_grid() const;</span></div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <span class="comment">// int blacs_context() const;</span></div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  <span class="comment">// int nb_row() const;</span></div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <span class="comment">// int nb_col() const;</span></div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
-<div class="line"><a name="l00126"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#a4e825494484cbc7aa09589b08704ab39">  126</a></span>&#160;  <span class="keyword">mutable</span> <span class="keywordtype">bool</span> <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a4e825494484cbc7aa09589b08704ab39">has_local_to_global</a>;  </div>
-<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#acc71220434a56d57c3a3fa371d4d611c">  127</a></span>&#160;  <span class="keyword">mutable</span> <span class="keywordtype">bool</span> <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#acc71220434a56d57c3a3fa371d4d611c">has_global_to_local</a>;  </div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  <span class="keyword">mutable</span> <span class="keywordtype">bool</span> has_local_to_global;  </div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  <span class="keyword">mutable</span> <span class="keywordtype">bool</span> has_global_to_local;  </div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;  <span class="keyword">mutable</span> std::vector&lt;size_t&gt;</div>
-<div class="line"><a name="l00129"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#a02f33779731c63783f110647322c2148">  129</a></span>&#160;      <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a02f33779731c63783f110647322c2148">global_row</a>;  </div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;      global_row;  </div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  <span class="keyword">mutable</span> std::vector&lt;size_t&gt;</div>
-<div class="line"><a name="l00131"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#a74d916f36a648d3d7cb7d1cbd8f7b01b">  131</a></span>&#160;      <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a74d916f36a648d3d7cb7d1cbd8f7b01b">global_col</a>;  </div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;      global_col;  </div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  <span class="keyword">mutable</span> std::vector&lt;size_t&gt;</div>
-<div class="line"><a name="l00133"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#a69b4a653aa73cd5e19a905f46ba1ff13">  133</a></span>&#160;      <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a69b4a653aa73cd5e19a905f46ba1ff13">local_row</a>;  </div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;      local_row;  </div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  <span class="keyword">mutable</span> std::vector&lt;size_t&gt;</div>
-<div class="line"><a name="l00135"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#a35b5d8c0623bdcf0ace05e538b4947e2">  135</a></span>&#160;      <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a35b5d8c0623bdcf0ace05e538b4947e2">local_col</a>;  </div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;      local_col;  </div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  <span class="keyword">mutable</span> std::vector&lt;int&gt;</div>
-<div class="line"><a name="l00137"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#a183803312ac5426aaa235ff2870ef527">  137</a></span>&#160;      <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a183803312ac5426aaa235ff2870ef527">proc_row</a>;  </div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;      proc_row;  </div>
 <div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;  <span class="keyword">mutable</span> std::vector&lt;int&gt;</div>
-<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#a8d41a6c6a457c318cc906e99eef5725f">  139</a></span>&#160;      <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a8d41a6c6a457c318cc906e99eef5725f">proc_col</a>;  </div>
-<div class="line"><a name="l00140"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1Matrix.html#a21f5e4043dd487b79e428a65b7a45c58">  140</a></span>&#160;  <span class="keyword">mutable</span> std::vector&lt;int&gt; <a class="code" href="classmptensor_1_1scalapack_1_1Matrix.html#a21f5e4043dd487b79e428a65b7a45c58">lld_list</a>;  </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;      proc_col;  </div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  <span class="keyword">mutable</span> std::vector&lt;int&gt; lld_list;  </div>
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;};</div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> C&gt;</div>
@@ -280,47 +298,31 @@ $(function() {
 <div class="ttc" id="ablacsgrid_8hpp_html"><div class="ttname"><a href="blacsgrid_8hpp.html">blacsgrid.hpp</a></div><div class="ttdoc">BlacsGrid class.</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1BlacsGrid_html"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1BlacsGrid.html">mptensor::scalapack::BlacsGrid</a></div><div class="ttdef"><b>Definition:</b> blacsgrid.hpp:39</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html">mptensor::scalapack::Matrix</a></div><div class="ttdoc">Distributed matrix using ScaLAPACK.</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:47</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a02f33779731c63783f110647322c2148"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a02f33779731c63783f110647322c2148">mptensor::scalapack::Matrix::global_row</a></div><div class="ttdeci">std::vector&lt; size_t &gt; global_row</div><div class="ttdoc">Mapping data from local row to global row.</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:129</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a0dceed1fff47dfd0cc6f914ca0fdfdf0"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a0dceed1fff47dfd0cc6f914ca0fdfdf0">mptensor::scalapack::Matrix::local_col_size_</a></div><div class="ttdeci">size_t local_col_size_</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:117</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a0ea0d8d4c5b9b1e9c3fc3c2a3f59ffca"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a0ea0d8d4c5b9b1e9c3fc3c2a3f59ffca">mptensor::scalapack::Matrix::n_row</a></div><div class="ttdeci">int n_row() const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:144</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a0f05c643424e57ff77f695dc60767656"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a0f05c643424e57ff77f695dc60767656">mptensor::scalapack::Matrix::operator*=</a></div><div class="ttdeci">Matrix &amp; operator*=(C rhs)</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:372</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a1218e41f7a2113cfab2bac0ed98fe730"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a1218e41f7a2113cfab2bac0ed98fe730">mptensor::scalapack::Matrix::V</a></div><div class="ttdeci">std::vector&lt; C &gt; V</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:113</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a183803312ac5426aaa235ff2870ef527"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a183803312ac5426aaa235ff2870ef527">mptensor::scalapack::Matrix::proc_row</a></div><div class="ttdeci">std::vector&lt; int &gt; proc_row</div><div class="ttdoc">Mapping data from global row to processor row.</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:137</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a1b72f09cb2cce94998cf16478c7c0e9a"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a1b72f09cb2cce94998cf16478c7c0e9a">mptensor::scalapack::Matrix::descriptor</a></div><div class="ttdeci">const int * descriptor() const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:136</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a1ffd96fc24b37215381335d8b6d6897e"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a1ffd96fc24b37215381335d8b6d6897e">mptensor::scalapack::Matrix::bcast</a></div><div class="ttdeci">void bcast(D *buffer, int count, int root) const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:441</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a21f5e4043dd487b79e428a65b7a45c58"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a21f5e4043dd487b79e428a65b7a45c58">mptensor::scalapack::Matrix::lld_list</a></div><div class="ttdeci">std::vector&lt; int &gt; lld_list</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:140</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a23c8d180318a99a97e775c7f50b895cb"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a23c8d180318a99a97e775c7f50b895cb">mptensor::scalapack::Matrix::print_info</a></div><div class="ttdeci">void print_info(std::ostream &amp;) const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:351</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a271b1618a855981743892fec36a5e756"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a271b1618a855981743892fec36a5e756">mptensor::scalapack::Matrix::prep_local_to_global</a></div><div class="ttdeci">void prep_local_to_global() const</div><div class="ttdoc">Preprocess for fast conversion from local index to global one.</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:240</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a27e1b8543dba519bf034c8e5ec81d699"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a27e1b8543dba519bf034c8e5ec81d699">mptensor::scalapack::Matrix::value_type</a></div><div class="ttdeci">C value_type</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:49</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a28eec8d5f36b68805d42efc38daf7370"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a28eec8d5f36b68805d42efc38daf7370">mptensor::scalapack::Matrix::local_row_size_</a></div><div class="ttdeci">size_t local_row_size_</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:116</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a29aab9ec408ca2d189005c106f5b7992"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a29aab9ec408ca2d189005c106f5b7992">mptensor::scalapack::Matrix::local_row_index</a></div><div class="ttdeci">size_t local_row_index(size_t lindex) const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:217</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a2b5bb554ec44a5599ea952bc28342b6f"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a2b5bb554ec44a5599ea952bc28342b6f">mptensor::scalapack::Matrix::local_index</a></div><div class="ttdeci">bool local_index(size_t g_row, size_t g_col, size_t &amp;i) const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:176</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a33c1ac5ddb9c8fd12311b9fa61e8e61d"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a33c1ac5ddb9c8fd12311b9fa61e8e61d">mptensor::scalapack::Matrix::global_index</a></div><div class="ttdeci">void global_index(size_t i, size_t &amp;g_row, size_t &amp;g_col) const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:165</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a35b5d8c0623bdcf0ace05e538b4947e2"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a35b5d8c0623bdcf0ace05e538b4947e2">mptensor::scalapack::Matrix::local_col</a></div><div class="ttdeci">std::vector&lt; size_t &gt; local_col</div><div class="ttdoc">Mapping data from global column to local column.</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:135</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a3915951c38f4a19013d55ac01422f8de"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a3915951c38f4a19013d55ac01422f8de">mptensor::scalapack::Matrix::comm_type</a></div><div class="ttdeci">MPI_Comm comm_type</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:50</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a3a590e0136d84e59fc7cb84f20f27bf9"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a3a590e0136d84e59fc7cb84f20f27bf9">mptensor::scalapack::Matrix::grid</a></div><div class="ttdeci">BlacsGrid grid</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:112</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a3d987fa28c624f0cefeeeab6e9bbcd1c"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a3d987fa28c624f0cefeeeab6e9bbcd1c">mptensor::scalapack::Matrix::desc</a></div><div class="ttdeci">std::vector&lt; int &gt; desc</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:114</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a4d749dc76bd04c8881ff2052bf6d21bd"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a4d749dc76bd04c8881ff2052bf6d21bd">mptensor::scalapack::Matrix::n_col</a></div><div class="ttdeci">int n_col() const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:149</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a4e825494484cbc7aa09589b08704ab39"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a4e825494484cbc7aa09589b08704ab39">mptensor::scalapack::Matrix::has_local_to_global</a></div><div class="ttdeci">bool has_local_to_global</div><div class="ttdoc">Flag for local-to-global mapping.</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:126</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a4f97b29e4b9893cc01f16a4ebaa34176"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a4f97b29e4b9893cc01f16a4ebaa34176">mptensor::scalapack::Matrix::local_row_size</a></div><div class="ttdeci">size_t local_row_size() const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:207</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a533fed7f5cc5ebfb0a006e6d9594c6f6"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a533fed7f5cc5ebfb0a006e6d9594c6f6">mptensor::scalapack::Matrix::operator-=</a></div><div class="ttdeci">Matrix &amp; operator-=(const Matrix &amp;rhs)</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:365</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a5e75440e681d4de40db609fc1fbce588"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a5e75440e681d4de40db609fc1fbce588">mptensor::scalapack::Matrix::head</a></div><div class="ttdeci">const C * head() const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:103</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a620bc61d9e5afb234f16f3591da56eb3"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a620bc61d9e5afb234f16f3591da56eb3">mptensor::scalapack::Matrix::Matrix</a></div><div class="ttdeci">Matrix()</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:70</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a69b4a653aa73cd5e19a905f46ba1ff13"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a69b4a653aa73cd5e19a905f46ba1ff13">mptensor::scalapack::Matrix::local_row</a></div><div class="ttdeci">std::vector&lt; size_t &gt; local_row</div><div class="ttdoc">Mapping data from global row to local row.</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:133</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a74d916f36a648d3d7cb7d1cbd8f7b01b"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a74d916f36a648d3d7cb7d1cbd8f7b01b">mptensor::scalapack::Matrix::global_col</a></div><div class="ttdeci">std::vector&lt; size_t &gt; global_col</div><div class="ttdoc">Mapping data from local column to global column.</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:131</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a7d47dee7e4015aec383d727a4c9a8663"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a7d47dee7e4015aec383d727a4c9a8663">mptensor::scalapack::Matrix::map</a></div><div class="ttdeci">Matrix &amp; map(UnaryOperation op)</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a848f9d35c35a622e0cae84d9f98c82c7"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a848f9d35c35a622e0cae84d9f98c82c7">mptensor::scalapack::Matrix::init</a></div><div class="ttdeci">void init(size_t n_row, size_t n_col)</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:321</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a8c696514afcb75bdd323303efd3a6223"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a8c696514afcb75bdd323303efd3a6223">mptensor::scalapack::Matrix::allreduce_sum</a></div><div class="ttdeci">C allreduce_sum(C value) const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:435</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a8d41a6c6a457c318cc906e99eef5725f"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a8d41a6c6a457c318cc906e99eef5725f">mptensor::scalapack::Matrix::proc_col</a></div><div class="ttdeci">std::vector&lt; int &gt; proc_col</div><div class="ttdoc">Mapping data from global column to processor column.</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:139</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a956ffe587c64cdf7d0039d2b6aea24bb"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a956ffe587c64cdf7d0039d2b6aea24bb">mptensor::scalapack::Matrix::get_lld</a></div><div class="ttdeci">int get_lld() const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:160</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a98f2d9c9a420ee0726350b68abe42149"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a98f2d9c9a420ee0726350b68abe42149">mptensor::scalapack::Matrix::flatten</a></div><div class="ttdeci">std::vector&lt; C &gt; flatten()</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:417</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_a9f0c389f1c8f653b22921c53b1337916"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#a9f0c389f1c8f653b22921c53b1337916">mptensor::scalapack::Matrix::get_comm</a></div><div class="ttdeci">const MPI_Comm &amp; get_comm() const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:121</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_aac4a41324b41ae0ac67c554ffba68908"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#aac4a41324b41ae0ac67c554ffba68908">mptensor::scalapack::Matrix::BLOCK_SIZE</a></div><div class="ttdeci">static const size_t BLOCK_SIZE</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:115</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_ab24cc752ee71032500742e742ec57a1e"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#ab24cc752ee71032500742e742ec57a1e">mptensor::scalapack::Matrix::operator/=</a></div><div class="ttdeci">Matrix &amp; operator/=(C rhs)</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:378</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_ab306057cd5466685a739b3e64a884d14"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#ab306057cd5466685a739b3e64a884d14">mptensor::scalapack::Matrix::barrier</a></div><div class="ttdeci">void barrier() const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:430</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_abff0a87aca7dce2c36a45d4e215132b3"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#abff0a87aca7dce2c36a45d4e215132b3">mptensor::scalapack::Matrix::local_position</a></div><div class="ttdeci">void local_position(size_t g_row, size_t g_col, int &amp;comm_rank, size_t &amp;lindex) const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:197</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_ac245a20eed08599a30a94de12d3fa286"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#ac245a20eed08599a30a94de12d3fa286">mptensor::scalapack::Matrix::transpose</a></div><div class="ttdeci">const Matrix transpose()</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:391</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_acc71220434a56d57c3a3fa371d4d611c"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#acc71220434a56d57c3a3fa371d4d611c">mptensor::scalapack::Matrix::has_global_to_local</a></div><div class="ttdeci">bool has_global_to_local</div><div class="ttdoc">Flag for global-to-local mapping.</div><div class="ttdef"><b>Definition:</b> matrix_scalapack.hpp:127</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_acd7e3b7ec524b0a510ebea7bec7a6dbd"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#acd7e3b7ec524b0a510ebea7bec7a6dbd">mptensor::scalapack::Matrix::save_index</a></div><div class="ttdeci">void save_index(const std::string &amp;filename) const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:446</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_ace80b53792e9042e2c09a253f07d4e32"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#ace80b53792e9042e2c09a253f07d4e32">mptensor::scalapack::Matrix::local_col_index</a></div><div class="ttdeci">size_t local_col_index(size_t lindex) const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:222</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1Matrix_html_ad4331b5ab262b5cddafcce2964049eb7"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1Matrix.html#ad4331b5ab262b5cddafcce2964049eb7">mptensor::scalapack::Matrix::local_size</a></div><div class="ttdeci">size_t local_size() const</div><div class="ttdef"><b>Definition:</b> matrix_scalapack_impl.hpp:113</div></div>
@@ -351,17 +353,13 @@ $(function() {
 <div class="ttc" id="anamespacemptensor_1_1scalapack_html_aedad6d88128b5a67b15ef7c385110126"><div class="ttname"><a href="namespacemptensor_1_1scalapack.html#aedad6d88128b5a67b15ef7c385110126">mptensor::scalapack::matrix_product</a></div><div class="ttdeci">void matrix_product(const Matrix&lt; C &gt; &amp;a, const Matrix&lt; C &gt; &amp;b, Matrix&lt; C &gt; &amp;c)</div></div>
 <div class="ttc" id="anamespacemptensor_html"><div class="ttname"><a href="namespacemptensor.html">mptensor</a></div><div class="ttdef"><b>Definition:</b> complex.hpp:34</div></div>
 </div><!-- fragment --></div><!-- contents -->
-<!-- HTML footer for doxygen 1.8.8-->
+</div><!-- doc-content -->
 <!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_8a9c5dbf120b6aa8a5646a47ef1c5afa.html">mptensor</a></li><li class="navelem"><a class="el" href="dir_39ed1537a25321a84ddf2111c6d4ade3.html">scalapack</a></li><li class="navelem"><a class="el" href="matrix__scalapack_8hpp.html">matrix_scalapack.hpp</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
 </div>
-</div>
-</div>
-</div>
-</div>
-<hr class="footer"/><address class="footer"><small>
-Generated on Tue May 9 2023 05:30:46 for mptensor by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.9.1
-</small></address>
 </body>
 </html>

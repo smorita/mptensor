@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['global_5fcol_767',['global_col',['../classmptensor_1_1scalapack_1_1Matrix.html#a74d916f36a648d3d7cb7d1cbd8f7b01b',1,'mptensor::scalapack::Matrix']]],
-  ['global_5frow_768',['global_row',['../classmptensor_1_1scalapack_1_1Matrix.html#a02f33779731c63783f110647322c2148',1,'mptensor::scalapack::Matrix']]],
-  ['grid_769',['grid',['../classmptensor_1_1scalapack_1_1Matrix.html#a3a590e0136d84e59fc7cb84f20f27bf9',1,'mptensor::scalapack::Matrix']]]
+  ['log_5ffactor_699',['log_factor',['../classexamples_1_1Ising__2D_1_1Atrg.html#a462db6c24b0257648518815ee75c9d2a',1,'examples::Ising_2D::Atrg::log_factor()'],['../classexamples_1_1Ising__2D_1_1Hotrg.html#ab8676d3f595bb6eaf72a48dff6b0069d',1,'examples::Ising_2D::Hotrg::log_factor()'],['../classexamples_1_1Ising__2D_1_1Trg.html#a80a8576df652405645d62264657d41e1',1,'examples::Ising_2D::Trg::log_factor()']]],
+  ['log_5fn_5fspin_700',['log_n_spin',['../classexamples_1_1Ising__2D_1_1Atrg.html#ac0886c587b51c255e5c547203fc30027',1,'examples::Ising_2D::Atrg::log_n_spin()'],['../classexamples_1_1Ising__2D_1_1Hotrg.html#aaf79775131606348b4d6f1c7082fa419',1,'examples::Ising_2D::Hotrg::log_n_spin()'],['../classexamples_1_1Ising__2D_1_1Trg.html#ad6a7aefdbd8895f5909409f62a97d904',1,'examples::Ising_2D::Trg::log_n_spin()']]]
 ];

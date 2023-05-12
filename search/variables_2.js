@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['comm_762',['comm',['../classmptensor_1_1scalapack_1_1BlacsGrid.html#a7a796c94f5cada242454ed9603c5aa5c',1,'mptensor::scalapack::BlacsGrid']]],
-  ['comm_5f_763',['comm_',['../classmptensor_1_1lapack_1_1Matrix.html#a9a2b6c558d528782f2c3b5d75d96315f',1,'mptensor::lapack::Matrix']]]
+  ['debug_696',['debug',['../namespacemptensor_1_1io__helper.html#a30d2089aef8f0932a02f7fb1e07688d0',1,'mptensor::io_helper']]]
 ];

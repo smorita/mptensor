@@ -1,0 +1,58 @@
+var namespaces_dup =
+[
+    [ "examples", "namespaceexamples.html", "namespaceexamples" ],
+    [ "index_constructor", "namespaceindex__constructor.html", [
+      [ "func", "namespaceindex__constructor.html#a10b921ef74f528995365b03e0ff408b4", null ],
+      [ "num", "namespaceindex__constructor.html#afb4265e3853aab933e44ee2b1a667375", null ],
+      [ "output", "namespaceindex__constructor.html#a9ebee45a310358b01ab6c1ab163d7f94", null ]
+    ] ],
+    [ "mptensor", "namespacemptensor.html", "namespacemptensor" ],
+    [ "output", "namespaceoutput.html", [
+      [ "A2", "namespaceoutput.html#acee7cddbbe0329ea188018c0ab1ac4cd", null ],
+      [ "A3", "namespaceoutput.html#aea01abb80086f29730db31480304923e", null ],
+      [ "A4", "namespaceoutput.html#ad6e1e54df87ab15a4b9090f4def2a027", null ],
+      [ "shape", "namespaceoutput.html#afdce3b77ca23af32bf74486b08613edf", null ]
+    ] ],
+    [ "tests", "namespacetests.html", [
+      [ "TensorC", "namespacetests.html#a82a40b6d6516c50d0cefc2325d9b2cce", null ],
+      [ "TensorD", "namespacetests.html#a1ac383d8898c844f5836162d02d3b936", null ],
+      [ "cfunc2_1", "namespacetests.html#a8984834836539a1eef8513989df349fd", null ],
+      [ "cfunc4_1", "namespacetests.html#a389a76cf8cdf4c36b257b9fbaa37562d", null ],
+      [ "cfunc4_2", "namespacetests.html#ad030da60fa354e18d00b00a64d42a696", null ],
+      [ "func2_1", "namespacetests.html#a3ed10fb0dd137b5bb3648eff50b6762f", null ],
+      [ "func4_1", "namespacetests.html#ab6f9229f4848aad0de42685f2ff7d0a8", null ],
+      [ "func4_2", "namespacetests.html#a8576a4c02821b333d7718f6a391365cf", null ],
+      [ "test_arithmetic", "namespacetests.html#ab912f21a77f52b849a2ac1b14ae2d6de", null ],
+      [ "test_arithmetic_complex", "namespacetests.html#ae5572bb8cdcfab85d6c36f166965cacb", null ],
+      [ "test_contract", "namespacetests.html#adeb2a0603f4b0d6bba27aeab6a1d8d9f", null ],
+      [ "test_contract_complex", "namespacetests.html#addb6388e1d8752247b338801a8299a32", null ],
+      [ "test_eigh", "namespacetests.html#aeee2ebdf8aaecb2635f9dbc5f6421c9d", null ],
+      [ "test_eigh_complex", "namespacetests.html#ab76c7b4d10cf1b1c0745119cd72911f2", null ],
+      [ "test_eigh_general", "namespacetests.html#a1f355883d5b61f6a030c7b49e9cedff3", null ],
+      [ "test_eigh_general_complex", "namespacetests.html#ad0796af78db5b01272f8b4c7d6b60eef", null ],
+      [ "test_eigh_rank2", "namespacetests.html#a0490e980fce997e804e95647aeeafbfa", null ],
+      [ "test_eigh_rank2_complex", "namespacetests.html#a77a00e3d9bfd54cbc3a0873744fccbb7", null ],
+      [ "test_kron", "namespacetests.html#ad5ca7fc1d43132683c6c606809d9151a", null ],
+      [ "test_kron_complex", "namespacetests.html#a0d4514a8bbe51826cf98a48f7243c5eb", null ],
+      [ "test_qr", "namespacetests.html#af47dc0c0b218c5c14c7cec835d6411ff", null ],
+      [ "test_qr_complex", "namespacetests.html#aeaac65738e0340184310b6c939d38242", null ],
+      [ "test_qr_rank2", "namespacetests.html#a0f8f3f8feebc09b25b28d90a8442b5f1", null ],
+      [ "test_qr_rank2_complex", "namespacetests.html#a296c4418d7b3d6358e97c2958b4826a9", null ],
+      [ "test_reshape", "namespacetests.html#a9aefd09fab49299dd496852c4607faa1", null ],
+      [ "test_reshape_complex", "namespacetests.html#a909f71241b106671fe2a9fcac4754af8", null ],
+      [ "test_set_slice", "namespacetests.html#a97c9ad4342c339b2c73b38b1f68fae2b", null ],
+      [ "test_set_slice_complex", "namespacetests.html#a22d72530012264e0b308424d2f8e0267", null ],
+      [ "test_slice", "namespacetests.html#aa85d6d9091787d1a6a4af17914180e3d", null ],
+      [ "test_slice_complex", "namespacetests.html#aba7e3162f5cbc6c8978d59865e57ce41", null ],
+      [ "test_svd", "namespacetests.html#a9ea5c1529fcf732abc6922bb51f9dc1e", null ],
+      [ "test_svd_complex", "namespacetests.html#aa2a3422e735badfdaa6d494cf2b6c497", null ],
+      [ "test_tensordot", "namespacetests.html#a41dc15c07523e914ee5bc6302b96d924", null ],
+      [ "test_tensordot_complex", "namespacetests.html#ae6446729fba6a3adaf6bef1b64958e74", null ],
+      [ "test_trace", "namespacetests.html#a8d9603cecfaa48d988c0bb390870890f", null ],
+      [ "test_trace2", "namespacetests.html#a62b8ba00fc05955a5743076e1b5a541d", null ],
+      [ "test_trace2_complex", "namespacetests.html#acf302289dc1e3aae9a5ae84930185410", null ],
+      [ "test_trace_complex", "namespacetests.html#a78328d1a8b095d1e555bc846731e16f6", null ],
+      [ "test_transpose", "namespacetests.html#af3fb3033281dc913c791f4adb39aa0f9", null ],
+      [ "test_transpose_complex", "namespacetests.html#aabf99d8f29ca6ba32fb4b9cdafdd6e74", null ]
+    ] ]
+];

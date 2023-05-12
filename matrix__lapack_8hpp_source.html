@@ -1,52 +1,58 @@
-<!-- HTML header for doxygen 1.8.8-->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- HTML header for doxygen 1.9.1-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <!-- For Mobile Devices -->
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-        <meta name="generator" content="Doxygen 1.9.1"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <title>mptensor: matrix_lapack.hpp Source File</title>
-        <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
-        <script type="text/javascript" src="dynsections.js"></script>
-        <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>mptensor: /home/runner/work/mptensor/mptensor/include/mptensor/lapack/matrix_lapack.hpp Source File</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-        <script type="text/x-mathjax-config">
+<script type="text/x-mathjax-config">
   MathJax.Hub.Config({
     extensions: ["tex2jax.js"],
     jax: ["input/TeX","output/HTML-CSS"],
 });
 </script>
-<script type="text/javascript" async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js"></script>
-        <link href="doxygen.css" rel="stylesheet" type="text/css" />
-        <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
-        <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="doxy-boot.js"></script>
-    </head>
-    <body>
-        <nav class="navbar navbar-default" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <div class="navbar-brand">
-                        <a href="index.html">
-                            <img src=mptensor_logo_w200.png height="30" class="d-inline-block align-top" alt="mptensor">
-                        </a>
-                        <small>v0.3.0</small>
-                    </div>
-                </div>
-            </div>
-        </nav>
-        <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-            <div class="content" id="content">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-12 panel " style="padding-bottom: 15px;">
-                            <div style="margin-bottom: 15px;">
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<!-- ... other metadata & script includes ... -->
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init();
+    DoxygenAwesomeFragmentCopyButton.init();
+    DoxygenAwesomeParagraphLink.init();
+</script>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="mptensor_logo_w200.png"/></td>
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">mptensor
+   &#160;<span id="projectnumber">v0.3.0</span>
+   </div>
+   <div id="projectbrief">Parallel Library for Tensor Network Methods</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
 <!-- end header part -->
 <!-- Generated by Doxygen 1.9.1 -->
 <script type="text/javascript">
@@ -64,6 +70,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('matrix__lapack_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -78,11 +101,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_8a9c5dbf120b6aa8a5646a47ef1c5afa.html">mptensor</a></li><li class="navelem"><a class="el" href="dir_344d3327f0918cc7ccb814673fe60df8.html">lapack</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">matrix_lapack.hpp</div>  </div>
@@ -186,10 +204,10 @@ $(function() {
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classmptensor_1_1lapack_1_1Matrix.html#a661a473f78ed7355a8853564e4517108">save_index</a>(<span class="keyword">const</span> std::string &amp;<a class="code" href="common_8hpp.html#ae2ad82de546906671630bd9bc3c9c294">filename</a>) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="classmptensor_1_1lapack_1_1Matrix.html#a1841a688d9aff7d8f83451b275f2d1b8">  108</a></span>&#160;  std::vector&lt;C&gt; <a class="code" href="classmptensor_1_1lapack_1_1Matrix.html#a1841a688d9aff7d8f83451b275f2d1b8">V</a>;  </div>
-<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classmptensor_1_1lapack_1_1Matrix.html#a9a2b6c558d528782f2c3b5d75d96315f">  109</a></span>&#160;  <span class="keywordtype">int</span> <a class="code" href="classmptensor_1_1lapack_1_1Matrix.html#a9a2b6c558d528782f2c3b5d75d96315f">comm_</a>;         </div>
-<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="classmptensor_1_1lapack_1_1Matrix.html#ab03785fd4502ecfd8801107688f01776">  110</a></span>&#160;  <span class="keywordtype">int</span> <a class="code" href="classmptensor_1_1lapack_1_1Matrix.html#ab03785fd4502ecfd8801107688f01776">n_row_</a>;        </div>
-<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="classmptensor_1_1lapack_1_1Matrix.html#aac9ad576ea3031ac07772c2b13dda738">  111</a></span>&#160;  <span class="keywordtype">int</span> <a class="code" href="classmptensor_1_1lapack_1_1Matrix.html#aac9ad576ea3031ac07772c2b13dda738">n_col_</a>;        </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  std::vector&lt;C&gt; V;  </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  <span class="keywordtype">int</span> comm_;         </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  <span class="keywordtype">int</span> n_row_;        </div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  <span class="keywordtype">int</span> n_col_;        </div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;};</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> C&gt;</div>
@@ -262,7 +280,6 @@ $(function() {
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html">mptensor::lapack::Matrix</a></div><div class="ttdoc">Non-distributed matrix using LAPACK.</div><div class="ttdef"><b>Definition:</b> matrix_lapack.hpp:44</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_a09ba7e4759cdd0e858624cc3563e4f46"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#a09ba7e4759cdd0e858624cc3563e4f46">mptensor::lapack::Matrix::print_info</a></div><div class="ttdeci">void print_info(std::ostream &amp;) const</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:213</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_a114b63e85d376862fb0dc3c21276d363"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#a114b63e85d376862fb0dc3c21276d363">mptensor::lapack::Matrix::global_col_index</a></div><div class="ttdeci">size_t global_col_index(size_t lindex_col) const</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:200</div></div>
-<div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_a1841a688d9aff7d8f83451b275f2d1b8"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#a1841a688d9aff7d8f83451b275f2d1b8">mptensor::lapack::Matrix::V</a></div><div class="ttdeci">std::vector&lt; C &gt; V</div><div class="ttdoc">Local strage.</div><div class="ttdef"><b>Definition:</b> matrix_lapack.hpp:108</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_a2ee61ad1efc8fc6f1c4486253f3467da"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#a2ee61ad1efc8fc6f1c4486253f3467da">mptensor::lapack::Matrix::n_row</a></div><div class="ttdeci">int n_row() const</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:137</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_a31b28dffa7c62f40f1b625c9fac8733d"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#a31b28dffa7c62f40f1b625c9fac8733d">mptensor::lapack::Matrix::get_comm_size</a></div><div class="ttdeci">int get_comm_size() const</div><div class="ttdoc">Always returns 1.</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:126</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_a424905d40064c6246db44142910261cc"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#a424905d40064c6246db44142910261cc">mptensor::lapack::Matrix::operator/=</a></div><div class="ttdeci">Matrix &amp; operator/=(C rhs)</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:238</div></div>
@@ -280,14 +297,11 @@ $(function() {
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_a8d82a6ca1713c758c01ffb35a49dc40c"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#a8d82a6ca1713c758c01ffb35a49dc40c">mptensor::lapack::Matrix::operator-=</a></div><div class="ttdeci">Matrix &amp; operator-=(const Matrix &amp;rhs)</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:225</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_a96a838b2f3ee8b5ee6695f095cc9d26b"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#a96a838b2f3ee8b5ee6695f095cc9d26b">mptensor::lapack::Matrix::Matrix</a></div><div class="ttdeci">Matrix()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:58</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_a9946d2febfb3e654a3b4c4c2f7bf15ec"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#a9946d2febfb3e654a3b4c4c2f7bf15ec">mptensor::lapack::Matrix::prep_local_to_global</a></div><div class="ttdeci">void prep_local_to_global() const</div><div class="ttdoc">Do nothing.</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:289</div></div>
-<div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_a9a2b6c558d528782f2c3b5d75d96315f"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#a9a2b6c558d528782f2c3b5d75d96315f">mptensor::lapack::Matrix::comm_</a></div><div class="ttdeci">int comm_</div><div class="ttdoc">Dummy variable. It is always 0.</div><div class="ttdef"><b>Definition:</b> matrix_lapack.hpp:109</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_a9ae5dbea97db37ac681fad5edc59e475"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#a9ae5dbea97db37ac681fad5edc59e475">mptensor::lapack::Matrix::global_row_index</a></div><div class="ttdeci">size_t global_row_index(size_t lindex_row) const</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:195</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_a9ead0622dc596ead6409f55c339d4dfc"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#a9ead0622dc596ead6409f55c339d4dfc">mptensor::lapack::Matrix::global_index</a></div><div class="ttdeci">void global_index(size_t i, size_t &amp;g_row, size_t &amp;g_col) const</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:147</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_aa1fd150267db3ed03f2685bdc8e8f3fc"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#aa1fd150267db3ed03f2685bdc8e8f3fc">mptensor::lapack::Matrix::operator[]</a></div><div class="ttdeci">const C &amp; operator[](size_t i) const</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:94</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_aa46c1f3293b50a45b31036fbd5b3af6e"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#aa46c1f3293b50a45b31036fbd5b3af6e">mptensor::lapack::Matrix::init</a></div><div class="ttdeci">void init(size_t n_row, size_t n_col)</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:205</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_aaaed55abaed0e7d23a4bb2d9c2b4dbfc"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#aaaed55abaed0e7d23a4bb2d9c2b4dbfc">mptensor::lapack::Matrix::local_row_size</a></div><div class="ttdeci">size_t local_row_size() const</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:175</div></div>
-<div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_aac9ad576ea3031ac07772c2b13dda738"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#aac9ad576ea3031ac07772c2b13dda738">mptensor::lapack::Matrix::n_col_</a></div><div class="ttdeci">int n_col_</div><div class="ttdoc">The number of columns.</div><div class="ttdef"><b>Definition:</b> matrix_lapack.hpp:111</div></div>
-<div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_ab03785fd4502ecfd8801107688f01776"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#ab03785fd4502ecfd8801107688f01776">mptensor::lapack::Matrix::n_row_</a></div><div class="ttdeci">int n_row_</div><div class="ttdoc">The number of rows.</div><div class="ttdef"><b>Definition:</b> matrix_lapack.hpp:110</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_ab0eb41ab57124b6c1b3f7776be84fb7c"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#ab0eb41ab57124b6c1b3f7776be84fb7c">mptensor::lapack::Matrix::local_col_index</a></div><div class="ttdeci">size_t local_col_index(size_t lindex) const</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:190</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_ab2780b4b24ed3d0d4cf2fcbf5776ace2"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#ab2780b4b24ed3d0d4cf2fcbf5776ace2">mptensor::lapack::Matrix::comm_type</a></div><div class="ttdeci">int comm_type</div><div class="ttdef"><b>Definition:</b> matrix_lapack.hpp:47</div></div>
 <div class="ttc" id="aclassmptensor_1_1lapack_1_1Matrix_html_ab8c90d9fabed7f4cafcc3a6b20efc5ac"><div class="ttname"><a href="classmptensor_1_1lapack_1_1Matrix.html#ab8c90d9fabed7f4cafcc3a6b20efc5ac">mptensor::lapack::Matrix::local_col_size</a></div><div class="ttdeci">size_t local_col_size() const</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:180</div></div>
@@ -319,17 +333,13 @@ $(function() {
 <div class="ttc" id="anamespacemptensor_1_1lapack_html_afb442b521a9f02e6b7b741298eb9b4e9"><div class="ttname"><a href="namespacemptensor_1_1lapack.html#afb442b521a9f02e6b7b741298eb9b4e9">mptensor::lapack::sum_matrix_data</a></div><div class="ttdeci">void sum_matrix_data(const Matrix&lt; C &gt; &amp;M, const std::vector&lt; int &gt; &amp;dest_rank, const std::vector&lt; size_t &gt; &amp;local_position, Matrix&lt; C &gt; &amp;M_new)</div><div class="ttdef"><b>Definition:</b> matrix_lapack_impl.hpp:357</div></div>
 <div class="ttc" id="anamespacemptensor_html"><div class="ttname"><a href="namespacemptensor.html">mptensor</a></div><div class="ttdef"><b>Definition:</b> complex.hpp:34</div></div>
 </div><!-- fragment --></div><!-- contents -->
-<!-- HTML footer for doxygen 1.8.8-->
+</div><!-- doc-content -->
 <!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_8a9c5dbf120b6aa8a5646a47ef1c5afa.html">mptensor</a></li><li class="navelem"><a class="el" href="dir_344d3327f0918cc7ccb814673fe60df8.html">lapack</a></li><li class="navelem"><a class="el" href="matrix__lapack_8hpp.html">matrix_lapack.hpp</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
 </div>
-</div>
-</div>
-</div>
-</div>
-<hr class="footer"/><address class="footer"><small>
-Generated on Tue May 9 2023 05:30:46 for mptensor by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.9.1
-</small></address>
 </body>
 </html>

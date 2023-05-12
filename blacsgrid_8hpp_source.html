@@ -1,52 +1,58 @@
-<!-- HTML header for doxygen 1.8.8-->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- HTML header for doxygen 1.9.1-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <!-- For Mobile Devices -->
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-        <meta name="generator" content="Doxygen 1.9.1"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <title>mptensor: blacsgrid.hpp Source File</title>
-        <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
-        <script type="text/javascript" src="dynsections.js"></script>
-        <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>mptensor: /home/runner/work/mptensor/mptensor/include/mptensor/scalapack/blacsgrid.hpp Source File</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-        <script type="text/x-mathjax-config">
+<script type="text/x-mathjax-config">
   MathJax.Hub.Config({
     extensions: ["tex2jax.js"],
     jax: ["input/TeX","output/HTML-CSS"],
 });
 </script>
-<script type="text/javascript" async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js"></script>
-        <link href="doxygen.css" rel="stylesheet" type="text/css" />
-        <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
-        <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="doxy-boot.js"></script>
-    </head>
-    <body>
-        <nav class="navbar navbar-default" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <div class="navbar-brand">
-                        <a href="index.html">
-                            <img src=mptensor_logo_w200.png height="30" class="d-inline-block align-top" alt="mptensor">
-                        </a>
-                        <small>v0.3.0</small>
-                    </div>
-                </div>
-            </div>
-        </nav>
-        <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-            <div class="content" id="content">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-12 panel " style="padding-bottom: 15px;">
-                            <div style="margin-bottom: 15px;">
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<!-- ... other metadata & script includes ... -->
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init();
+    DoxygenAwesomeFragmentCopyButton.init();
+    DoxygenAwesomeParagraphLink.init();
+</script>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="mptensor_logo_w200.png"/></td>
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">mptensor
+   &#160;<span id="projectnumber">v0.3.0</span>
+   </div>
+   <div id="projectbrief">Parallel Library for Tensor Network Methods</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
 <!-- end header part -->
 <!-- Generated by Doxygen 1.9.1 -->
 <script type="text/javascript">
@@ -64,6 +70,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('blacsgrid_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -78,11 +101,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_8a9c5dbf120b6aa8a5646a47ef1c5afa.html">mptensor</a></li><li class="navelem"><a class="el" href="dir_39ed1537a25321a84ddf2111c6d4ade3.html">scalapack</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">blacsgrid.hpp</div>  </div>
@@ -122,8 +140,8 @@ $(function() {
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <span class="comment">// std::vector&lt;int&gt; pnum2mpirank;</span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <span class="comment">// std::vector&lt;int&gt; mpirank2pnum;</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classmptensor_1_1scalapack_1_1BlacsGrid.html#ae84cb2833142e2cc5c97f0cd303580e4">init_grid</a>(<span class="keyword">const</span> MPI_Comm &amp;<a class="code" href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a7a796c94f5cada242454ed9603c5aa5c">comm</a>, <span class="keywordtype">int</span> <a class="code" href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a95ebf3248bdc91eacda35e44a2098df5">nprow</a>, <span class="keywordtype">int</span> <a class="code" href="classmptensor_1_1scalapack_1_1BlacsGrid.html#ab6b5af09e6caa45b0a5e257ba43c9029">npcol</a>);</div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a3544838bcd933ab8dd3489fe5f6c9289">   44</a></span>&#160;  <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a3544838bcd933ab8dd3489fe5f6c9289">is_initialized</a>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keywordtype">void</span> init_grid(<span class="keyword">const</span> MPI_Comm &amp;<a class="code" href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a7a796c94f5cada242454ed9603c5aa5c">comm</a>, <span class="keywordtype">int</span> <a class="code" href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a95ebf3248bdc91eacda35e44a2098df5">nprow</a>, <span class="keywordtype">int</span> <a class="code" href="classmptensor_1_1scalapack_1_1BlacsGrid.html#ab6b5af09e6caa45b0a5e257ba43c9029">npcol</a>);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">bool</span> is_initialized;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <a class="code" href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a722516c38b9458eb088bd554461c25f5">BlacsGrid</a>(<span class="keyword">const</span> MPI_Comm &amp;<a class="code" href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a7a796c94f5cada242454ed9603c5aa5c">comm</a>);</div>
@@ -160,7 +178,6 @@ $(function() {
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1BlacsGrid_html"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1BlacsGrid.html">mptensor::scalapack::BlacsGrid</a></div><div class="ttdef"><b>Definition:</b> blacsgrid.hpp:39</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1BlacsGrid_html_a2838ff2d4ebe454533389c582f04f7a0"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a2838ff2d4ebe454533389c582f04f7a0">mptensor::scalapack::BlacsGrid::mpisize</a></div><div class="ttdeci">int mpisize</div><div class="ttdef"><b>Definition:</b> blacsgrid.hpp:56</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1BlacsGrid_html_a31fc27f4d175d4521febaa886cddaf7d"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a31fc27f4d175d4521febaa886cddaf7d">mptensor::scalapack::BlacsGrid::exit</a></div><div class="ttdeci">static void exit()</div><div class="ttdef"><b>Definition:</b> blacsgrid.cc:142</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1BlacsGrid_html_a3544838bcd933ab8dd3489fe5f6c9289"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a3544838bcd933ab8dd3489fe5f6c9289">mptensor::scalapack::BlacsGrid::is_initialized</a></div><div class="ttdeci">static bool is_initialized</div><div class="ttdef"><b>Definition:</b> blacsgrid.hpp:44</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1BlacsGrid_html_a541f3238dceb0c00e1c9bf4a9e5c031c"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a541f3238dceb0c00e1c9bf4a9e5c031c">mptensor::scalapack::BlacsGrid::myrank</a></div><div class="ttdeci">int myrank</div><div class="ttdef"><b>Definition:</b> blacsgrid.hpp:56</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1BlacsGrid_html_a722516c38b9458eb088bd554461c25f5"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a722516c38b9458eb088bd554461c25f5">mptensor::scalapack::BlacsGrid::BlacsGrid</a></div><div class="ttdeci">BlacsGrid(const MPI_Comm &amp;comm)</div><div class="ttdef"><b>Definition:</b> blacsgrid.cc:56</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1BlacsGrid_html_a7a796c94f5cada242454ed9603c5aa5c"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1BlacsGrid.html#a7a796c94f5cada242454ed9603c5aa5c">mptensor::scalapack::BlacsGrid::comm</a></div><div class="ttdeci">MPI_Comm comm</div><div class="ttdef"><b>Definition:</b> blacsgrid.hpp:52</div></div>
@@ -173,20 +190,15 @@ $(function() {
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1BlacsGrid_html_ac99fa54064c4abb374ae5296bc047a39"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1BlacsGrid.html#ac99fa54064c4abb374ae5296bc047a39">mptensor::scalapack::BlacsGrid::mypnum</a></div><div class="ttdeci">int mypnum</div><div class="ttdef"><b>Definition:</b> blacsgrid.hpp:55</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1BlacsGrid_html_addb312e44f442bc066b46d124b230e00"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1BlacsGrid.html#addb312e44f442bc066b46d124b230e00">mptensor::scalapack::BlacsGrid::ictxt</a></div><div class="ttdeci">int ictxt</div><div class="ttdef"><b>Definition:</b> blacsgrid.hpp:53</div></div>
 <div class="ttc" id="aclassmptensor_1_1scalapack_1_1BlacsGrid_html_ae61a7abb9d9ed4aa717e38993f271cd0"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1BlacsGrid.html#ae61a7abb9d9ed4aa717e38993f271cd0">mptensor::scalapack::BlacsGrid::init</a></div><div class="ttdeci">static void init()</div><div class="ttdef"><b>Definition:</b> blacsgrid.cc:111</div></div>
-<div class="ttc" id="aclassmptensor_1_1scalapack_1_1BlacsGrid_html_ae84cb2833142e2cc5c97f0cd303580e4"><div class="ttname"><a href="classmptensor_1_1scalapack_1_1BlacsGrid.html#ae84cb2833142e2cc5c97f0cd303580e4">mptensor::scalapack::BlacsGrid::init_grid</a></div><div class="ttdeci">void init_grid(const MPI_Comm &amp;comm, int nprow, int npcol)</div><div class="ttdef"><b>Definition:</b> blacsgrid.cc:65</div></div>
 <div class="ttc" id="anamespacemptensor_html"><div class="ttname"><a href="namespacemptensor.html">mptensor</a></div><div class="ttdef"><b>Definition:</b> complex.hpp:34</div></div>
 </div><!-- fragment --></div><!-- contents -->
-<!-- HTML footer for doxygen 1.8.8-->
+</div><!-- doc-content -->
 <!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_8a9c5dbf120b6aa8a5646a47ef1c5afa.html">mptensor</a></li><li class="navelem"><a class="el" href="dir_39ed1537a25321a84ddf2111c6d4ade3.html">scalapack</a></li><li class="navelem"><a class="el" href="blacsgrid_8hpp.html">blacsgrid.hpp</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
 </div>
-</div>
-</div>
-</div>
-</div>
-<hr class="footer"/><address class="footer"><small>
-Generated on Tue May 9 2023 05:30:46 for mptensor by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.9.1
-</small></address>
 </body>
 </html>

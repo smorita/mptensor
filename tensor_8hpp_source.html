@@ -1,52 +1,58 @@
-<!-- HTML header for doxygen 1.8.8-->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- HTML header for doxygen 1.9.1-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <!-- For Mobile Devices -->
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-        <meta name="generator" content="Doxygen 1.9.1"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <title>mptensor: tensor.hpp Source File</title>
-        <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
-        <script type="text/javascript" src="dynsections.js"></script>
-        <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>mptensor: /home/runner/work/mptensor/mptensor/include/mptensor/tensor.hpp Source File</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-        <script type="text/x-mathjax-config">
+<script type="text/x-mathjax-config">
   MathJax.Hub.Config({
     extensions: ["tex2jax.js"],
     jax: ["input/TeX","output/HTML-CSS"],
 });
 </script>
-<script type="text/javascript" async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js"></script>
-        <link href="doxygen.css" rel="stylesheet" type="text/css" />
-        <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
-        <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="doxy-boot.js"></script>
-    </head>
-    <body>
-        <nav class="navbar navbar-default" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <div class="navbar-brand">
-                        <a href="index.html">
-                            <img src=mptensor_logo_w200.png height="30" class="d-inline-block align-top" alt="mptensor">
-                        </a>
-                        <small>v0.3.0</small>
-                    </div>
-                </div>
-            </div>
-        </nav>
-        <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-            <div class="content" id="content">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-12 panel " style="padding-bottom: 15px;">
-                            <div style="margin-bottom: 15px;">
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<!-- ... other metadata & script includes ... -->
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init();
+    DoxygenAwesomeFragmentCopyButton.init();
+    DoxygenAwesomeParagraphLink.init();
+</script>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="mptensor_logo_w200.png"/></td>
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">mptensor
+   &#160;<span id="projectnumber">v0.3.0</span>
+   </div>
+   <div id="projectbrief">Parallel Library for Tensor Network Methods</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
 <!-- end header part -->
 <!-- Generated by Doxygen 1.9.1 -->
 <script type="text/javascript">
@@ -64,6 +70,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('tensor_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -78,11 +101,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_8a9c5dbf120b6aa8a5646a47ef1c5afa.html">mptensor</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">tensor.hpp</div>  </div>
@@ -139,7 +157,7 @@ $(function() {
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  <span class="keyword">explicit</span> <a class="code" href="classmptensor_1_1Tensor.html#aedbd0391fe651e9b3c32968a740f6611">Tensor</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Shape</a> &amp;);</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="keyword">explicit</span> <a class="code" href="classmptensor_1_1Tensor.html#aedbd0391fe651e9b3c32968a740f6611">Tensor</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Tensor.html#aaf73556a0972ba543aeca688ec5e5cd1">comm_type</a> &amp;);</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  <a class="code" href="classmptensor_1_1Tensor.html#aedbd0391fe651e9b3c32968a740f6611">Tensor</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Tensor.html#aaf73556a0972ba543aeca688ec5e5cd1">comm_type</a> &amp;, <span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Shape</a> &amp;);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <a class="code" href="classmptensor_1_1Tensor.html#aedbd0391fe651e9b3c32968a740f6611">Tensor</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Tensor.html#aaf73556a0972ba543aeca688ec5e5cd1">comm_type</a> &amp;, <span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Shape</a> &amp;, <span class="keywordtype">size_t</span> <a class="code" href="classmptensor_1_1Tensor.html#a665191d9150af031a31f2a950e31fdfe">upper_rank</a>);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <a class="code" href="classmptensor_1_1Tensor.html#aedbd0391fe651e9b3c32968a740f6611">Tensor</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Tensor.html#aaf73556a0972ba543aeca688ec5e5cd1">comm_type</a> &amp;, <span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Shape</a> &amp;, <span class="keywordtype">size_t</span> upper_rank);</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <a class="code" href="classmptensor_1_1Tensor.html#aedbd0391fe651e9b3c32968a740f6611">Tensor</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Tensor.html#aaf73556a0972ba543aeca688ec5e5cd1">comm_type</a> &amp;, <span class="keyword">const</span> <a class="code" href="classmptensor_1_1Tensor.html">Tensor&lt;lapack::Matrix, C&gt;</a> &amp;);</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <a class="code" href="classmptensor_1_1Tensor.html#aedbd0391fe651e9b3c32968a740f6611">Tensor</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Tensor.html#aaf73556a0972ba543aeca688ec5e5cd1">comm_type</a> &amp;, <span class="keyword">const</span> std::vector&lt;C&gt; &amp;);</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
@@ -222,25 +240,25 @@ $(function() {
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                           <span class="keywordtype">size_t</span> &amp;local_idx) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00148"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#a0859212e02a5f168ed66598e16fff73f">  148</a></span>&#160;  Matrix&lt;C&gt; <a class="code" href="classmptensor_1_1Tensor.html#a0859212e02a5f168ed66598e16fff73f">Mat</a>;  </div>
-<div class="line"><a name="l00149"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#a1056c6d2d296f6637a99de59e168029f">  149</a></span>&#160;  <a class="code" href="classmptensor_1_1Index.html">Shape</a> <a class="code" href="classmptensor_1_1Tensor.html#a1056c6d2d296f6637a99de59e168029f">Dim</a>;      </div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  Matrix&lt;C&gt; Mat;  </div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  <a class="code" href="classmptensor_1_1Index.html">Shape</a> Dim;      </div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#a665191d9150af031a31f2a950e31fdfe">  151</a></span>&#160;  <span class="keywordtype">size_t</span> <a class="code" href="classmptensor_1_1Tensor.html#a665191d9150af031a31f2a950e31fdfe">upper_rank</a>;  </div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  <span class="keywordtype">size_t</span> upper_rank;  </div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
-<div class="line"><a name="l00159"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#adedb83cbcc19a60dc21fad63a3296211">  159</a></span>&#160;  <a class="code" href="classmptensor_1_1Index.html">Axes</a> <a class="code" href="classmptensor_1_1Tensor.html#adedb83cbcc19a60dc21fad63a3296211">axes_map</a>;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;  <a class="code" href="classmptensor_1_1Index.html">Axes</a> axes_map;</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classmptensor_1_1Tensor.html#ace94ef44e8ed46fa274361d59cf3cc04">init</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Shape</a> &amp;, <span class="keywordtype">size_t</span> <a class="code" href="classmptensor_1_1Tensor.html#a665191d9150af031a31f2a950e31fdfe">upper_rank</a>);</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classmptensor_1_1Tensor.html#ace94ef44e8ed46fa274361d59cf3cc04">init</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Shape</a> &amp;, <span class="keywordtype">size_t</span> <a class="code" href="classmptensor_1_1Tensor.html#a665191d9150af031a31f2a950e31fdfe">upper_rank</a>, <span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Axes</a> &amp;<a class="code" href="classmptensor_1_1Tensor.html#a34b4c1f78107dc8ac31d179838f21871">map</a>);</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classmptensor_1_1Tensor.html#aeaa593a9ebdad8849983f1f78709ae49">change_configuration</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> new_upper_rank,</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;  <span class="keywordtype">void</span> init(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Shape</a> &amp;, <span class="keywordtype">size_t</span> upper_rank);</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;  <span class="keywordtype">void</span> init(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Shape</a> &amp;, <span class="keywordtype">size_t</span> upper_rank, <span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Axes</a> &amp;<a class="code" href="classmptensor_1_1Tensor.html#a34b4c1f78107dc8ac31d179838f21871">map</a>);</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  <span class="keywordtype">void</span> change_configuration(<span class="keyword">const</span> <span class="keywordtype">size_t</span> new_upper_rank,</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                            <span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Axes</a> &amp;new_axes_map);</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classmptensor_1_1Tensor.html#a464e570b8fab589b4ed96cac37a88067">local_index</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Index</a> &amp;, <span class="keywordtype">size_t</span> &amp;i) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;  <span class="keywordtype">bool</span> local_index(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Index</a> &amp;, <span class="keywordtype">size_t</span> &amp;i) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
-<div class="line"><a name="l00167"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#a65a5d212ff8f2fd36f2ec6fefe20feaf">  167</a></span>&#160;  <span class="keyword">mutable</span> std::vector&lt;size_t&gt; <a class="code" href="classmptensor_1_1Tensor.html#a65a5d212ff8f2fd36f2ec6fefe20feaf">l2g_map_row</a>;</div>
-<div class="line"><a name="l00168"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#a4172dc0d3f376cb064cdb148a2461dea">  168</a></span>&#160;  <span class="keyword">mutable</span> std::vector&lt;size_t&gt; <a class="code" href="classmptensor_1_1Tensor.html#a4172dc0d3f376cb064cdb148a2461dea">l2g_map_col</a>;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;  <span class="keyword">mutable</span> std::vector&lt;size_t&gt; l2g_map_row;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;  <span class="keyword">mutable</span> std::vector&lt;size_t&gt; l2g_map_col;</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classmptensor_1_1Tensor.html#a48cb620b020ea1b75ac896a162694d93">save_ver_0_2</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="common_8hpp.html#ae2ad82de546906671630bd9bc3c9c294">filename</a>) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classmptensor_1_1Tensor.html#a893905b112de0fd74b17c7012ec359c0">load_ver_0_2</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="common_8hpp.html#ae2ad82de546906671630bd9bc3c9c294">filename</a>);</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;  <span class="keywordtype">void</span> save_ver_0_2(<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="common_8hpp.html#ae2ad82de546906671630bd9bc3c9c294">filename</a>) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;  <span class="keywordtype">void</span> load_ver_0_2(<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="common_8hpp.html#ae2ad82de546906671630bd9bc3c9c294">filename</a>);</div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;};</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="comment">/* Operations */</span></div>
@@ -397,8 +415,6 @@ $(function() {
 <div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// _TENSOR_HPP_</span></div>
 <div class="ttc" id="aclassmptensor_1_1Index_html"><div class="ttname"><a href="classmptensor_1_1Index.html">mptensor::Index</a></div><div class="ttdef"><b>Definition:</b> index.hpp:39</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html"><div class="ttname"><a href="classmptensor_1_1Tensor.html">mptensor::Tensor</a></div><div class="ttdoc">Tensor class. The main object of mptensor.</div><div class="ttdef"><b>Definition:</b> tensor.hpp:54</div></div>
-<div class="ttc" id="aclassmptensor_1_1Tensor_html_a0859212e02a5f168ed66598e16fff73f"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a0859212e02a5f168ed66598e16fff73f">mptensor::Tensor::Mat</a></div><div class="ttdeci">Matrix&lt; C &gt; Mat</div><div class="ttdoc">local storage.</div><div class="ttdef"><b>Definition:</b> tensor.hpp:148</div></div>
-<div class="ttc" id="aclassmptensor_1_1Tensor_html_a1056c6d2d296f6637a99de59e168029f"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a1056c6d2d296f6637a99de59e168029f">mptensor::Tensor::Dim</a></div><div class="ttdeci">Shape Dim</div><div class="ttdoc">Shape of tensor.</div><div class="ttdef"><b>Definition:</b> tensor.hpp:149</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a12d78d504dd2afd92298b4d1bb840a81"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a12d78d504dd2afd92298b4d1bb840a81">mptensor::Tensor::set_value</a></div><div class="ttdeci">void set_value(const Index &amp;idx, C val)</div><div class="ttdoc">Set an element.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:564</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a13cc25859965d73d3b956b13e3030a17"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a13cc25859965d73d3b956b13e3030a17">mptensor::Tensor::print_info</a></div><div class="ttdeci">void print_info(std::ostream &amp;out, const std::string &amp;tag=&quot;&quot;) const</div><div class="ttdoc">Output information of tensor.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:418</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a19f1ae095b8999437b446e3fd3b94ea5"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a19f1ae095b8999437b446e3fd3b94ea5">mptensor::Tensor::rank</a></div><div class="ttdeci">size_t rank() const</div><div class="ttdoc">Rank of tensor.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:164</div></div>
@@ -414,21 +430,15 @@ $(function() {
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a398edfe3ae7d9db8d252d050ed3adebe"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a398edfe3ae7d9db8d252d050ed3adebe">mptensor::Tensor::get_matrix</a></div><div class="ttdeci">const Matrix&lt; C &gt; &amp; get_matrix() const</div><div class="ttdoc">distributed Matrix</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:197</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a3d47ba84e651c2d734ad48f0bfd07e3e"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a3d47ba84e651c2d734ad48f0bfd07e3e">mptensor::Tensor::set_slice</a></div><div class="ttdeci">Tensor&lt; Matrix, C &gt; &amp; set_slice(const Tensor &amp;a, size_t n_axes, size_t i_begin, size_t i_end)</div><div class="ttdoc">Inverse of slice().</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:840</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a3e43ac3c83db3d4cbca1252f8052e4f2"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a3e43ac3c83db3d4cbca1252f8052e4f2">mptensor::Tensor::local_position</a></div><div class="ttdeci">void local_position(const Index &amp;idx, int &amp;comm_rank, size_t &amp;local_idx) const</div><div class="ttdoc">Calculate rank which has the given global index and its local index.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:578</div></div>
-<div class="ttc" id="aclassmptensor_1_1Tensor_html_a4172dc0d3f376cb064cdb148a2461dea"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a4172dc0d3f376cb064cdb148a2461dea">mptensor::Tensor::l2g_map_col</a></div><div class="ttdeci">std::vector&lt; size_t &gt; l2g_map_col</div><div class="ttdef"><b>Definition:</b> tensor.hpp:168</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a441872edc0ec1f3f0d9fd2693996de59"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a441872edc0ec1f3f0d9fd2693996de59">mptensor::Tensor::operator=</a></div><div class="ttdeci">Tensor&lt; Matrix, C &gt; &amp; operator=(C rhs)</div><div class="ttdoc">Initialize all elements by rhs.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:1007</div></div>
-<div class="ttc" id="aclassmptensor_1_1Tensor_html_a464e570b8fab589b4ed96cac37a88067"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a464e570b8fab589b4ed96cac37a88067">mptensor::Tensor::local_index</a></div><div class="ttdeci">bool local_index(const Index &amp;, size_t &amp;i) const</div><div class="ttdoc">Convert global index to local index.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:464</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a472f1154f5e061e7aaef556dcaab5820"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a472f1154f5e061e7aaef556dcaab5820">mptensor::Tensor::value_type</a></div><div class="ttdeci">C value_type</div><div class="ttdoc">double or complex</div><div class="ttdef"><b>Definition:</b> tensor.hpp:56</div></div>
-<div class="ttc" id="aclassmptensor_1_1Tensor_html_a48cb620b020ea1b75ac896a162694d93"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a48cb620b020ea1b75ac896a162694d93">mptensor::Tensor::save_ver_0_2</a></div><div class="ttdeci">void save_ver_0_2(const char *filename) const</div><div class="ttdoc">Save a tensor to files using the old version interface (&lt;= 0.2).</div><div class="ttdef"><b>Definition:</b> save.hpp:106</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a4d9962d6e428468d02c417572f80c724"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a4d9962d6e428468d02c417572f80c724">mptensor::Tensor::gather</a></div><div class="ttdeci">Tensor&lt; lapack::Matrix, C &gt; gather()</div><div class="ttdoc">Gather all elements into a non-distributed tensor.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:949</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a60776a0b19829869a153ba6b4d01875d"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a60776a0b19829869a153ba6b4d01875d">mptensor::Tensor::make_l2g_map</a></div><div class="ttdeci">void make_l2g_map() const</div><div class="ttdoc">Preprocess for fast conversion from local index to global one.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:258</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a626583047e536e62b3137119cc3c644a"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a626583047e536e62b3137119cc3c644a">mptensor::Tensor::local_size</a></div><div class="ttdeci">size_t local_size() const</div><div class="ttdoc">Size of local storage.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:179</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a63dc425e96ecc3b10fcbd50e4f8feb03"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a63dc425e96ecc3b10fcbd50e4f8feb03">mptensor::Tensor::global_index_l2g_map</a></div><div class="ttdeci">void global_index_l2g_map(size_t lindex, size_t gindex[]) const</div><div class="ttdoc">Convert local index to global index using l2g_map.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:314</div></div>
-<div class="ttc" id="aclassmptensor_1_1Tensor_html_a65a5d212ff8f2fd36f2ec6fefe20feaf"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a65a5d212ff8f2fd36f2ec6fefe20feaf">mptensor::Tensor::l2g_map_row</a></div><div class="ttdeci">std::vector&lt; size_t &gt; l2g_map_row</div><div class="ttdef"><b>Definition:</b> tensor.hpp:167</div></div>
-<div class="ttc" id="aclassmptensor_1_1Tensor_html_a665191d9150af031a31f2a950e31fdfe"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a665191d9150af031a31f2a950e31fdfe">mptensor::Tensor::upper_rank</a></div><div class="ttdeci">size_t upper_rank</div><div class="ttdoc">Upper rank for matrix representation.</div><div class="ttdef"><b>Definition:</b> tensor.hpp:151</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a6b5b26896d5d1ae5794c9c1eeb122b6e"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a6b5b26896d5d1ae5794c9c1eeb122b6e">mptensor::Tensor::flatten</a></div><div class="ttdeci">std::vector&lt; C &gt; flatten()</div><div class="ttdoc">Return a copy of the flattened vector.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:965</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a77407a60b9bcbd1c7ec941a6f8f9218d"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a77407a60b9bcbd1c7ec941a6f8f9218d">mptensor::Tensor::get_comm_rank</a></div><div class="ttdeci">int get_comm_rank() const</div><div class="ttdoc">Rank of process.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:222</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a79685236943cf75de6042515f3632e3b"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a79685236943cf75de6042515f3632e3b">mptensor::Tensor::multiply_vector</a></div><div class="ttdeci">Tensor&lt; Matrix, C &gt; &amp; multiply_vector(const std::vector&lt; D &gt; &amp;vec, size_t n_axes)</div><div class="ttdoc">Element-wise vector multiplication.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:694</div></div>
-<div class="ttc" id="aclassmptensor_1_1Tensor_html_a893905b112de0fd74b17c7012ec359c0"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a893905b112de0fd74b17c7012ec359c0">mptensor::Tensor::load_ver_0_2</a></div><div class="ttdeci">void load_ver_0_2(const char *filename)</div><div class="ttdoc">Load a tensor from files using the old version interface (&lt;= 0.2).</div><div class="ttdef"><b>Definition:</b> load.hpp:162</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a8d6267bb42d5e1138d60ecf386c08e21"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a8d6267bb42d5e1138d60ecf386c08e21">mptensor::Tensor::get_comm_size</a></div><div class="ttdeci">int get_comm_size() const</div><div class="ttdoc">Size of communicator.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:216</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a93cdd3c3801cb061e339ab9f151c073d"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a93cdd3c3801cb061e339ab9f151c073d">mptensor::Tensor::operator*=</a></div><div class="ttdeci">Tensor&lt; Matrix, C &gt; &amp; operator*=(C rhs)</div><div class="ttdoc">Scalar-multiplication assignment.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:993</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_a94ee9b6bdec2365a45f960c4e7eb3ab9"><div class="ttname"><a href="classmptensor_1_1Tensor.html#a94ee9b6bdec2365a45f960c4e7eb3ab9">mptensor::Tensor::get_axes_map</a></div><div class="ttdeci">const Axes &amp; get_axes_map() const</div><div class="ttdoc">Map of axes for lazy evaluation of transpose.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:191</div></div>
@@ -438,13 +448,10 @@ $(function() {
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_aaf73556a0972ba543aeca688ec5e5cd1"><div class="ttname"><a href="classmptensor_1_1Tensor.html#aaf73556a0972ba543aeca688ec5e5cd1">mptensor::Tensor::comm_type</a></div><div class="ttdeci">Matrix&lt; C &gt;::comm_type comm_type</div><div class="ttdoc">type of communicator.</div><div class="ttdef"><b>Definition:</b> tensor.hpp:58</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_ab329b474229383b39d4d37709922d26f"><div class="ttname"><a href="classmptensor_1_1Tensor.html#ab329b474229383b39d4d37709922d26f">mptensor::Tensor::shape</a></div><div class="ttdeci">const Shape &amp; shape() const</div><div class="ttdoc">Shape of tensor.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:158</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_ac6df2376ea67c2b4e5e864fcf6c0821c"><div class="ttname"><a href="classmptensor_1_1Tensor.html#ac6df2376ea67c2b4e5e864fcf6c0821c">mptensor::Tensor::operator-=</a></div><div class="ttdeci">Tensor&lt; Matrix, C &gt; &amp; operator-=(const Tensor &amp;rhs)</div><div class="ttdoc">Subtraction assignment.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:984</div></div>
-<div class="ttc" id="aclassmptensor_1_1Tensor_html_ace94ef44e8ed46fa274361d59cf3cc04"><div class="ttname"><a href="classmptensor_1_1Tensor.html#ace94ef44e8ed46fa274361d59cf3cc04">mptensor::Tensor::init</a></div><div class="ttdeci">void init(const Shape &amp;, size_t upper_rank)</div><div class="ttdoc">Initialization.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:384</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_acfe44c70c6eb10584bc68013c578fa0a"><div class="ttname"><a href="classmptensor_1_1Tensor.html#acfe44c70c6eb10584bc68013c578fa0a">mptensor::Tensor::get_upper_rank</a></div><div class="ttdeci">size_t get_upper_rank() const</div><div class="ttdoc">Upper rank for matrix representation.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:185</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_ad2f2988417378ff40c36997ed9ae9866"><div class="ttname"><a href="classmptensor_1_1Tensor.html#ad2f2988417378ff40c36997ed9ae9866">mptensor::Tensor::operator+=</a></div><div class="ttdeci">Tensor&lt; Matrix, C &gt; &amp; operator+=(const Tensor &amp;rhs)</div><div class="ttdoc">Addition assignment.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:975</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_adaf52d43278ca27995590c68eaffadcd"><div class="ttname"><a href="classmptensor_1_1Tensor.html#adaf52d43278ca27995590c68eaffadcd">mptensor::Tensor::save</a></div><div class="ttdeci">void save(const std::string &amp;filename) const</div><div class="ttdoc">Save a tensor to files.</div><div class="ttdef"><b>Definition:</b> save.hpp:53</div></div>
-<div class="ttc" id="aclassmptensor_1_1Tensor_html_adedb83cbcc19a60dc21fad63a3296211"><div class="ttname"><a href="classmptensor_1_1Tensor.html#adedb83cbcc19a60dc21fad63a3296211">mptensor::Tensor::axes_map</a></div><div class="ttdeci">Axes axes_map</div><div class="ttdoc">Map of axes for lazy evaluation of transpose.</div><div class="ttdef"><b>Definition:</b> tensor.hpp:159</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_ae18b1a50a693462062ba1c69a7f2b1a4"><div class="ttname"><a href="classmptensor_1_1Tensor.html#ae18b1a50a693462062ba1c69a7f2b1a4">mptensor::Tensor::global_index_l2g_map_transpose</a></div><div class="ttdeci">void global_index_l2g_map_transpose(size_t lindex, const size_t axes_trans[], size_t index_new[]) const</div><div class="ttdoc">Convert local index to global index of transposed tensor using l2g_map.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:347</div></div>
-<div class="ttc" id="aclassmptensor_1_1Tensor_html_aeaa593a9ebdad8849983f1f78709ae49"><div class="ttname"><a href="classmptensor_1_1Tensor.html#aeaa593a9ebdad8849983f1f78709ae49">mptensor::Tensor::change_configuration</a></div><div class="ttdeci">void change_configuration(const size_t new_upper_rank, const Axes &amp;new_axes_map)</div><div class="ttdoc">Change the upper rank and the axes map.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:605</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_aedbd0391fe651e9b3c32968a740f6611"><div class="ttname"><a href="classmptensor_1_1Tensor.html#aedbd0391fe651e9b3c32968a740f6611">mptensor::Tensor::Tensor</a></div><div class="ttdeci">Tensor()</div><div class="ttdoc">Default constructor of tensor.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:70</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_af54efb34dcf38d9386b29347a543371e"><div class="ttname"><a href="classmptensor_1_1Tensor.html#af54efb34dcf38d9386b29347a543371e">mptensor::Tensor::matrix_type</a></div><div class="ttdeci">Matrix&lt; C &gt; matrix_type</div><div class="ttdoc">type of Matrix class</div><div class="ttdef"><b>Definition:</b> tensor.hpp:57</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_afd03a8861be2dd9210ab9ec25372acec"><div class="ttname"><a href="classmptensor_1_1Tensor.html#afd03a8861be2dd9210ab9ec25372acec">mptensor::Tensor::operator[]</a></div><div class="ttdeci">const C &amp; operator[](size_t local_idx) const</div><div class="ttdoc">Const array subscript operator.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:231</div></div>
@@ -485,17 +492,13 @@ $(function() {
 <div class="ttc" id="asave_8hpp_html"><div class="ttname"><a href="save_8hpp.html">save.hpp</a></div><div class="ttdoc">Header file of saver.</div></div>
 <div class="ttc" id="atensor__impl_8hpp_html"><div class="ttname"><a href="tensor__impl_8hpp.html">tensor_impl.hpp</a></div><div class="ttdoc">Implementation of tensor class.</div></div>
 </div><!-- fragment --></div><!-- contents -->
-<!-- HTML footer for doxygen 1.8.8-->
+</div><!-- doc-content -->
 <!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_8a9c5dbf120b6aa8a5646a47ef1c5afa.html">mptensor</a></li><li class="navelem"><a class="el" href="tensor_8hpp.html">tensor.hpp</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
 </div>
-</div>
-</div>
-</div>
-</div>
-<hr class="footer"/><address class="footer"><small>
-Generated on Tue May 9 2023 05:30:46 for mptensor by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.9.1
-</small></address>
 </body>
 </html>

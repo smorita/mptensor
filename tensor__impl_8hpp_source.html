@@ -1,52 +1,58 @@
-<!-- HTML header for doxygen 1.8.8-->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- HTML header for doxygen 1.9.1-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <!-- For Mobile Devices -->
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-        <meta name="generator" content="Doxygen 1.9.1"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <title>mptensor: tensor_impl.hpp Source File</title>
-        <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
-        <script type="text/javascript" src="dynsections.js"></script>
-        <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>mptensor: /home/runner/work/mptensor/mptensor/include/mptensor/tensor_impl.hpp Source File</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-        <script type="text/x-mathjax-config">
+<script type="text/x-mathjax-config">
   MathJax.Hub.Config({
     extensions: ["tex2jax.js"],
     jax: ["input/TeX","output/HTML-CSS"],
 });
 </script>
-<script type="text/javascript" async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js"></script>
-        <link href="doxygen.css" rel="stylesheet" type="text/css" />
-        <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
-        <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="doxy-boot.js"></script>
-    </head>
-    <body>
-        <nav class="navbar navbar-default" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <div class="navbar-brand">
-                        <a href="index.html">
-                            <img src=mptensor_logo_w200.png height="30" class="d-inline-block align-top" alt="mptensor">
-                        </a>
-                        <small>v0.3.0</small>
-                    </div>
-                </div>
-            </div>
-        </nav>
-        <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-            <div class="content" id="content">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-12 panel " style="padding-bottom: 15px;">
-                            <div style="margin-bottom: 15px;">
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<!-- ... other metadata & script includes ... -->
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init();
+    DoxygenAwesomeFragmentCopyButton.init();
+    DoxygenAwesomeParagraphLink.init();
+</script>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="mptensor_logo_w200.png"/></td>
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">mptensor
+   &#160;<span id="projectnumber">v0.3.0</span>
+   </div>
+   <div id="projectbrief">Parallel Library for Tensor Network Methods</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
 <!-- end header part -->
 <!-- Generated by Doxygen 1.9.1 -->
 <script type="text/javascript">
@@ -64,6 +70,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('tensor__impl_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -78,11 +101,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_8a9c5dbf120b6aa8a5646a47ef1c5afa.html">mptensor</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">tensor_impl.hpp</div>  </div>
@@ -162,7 +180,7 @@ $(function() {
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>&gt; <span class="keyword">class </span>Matrix, <span class="keyword">typename</span> C&gt;</div>
 <div class="line"><a name="l00098"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#a8fe3d982300db129ea04ed49453794a4">   98</a></span>&#160;<a class="code" href="classmptensor_1_1Tensor.html">Tensor&lt;Matrix, C&gt;::Tensor</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Tensor.html#aaf73556a0972ba543aeca688ec5e5cd1">comm_type</a> &amp;comm, <span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Shape</a> &amp;<a class="code" href="namespaceoutput.html#afdce3b77ca23af32bf74486b08613edf">shape</a>)</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    : Mat(comm) {</div>
-<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#aa7550a4ae78d8f316370c723d28ba178">  100</a></span>&#160;  <a class="code" href="classmptensor_1_1Tensor.html#ace94ef44e8ed46fa274361d59cf3cc04">init</a>(<a class="code" href="classmptensor_1_1Tensor.html#ab329b474229383b39d4d37709922d26f">shape</a>, <a class="code" href="classmptensor_1_1Tensor.html#ab329b474229383b39d4d37709922d26f">shape</a>.<a class="code" href="classmptensor_1_1Index.html#afbd9d70b45b6bda2d0883d2f7b14849a">size</a>() / 2);</div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#aa7550a4ae78d8f316370c723d28ba178">  100</a></span>&#160;  init(<a class="code" href="classmptensor_1_1Tensor.html#ab329b474229383b39d4d37709922d26f">shape</a>, <a class="code" href="classmptensor_1_1Tensor.html#ab329b474229383b39d4d37709922d26f">shape</a>.<a class="code" href="classmptensor_1_1Index.html#afbd9d70b45b6bda2d0883d2f7b14849a">size</a>() / 2);</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;};</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
@@ -207,10 +225,10 @@ $(function() {
 <div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#ab329b474229383b39d4d37709922d26f">  158</a></span>&#160;<span class="keyword">inline</span> <span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Shape</a> &amp;<a class="code" href="namespaceoutput.html#afdce3b77ca23af32bf74486b08613edf">Tensor&lt;Matrix, C&gt;::shape</a>()<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;  <span class="keywordflow">return</span> Dim;</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;};</div>
-<div class="line"><a name="l00161"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#ace94ef44e8ed46fa274361d59cf3cc04">  161</a></span>&#160; </div>
-<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#aeaa593a9ebdad8849983f1f78709ae49">  163</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>&gt; <span class="keyword">class </span>Matrix, <span class="keyword">typename</span> C&gt;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>&gt; <span class="keyword">class </span>Matrix, <span class="keyword">typename</span> C&gt;</div>
 <div class="line"><a name="l00164"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#a19f1ae095b8999437b446e3fd3b94ea5">  164</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code" href="classmptensor_1_1Tensor.html">Tensor&lt;Matrix, C&gt;::rank</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00165"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#a464e570b8fab589b4ed96cac37a88067">  165</a></span>&#160;  <span class="keywordflow">return</span> Dim.size();</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;  <span class="keywordflow">return</span> Dim.size();</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;};</div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
@@ -388,17 +406,17 @@ $(function() {
 <div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160; </div>
 <div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160; </div>
 <div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>&gt; <span class="keyword">class </span>Matrix, <span class="keyword">typename</span> C&gt;</div>
-<div class="line"><a name="l00384"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#ace94ef44e8ed46fa274361d59cf3cc04">  384</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classmptensor_1_1Tensor.html">Tensor&lt;Matrix, C&gt;::init</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Shape</a> &amp;<a class="code" href="namespaceoutput.html#afdce3b77ca23af32bf74486b08613edf">shape</a>, <span class="keywordtype">size_t</span> urank) {</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classmptensor_1_1Tensor.html">Tensor&lt;Matrix, C&gt;::init</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Shape</a> &amp;<a class="code" href="namespaceoutput.html#afdce3b77ca23af32bf74486b08613edf">shape</a>, <span class="keywordtype">size_t</span> urank) {</div>
 <div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;  init(<a class="code" href="namespaceoutput.html#afdce3b77ca23af32bf74486b08613edf">shape</a>, urank, <a class="code" href="namespacemptensor.html#a6b444611f676dfab6ea443d6a099249f">range</a>(<a class="code" href="namespaceoutput.html#afdce3b77ca23af32bf74486b08613edf">shape</a>.size()));</div>
 <div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;}</div>
 <div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160; </div>
 <div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160; </div>
 <div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>&gt; <span class="keyword">class </span>Matrix, <span class="keyword">typename</span> C&gt;</div>
-<div class="line"><a name="l00395"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#a8cf7c223ef445b957fcd50115a232d9c">  395</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classmptensor_1_1Tensor.html">Tensor&lt;Matrix, C&gt;::init</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Shape</a> &amp;<a class="code" href="namespaceoutput.html#afdce3b77ca23af32bf74486b08613edf">shape</a>, <span class="keywordtype">size_t</span> urank,</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;                             <span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Axes</a> &amp;map) {</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;<span class="keywordtype">void</span> Tensor&lt;Matrix, C&gt;::init(<span class="keyword">const</span> <a class="code" href="namespacemptensor.html#a8a707d2bc3c2f739fb04316deb4d0a04">Shape</a> &amp;<a class="code" href="namespaceoutput.html#afdce3b77ca23af32bf74486b08613edf">shape</a>, <span class="keywordtype">size_t</span> urank,</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;                             <span class="keyword">const</span> <a class="code" href="namespacemptensor.html#ada198dc45d2bc41ae74ffda8e4ef1137">Axes</a> &amp;map) {</div>
 <div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;  Dim = <a class="code" href="namespaceoutput.html#afdce3b77ca23af32bf74486b08613edf">shape</a>;</div>
 <div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;  axes_map = map;</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">size_t</span> rank = Dim.<a class="code" href="classmptensor_1_1Index.html#afbd9d70b45b6bda2d0883d2f7b14849a">size</a>();</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">size_t</span> rank = Dim.size();</div>
 <div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;  assert(urank &lt;= rank);</div>
 <div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;  upper_rank = urank;</div>
 <div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160; </div>
@@ -443,7 +461,7 @@ $(function() {
 <div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160; </div>
 <div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160; </div>
 <div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>&gt; <span class="keyword">class </span>Matrix, <span class="keyword">typename</span> C&gt;</div>
-<div class="line"><a name="l00464"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#a464e570b8fab589b4ed96cac37a88067">  464</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classmptensor_1_1Tensor.html">Tensor&lt;Matrix, C&gt;::local_index</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Index</a> &amp;gindex, <span class="keywordtype">size_t</span> &amp;lindex)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classmptensor_1_1Tensor.html">Tensor&lt;Matrix, C&gt;::local_index</a>(<span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Index</a> &amp;gindex, <span class="keywordtype">size_t</span> &amp;lindex)<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">size_t</span> rank = gindex.<a class="code" href="classmptensor_1_1Index.html#afbd9d70b45b6bda2d0883d2f7b14849a">size</a>();</div>
 <div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;  assert(rank == Dim.size());</div>
 <div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;  assert(rank &gt; 0);</div>
@@ -552,7 +570,7 @@ $(function() {
 <div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160; </div>
 <div class="line"><a name="l00598"></a><span class="lineno">  598</span>&#160; </div>
 <div class="line"><a name="l00604"></a><span class="lineno">  604</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>&gt; <span class="keyword">class </span>Matrix, <span class="keyword">typename</span> C&gt;</div>
-<div class="line"><a name="l00605"></a><span class="lineno"><a class="line" href="classmptensor_1_1Tensor.html#aeaa593a9ebdad8849983f1f78709ae49">  605</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classmptensor_1_1Tensor.html">Tensor&lt;Matrix, C&gt;::change_configuration</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> new_upper_rank,</div>
+<div class="line"><a name="l00605"></a><span class="lineno">  605</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classmptensor_1_1Tensor.html">Tensor&lt;Matrix, C&gt;::change_configuration</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> new_upper_rank,</div>
 <div class="line"><a name="l00606"></a><span class="lineno">  606</span>&#160;                                             <span class="keyword">const</span> <a class="code" href="classmptensor_1_1Index.html">Axes</a> &amp;new_axes_map) {</div>
 <div class="line"><a name="l00607"></a><span class="lineno">  607</span>&#160;  <span class="keywordflow">if</span> ((upper_rank == new_upper_rank) &amp;&amp; (axes_map == new_axes_map)) <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160; </div>
@@ -571,21 +589,21 @@ $(function() {
 <div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160;  <a class="code" href="group__ShapeChange.html#ga2f2bdcc50fb6d486147f1ac2ac54b929">transpose</a>(axes);</div>
 <div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160; </div>
 <div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;  <span class="comment">/* create lists of local position and destination rank */</span></div>
-<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">size_t</span> local_size = T_old.<a class="code" href="classmptensor_1_1Tensor.html#a626583047e536e62b3137119cc3c644a">local_size</a>();</div>
+<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">size_t</span> local_size = T_old.local_size();</div>
 <div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;  std::vector&lt;int&gt; dest_mpirank(local_size);</div>
 <div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160;  std::vector&lt;unsigned long int&gt; local_position(local_size);</div>
 <div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160; </div>
-<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;  T_old.<a class="code" href="classmptensor_1_1Tensor.html#a25c1bac0c9cc60894b8ad36c9d609f27">prep_local_to_global</a>();</div>
+<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;  T_old.prep_local_to_global();</div>
 <div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;  this-&gt;prep_global_to_local();</div>
 <div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160; </div>
 <div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160;<span class="preprocessor">#pragma omp parallel default(shared)</span></div>
 <div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;  {</div>
-<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;    <a class="code" href="classmptensor_1_1Index.html">Index</a> index;</div>
-<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;    index.<a class="code" href="classmptensor_1_1Index.html#a4941093db035ea4ada8623146a6f184b">resize</a>(rank);</div>
+<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;    <a class="code" href="index__constructor_8hpp.html#a0a012a4e297b6c520c9ed919f374ebe5">Index</a> index;</div>
+<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;    index.resize(rank);</div>
 <div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160; </div>
 <div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;<span class="preprocessor">#pragma omp for</span></div>
 <div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; local_size; ++i) {</div>
-<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;      T_old.<a class="code" href="classmptensor_1_1Tensor.html#a1a89e45e1f688b3783c4c8b81f56ebe2">global_index_fast</a>(i, index);</div>
+<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;      T_old.global_index_fast(i, index);</div>
 <div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160; </div>
 <div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160;      <span class="keywordtype">int</span> dest;</div>
 <div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;      <span class="keywordtype">size_t</span> pos;</div>
@@ -597,7 +615,7 @@ $(function() {
 <div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;  }</div>
 <div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160; </div>
 <div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;  <span class="comment">/* exchange data */</span></div>
-<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;  <a class="code" href="namespacemptensor_1_1lapack.html#abccf86a79bd749446e69de739153dfd2">replace_matrix_data</a>(T_old.<a class="code" href="classmptensor_1_1Tensor.html#a398edfe3ae7d9db8d252d050ed3adebe">get_matrix</a>(), dest_mpirank, local_position, Mat);</div>
+<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;  <a class="code" href="namespacemptensor_1_1lapack.html#abccf86a79bd749446e69de739153dfd2">replace_matrix_data</a>(T_old.get_matrix(), dest_mpirank, local_position, Mat);</div>
 <div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160; </div>
 <div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;  <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;}</div>
@@ -2112,7 +2130,6 @@ $(function() {
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_aa7550a4ae78d8f316370c723d28ba178"><div class="ttname"><a href="classmptensor_1_1Tensor.html#aa7550a4ae78d8f316370c723d28ba178">mptensor::Tensor::transpose</a></div><div class="ttdeci">Tensor&lt; Matrix, C &gt; &amp; transpose(const Axes &amp;axes)</div><div class="ttdoc">Transposition of tensor with lazy evaluation.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:661</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_aaf73556a0972ba543aeca688ec5e5cd1"><div class="ttname"><a href="classmptensor_1_1Tensor.html#aaf73556a0972ba543aeca688ec5e5cd1">mptensor::Tensor&lt; scalapack::Matrix, double &gt;::comm_type</a></div><div class="ttdeci">scalapack::Matrix&lt; double &gt;::comm_type comm_type</div><div class="ttdoc">type of communicator.</div><div class="ttdef"><b>Definition:</b> tensor.hpp:58</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_ab329b474229383b39d4d37709922d26f"><div class="ttname"><a href="classmptensor_1_1Tensor.html#ab329b474229383b39d4d37709922d26f">mptensor::Tensor::shape</a></div><div class="ttdeci">const Shape &amp; shape() const</div><div class="ttdoc">Shape of tensor.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:158</div></div>
-<div class="ttc" id="aclassmptensor_1_1Tensor_html_ace94ef44e8ed46fa274361d59cf3cc04"><div class="ttname"><a href="classmptensor_1_1Tensor.html#ace94ef44e8ed46fa274361d59cf3cc04">mptensor::Tensor::init</a></div><div class="ttdeci">void init(const Shape &amp;, size_t upper_rank)</div><div class="ttdoc">Initialization.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:384</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_acfe44c70c6eb10584bc68013c578fa0a"><div class="ttname"><a href="classmptensor_1_1Tensor.html#acfe44c70c6eb10584bc68013c578fa0a">mptensor::Tensor::get_upper_rank</a></div><div class="ttdeci">size_t get_upper_rank() const</div><div class="ttdoc">Upper rank for matrix representation.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:185</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_ae18b1a50a693462062ba1c69a7f2b1a4"><div class="ttname"><a href="classmptensor_1_1Tensor.html#ae18b1a50a693462062ba1c69a7f2b1a4">mptensor::Tensor::global_index_l2g_map_transpose</a></div><div class="ttdeci">void global_index_l2g_map_transpose(size_t lindex, const size_t axes_trans[], size_t index_new[]) const</div><div class="ttdoc">Convert local index to global index of transposed tensor using l2g_map.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:347</div></div>
 <div class="ttc" id="aclassmptensor_1_1Tensor_html_aedbd0391fe651e9b3c32968a740f6611"><div class="ttname"><a href="classmptensor_1_1Tensor.html#aedbd0391fe651e9b3c32968a740f6611">mptensor::Tensor::Tensor</a></div><div class="ttdeci">Tensor()</div><div class="ttdoc">Default constructor of tensor.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:70</div></div>
@@ -2138,6 +2155,7 @@ $(function() {
 <div class="ttc" id="agroup__ShapeChange_html_ga9df9d388f7dae0a2bb13e5828896bb00"><div class="ttname"><a href="group__ShapeChange.html#ga9df9d388f7dae0a2bb13e5828896bb00">mptensor::reshape</a></div><div class="ttdeci">Tensor&lt; Matrix, C &gt; reshape(const Tensor&lt; Matrix, C &gt; &amp;a, const Shape &amp;shape_new)</div><div class="ttdoc">Change the shape of tensor.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:1142</div></div>
 <div class="ttc" id="agroup__ShapeChange_html_gad746f307b8713434af5d8c2694ce80e9"><div class="ttname"><a href="group__ShapeChange.html#gad746f307b8713434af5d8c2694ce80e9">mptensor::extend</a></div><div class="ttdeci">Tensor&lt; Matrix, C &gt; extend(const Tensor&lt; Matrix, C &gt; &amp;a, const Shape &amp;shape_new)</div><div class="ttdoc">Extend the size of a tensor.</div><div class="ttdef"><b>Definition:</b> tensor_impl.hpp:1356</div></div>
 <div class="ttc" id="aindex_8hpp_html"><div class="ttname"><a href="index_8hpp.html">index.hpp</a></div><div class="ttdoc">header file of Index class</div></div>
+<div class="ttc" id="aindex__constructor_8hpp_html_a0a012a4e297b6c520c9ed919f374ebe5"><div class="ttname"><a href="index__constructor_8hpp.html#a0a012a4e297b6c520c9ed919f374ebe5">Index</a></div><div class="ttdeci">Index(size_t j0)</div><div class="ttdef"><b>Definition:</b> index_constructor.hpp:11</div></div>
 <div class="ttc" id="amatrix_8hpp_html"><div class="ttname"><a href="matrix_8hpp.html">matrix.hpp</a></div><div class="ttdoc">List of header files for matrix classes.</div></div>
 <div class="ttc" id="amatrix__lapack_8cc_html_aa7a2fd3803cab6636bbf586f5dd59737"><div class="ttname"><a href="matrix__lapack_8cc.html#aa7a2fd3803cab6636bbf586f5dd59737">complex</a></div><div class="ttdeci">mptensor::complex complex</div><div class="ttdef"><b>Definition:</b> matrix_lapack.cc:36</div></div>
 <div class="ttc" id="anamespacemptensor_1_1debug_html_a06b424ebdecfded16461da5f671a3437"><div class="ttname"><a href="namespacemptensor_1_1debug.html#a06b424ebdecfded16461da5f671a3437">mptensor::debug::check_total_size</a></div><div class="ttdeci">bool check_total_size(const Shape &amp;s1, const Shape &amp;s2)</div><div class="ttdef"><b>Definition:</b> tensor.cc:49</div></div>
@@ -2168,19 +2186,15 @@ $(function() {
 <div class="ttc" id="anamespacemptensor_html_adc7d3e151ee43903aa658faf936cd861"><div class="ttname"><a href="namespacemptensor.html#adc7d3e151ee43903aa658faf936cd861">mptensor::is_no_transpose</a></div><div class="ttdeci">bool is_no_transpose(const Axes &amp;axes, const Axes &amp;axes_map, size_t rank)</div><div class="ttdef"><b>Definition:</b> tensor.cc:35</div></div>
 <div class="ttc" id="anamespaceoutput_html_afdce3b77ca23af32bf74486b08613edf"><div class="ttname"><a href="namespaceoutput.html#afdce3b77ca23af32bf74486b08613edf">output.shape</a></div><div class="ttdeci">tuple shape</div><div class="ttdef"><b>Definition:</b> output.py:28</div></div>
 <div class="ttc" id="atensor_8hpp_html"><div class="ttname"><a href="tensor_8hpp.html">tensor.hpp</a></div><div class="ttdoc">Tensor class.</div></div>
-<div class="ttc" id="atests_2timer_8hpp_html_a57fe6a37790ffb0ebe57b18537908925"><div class="ttname"><a href="tests_2timer_8hpp.html#a57fe6a37790ffb0ebe57b18537908925">operator-</a></div><div class="ttdeci">double operator-(Timer &amp;t1, Timer &amp;t0)</div><div class="ttdef"><b>Definition:</b> tests/timer.hpp:64</div></div>
+<div class="ttc" id="atests_2timer_8hpp_html_a57fe6a37790ffb0ebe57b18537908925"><div class="ttname"><a href="tests_2timer_8hpp.html#a57fe6a37790ffb0ebe57b18537908925">operator-</a></div><div class="ttdeci">double operator-(Timer &amp;t1, Timer &amp;t0)</div><div class="ttdef"><b>Definition:</b> timer.hpp:64</div></div>
 </div><!-- fragment --></div><!-- contents -->
-<!-- HTML footer for doxygen 1.8.8-->
+</div><!-- doc-content -->
 <!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_8a9c5dbf120b6aa8a5646a47ef1c5afa.html">mptensor</a></li><li class="navelem"><a class="el" href="tensor__impl_8hpp.html">tensor_impl.hpp</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
 </div>
-</div>
-</div>
-</div>
-</div>
-<hr class="footer"/><address class="footer"><small>
-Generated on Tue May 9 2023 05:30:46 for mptensor by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.9.1
-</small></address>
 </body>
 </html>
