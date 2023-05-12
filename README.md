@@ -2,6 +2,7 @@
 
 [![GitHub](https://img.shields.io/github/license/smorita/mptensor)][License]
 [![build](https://github.com/smorita/mptensor/actions/workflows/build.yml/badge.svg)](https://github.com/smorita/mptensor/actions/workflows/build.yml)
+[![docs](https://github.com/smorita/mptensor/actions/workflows/docs.yml/badge.svg)](https://smorita.github.io/mptensor/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3735474.svg)](https://doi.org/10.5281/zenodo.3735474)
 
 
