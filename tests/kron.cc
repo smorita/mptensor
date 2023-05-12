@@ -95,11 +95,11 @@ void test_kron(const mpi_comm &comm, int L, std::ostream &ostrm) {
     double val;
     C.get_value(index, val);
 
-    index_A[0] = index[0] % shape_B[0];
-    index_A[1] = index[1] % shape_B[1];
+    index_A[0] = index[0] % shape_A[0];
+    index_A[1] = index[1] % shape_A[1];
 
-    index_B[0] = index[0] / shape_B[0];
-    index_B[1] = index[1] / shape_B[1];
+    index_B[0] = index[0] / shape_A[0];
+    index_B[1] = index[1] / shape_A[1];
     double exact = func2_1(index_A, shape_A) * func2_1(index_B, shape_B);
 
     if (error < fabs(val - exact)) error = fabs(val - exact);
@@ -185,11 +185,11 @@ void test_kron_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
     complex val;
     C.get_value(index, val);
 
-    index_A[0] = index[0] / shape_B[0];
-    index_A[1] = index[1] / shape_B[1];
+    index_A[0] = index[0] % shape_A[0];
+    index_A[1] = index[1] % shape_A[1];
 
-    index_B[0] = index[0] % shape_B[0];
-    index_B[1] = index[1] % shape_B[1];
+    index_B[0] = index[0] / shape_A[0];
+    index_B[1] = index[1] / shape_A[1];
     complex exact = cfunc2_1(index_A, shape_A) * cfunc2_1(index_B, shape_B);
 
     if (error < std::abs(val - exact)) error = std::abs(val - exact);
@@ -200,7 +200,7 @@ void test_kron_complex(const mpi_comm &comm, int L, std::ostream &ostrm) {
   double max_error = mpi_reduce_max(error, comm);
   if (mpiroot) {
     ostrm << "========================================\n"
-          << "kron <double> ( C[M, K] = A[N0, N1] * B[N2, N3] )\n"
+          << "kron <complex> ( C[M, K] = A[N0, N1] * B[N2, N3] )\n"
           << "[N0, N1, N2, N3] = [" << N0 << ", " << N1 << ", " << N2 << ", "
           << N3 << "] "
           << "M= " << N0 * N2 << " K= " << N1 * N3 << "\n"
