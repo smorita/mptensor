@@ -1137,6 +1137,7 @@ Tensor<Matrix, C> transpose(const Tensor<Matrix, C> &T, const Axes &axes,
 
   \note The new shape should be compatible with the original shape.
   The total size of tensor does not change.
+  \warning mptensor uses the column major, unlike NumPy.
 */
 template <template <typename> class Matrix, typename C>
 Tensor<Matrix, C> reshape(const Tensor<Matrix, C> &T, const Shape &shape_new) {
@@ -1585,15 +1586,21 @@ Tensor<Matrix, C> contract(const Tensor<Matrix, C> &T, const Axes &axes_1,
 
 //! Compute the Kronecker product
 /*!
-  \param A Tensor to product.
-  \param B Tensor to product.
+  \param a Tensor to product.
+  \param b Tensor to product.
 
-  \return The Kronecker product of A and B.
+  \return The Kronecker product of a and b.
 
   If A.shape() = A[r0,...,rN] and B.shape() = B[s0,...,sN], the Kronecker product has shape [r0*s0,..., rN*sN].
-  kron(A, B)[k0,...,kN] = A[i0,...,iN] * B[j0,...,jN] where kt = it * st + jt.
+  Each element is given as
+  \code kron(A, B)[k0,...,kN] = A[i0,...,iN] * B[j0,...,jN] \endcode
+  where
+  \code kt = it + jt * st \endcode
 
   \note The rank of \c a and \c b should be the same.
+
+  \warning To be consistent with the reshape operation, the new indices of the Kronecker product are determined by the column major, unlike in NumPy. Thus, if the shapes of A and B are [r0, r1] and [s0, s1], the Kronecker product of A and B satisfies
+  \code reshape(kron(A, B), [r0, s0, r1, s1])[i, j, k, l] = A[i, k] * B[j, l] \endcode
 */
 template <template <typename> class Matrix, typename C>
 Tensor<Matrix, C> kron(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b) {
@@ -1608,8 +1615,8 @@ Tensor<Matrix, C> kron(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b) {
   axes_trans.resize(2 * n);
   for (size_t i = 0; i < shape_b.size(); ++i) {
     shape_c[i] *= shape_b[i];
-    axes_trans[2 * i] = i + n;
-    axes_trans[2 * i + 1] = i;
+    axes_trans[2 * i] = i;
+    axes_trans[2 * i + 1] = i + n;
   }
 
   return reshape(

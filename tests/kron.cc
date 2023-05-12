@@ -95,11 +95,11 @@ void test_kron(const mpi_comm &comm, int L, std::ostream &ostrm) {
     double val;
     C.get_value(index, val);
 
-    index_A[0] = index[0] / shape_B[0];
-    index_A[1] = index[1] / shape_B[1];
+    index_A[0] = index[0] % shape_B[0];
+    index_A[1] = index[1] % shape_B[1];
 
-    index_B[0] = index[0] % shape_B[0];
-    index_B[1] = index[1] % shape_B[1];
+    index_B[0] = index[0] / shape_B[0];
+    index_B[1] = index[1] / shape_B[1];
     double exact = func2_1(index_A, shape_A) * func2_1(index_B, shape_B);
 
     if (error < fabs(val - exact)) error = fabs(val - exact);
