@@ -1,5 +1,12 @@
 var NAVTREEINDEX4 =
 {
+"tensor__impl_8hpp.html#ga3a7fa56ba73f1c941db57d19b2faa06b":[9,0,1,0,15,21],
+"tensor__impl_8hpp.html#ga3bc245f63d5e2097a2cd569ad8c94ce7":[9,0,1,0,15,13],
+"tensor__impl_8hpp.html#ga53c476ed1cd1b7795585c852c90c95ad":[9,0,1,0,15,12],
+"tensor__impl_8hpp.html#ga5490b8c3a3669dc3335b61b8618bfc21":[9,0,1,0,15,52],
+"tensor__impl_8hpp.html#ga5be49b77384ce23e7788737fda534534":[9,0,1,0,15,24],
+"tensor__impl_8hpp.html#ga6f352770092d715ebc5614b706de4ade":[9,0,1,0,15,47],
+"tensor__impl_8hpp.html#ga7a9d150db6d977393a76244b73cfabfc":[9,0,1,0,15,32],
 "tensor__impl_8hpp.html#ga7ecf5d42aa488cedeb31dd3f65fde79a":[9,0,1,0,15,30],
 "tensor__impl_8hpp.html#ga83976ad80aa80b83babb4710ed391cca":[9,0,1,0,15,17],
 "tensor__impl_8hpp.html#ga84b284094ddb52d0d310fed19b870169":[9,0,1,0,15,44],

@@ -124,12 +124,18 @@ For parallel computing</h2>
 <h2><a class="anchor" id="autotoc_md3"></a>
 For document generation</h2>
 <ul>
-<li>Doxygen (&lt; 1.8.12)</li>
+<li>Doxygen (&gt;= 1.9.1)</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md4"></a>
 How to Use</h1>
 <ol type="1">
-<li>Build and install mptensor library <pre class="fragment"> mkdir build
+<li>Build and install mptensor library <pre class="fragment"> # Modern CMake (&gt;= 3.15)
+ cmake -B build
+ cmake --build build
+ sudo cmake --install build
+
+ # Traditional way
+ mkdir build
  cd build
  cmake ../
  make
@@ -138,8 +144,11 @@ How to Use</h1>
 <li>Include the header file <code><a class="el" href="mptensor_8hpp.html" title="Top header file of mptensor.">mptensor/mptensor.hpp</a></code> in your codes.</li>
 <li>Complie your applications with link option <code>-lmptensor</code> .</li>
 </ol>
-<p>The default install directory is <code>/usr/local</code>. It can be changed by <code>-DCMAKE_INSTALL_PREFIX</code> option. </p><pre class="fragment">$ cmake -DCMAKE_INSTALL_PREFIX=/home/smorita/.local ../
-</pre><p> See also the <a href="https://cmake.org/cmake/help/v3.6/variable/CMAKE_INSTALL_PREFIX.html">cmake page</a>.</p>
+<p>The default install directory is <code>/usr/local</code>. It can be changed by <code>-DCMAKE_INSTALL_PREFIX</code> option. </p><pre class="fragment"># Modern CMake
+cmake --install build --prefix your_install_prefix
+# Traditional way
+cmake -DCMAKE_INSTALL_PREFIX=your_install_path ../
+</pre><p> See also the <a href="https://cmake.org/cmake/help/latest/manual/cmake.1.html">CMake documentation</a>.</p>
 <h1><a class="anchor" id="autotoc_md5"></a>
 Documents</h1>
 <p>The HTML documents are available in <a href="https://smorita.github.io/mptensor/">here</a>.</p>
