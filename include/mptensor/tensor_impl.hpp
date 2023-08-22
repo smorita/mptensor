@@ -187,6 +187,12 @@ inline size_t Tensor<Matrix, C>::get_upper_rank() const {
 };
 
 //! Map of axes for lazy evaluation of transpose
+/*!
+  `axes_map` stores an index mapping from a before-transposed tensor to an after-transposed tensor.
+
+  Let `V` a 3-leg tensor with `shape=[10, 20, 30]` and `axes_map=[0, 1, 2]`.
+  When we transpose `V` as `T = V.transpose(Axes(1, 2, 0));`, `T` has `shape=[20, 30, 10]` and `axes_map=[2, 0, 1]`. Thus, `axes_map` satisfies `axes_map[iV] = iT`.
+*/
 template <template <typename> class Matrix, typename C>
 inline const Axes &Tensor<Matrix, C>::get_axes_map() const {
   return axes_map;

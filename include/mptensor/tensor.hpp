@@ -58,6 +58,8 @@ class Tensor {
   typedef typename Matrix<C>::comm_type comm_type;  //!< type of communicator.
   /*!< \c MPI_Comm or \c int. */
 
+  //! \ingroup TensorConstructor
+  //! \{
   Tensor();
   explicit Tensor(const Shape &);
   explicit Tensor(const comm_type &);
@@ -65,6 +67,7 @@ class Tensor {
   Tensor(const comm_type &, const Shape &, size_t upper_rank);
   Tensor(const comm_type &, const Tensor<lapack::Matrix, C> &);
   Tensor(const comm_type &, const std::vector<C> &);
+  //! \}
 
   const Shape &shape() const;
   size_t rank() const;

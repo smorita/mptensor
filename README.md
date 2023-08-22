@@ -22,12 +22,18 @@ It provides similar interfaces as Numpy and Scipy in Python.
 
 ### For document generation
 
-- Doxygen (< 1.8.12)
+- Doxygen (>= 1.9.1)
 
 ## How to Use
 
 1. Build and install mptensor library
 
+        # Modern CMake (>= 3.15)
+        cmake -B build
+        cmake --build build
+        sudo cmake --install build
+
+        # Traditional way
         mkdir build
         cd build
         cmake ../
@@ -39,9 +45,12 @@ It provides similar interfaces as Numpy and Scipy in Python.
 
 The default install directory is `/usr/local`. It can be changed by `-DCMAKE_INSTALL_PREFIX` option.
 
-    $ cmake -DCMAKE_INSTALL_PREFIX=/home/smorita/.local ../
+    # Modern CMake
+    cmake --install build --prefix your_install_prefix
+    # Traditional way
+    cmake -DCMAKE_INSTALL_PREFIX=your_install_path ../
 
-See also the [cmake page](https://cmake.org/cmake/help/v3.6/variable/CMAKE_INSTALL_PREFIX.html).
+See also the [CMake documentation](https://cmake.org/cmake/help/latest/manual/cmake.1.html).
 
 ## Documents
 
