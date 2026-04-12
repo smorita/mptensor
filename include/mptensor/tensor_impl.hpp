@@ -187,6 +187,12 @@ inline size_t Tensor<Matrix, C>::get_upper_rank() const {
 };
 
 //! Map of axes for lazy evaluation of transpose
+/*!
+  `axes_map` stores an index mapping from a before-transposed tensor to an after-transposed tensor.
+
+  Let `V` a 3-leg tensor with `shape=[10, 20, 30]` and `axes_map=[0, 1, 2]`.
+  When we transpose `V` as `T = V.transpose(Axes(1, 2, 0));`, `T` has `shape=[20, 30, 10]` and `axes_map=[2, 0, 1]`. Thus, `axes_map` satisfies `axes_map[iV] = iT`.
+*/
 template <template <typename> class Matrix, typename C>
 inline const Axes &Tensor<Matrix, C>::get_axes_map() const {
   return axes_map;
@@ -1137,6 +1143,7 @@ Tensor<Matrix, C> transpose(const Tensor<Matrix, C> &T, const Axes &axes,
 
   \note The new shape should be compatible with the original shape.
   The total size of tensor does not change.
+  \warning mptensor uses the column major, unlike NumPy.
 */
 template <template <typename> class Matrix, typename C>
 Tensor<Matrix, C> reshape(const Tensor<Matrix, C> &T, const Shape &shape_new) {
@@ -1582,6 +1589,48 @@ Tensor<Matrix, C> contract(const Tensor<Matrix, C> &T, const Axes &axes_1,
 
   return T_new;
 }
+
+//! Compute the Kronecker product
+/*!
+  \param a Tensor to product.
+  \param b Tensor to product.
+
+  \return The Kronecker product of a and b.
+
+  If A.shape() = A[r0,...,rN] and B.shape() = B[s0,...,sN], the Kronecker product has shape [r0*s0,..., rN*sN].
+  Each element is given as
+  \code kron(A, B)[k0,...,kN] = A[i0,...,iN] * B[j0,...,jN] \endcode
+  where
+  \code kt = it + jt * st \endcode
+
+  \note The rank of \c a and \c b should be the same.
+
+  \warning To be consistent with the reshape operation, the new indices of the Kronecker product are determined by the column major, unlike in NumPy. Thus, if the shapes of A and B are [r0, r1] and [s0, s1], the Kronecker product of A and B satisfies
+  \code reshape(kron(A, B), [r0, s0, r1, s1])[i, j, k, l] = A[i, k] * B[j, l] \endcode
+*/
+template <template <typename> class Matrix, typename C>
+Tensor<Matrix, C> kron(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b) {
+  assert(a.rank() == b.rank());
+  assert(a.get_comm() == b.get_comm());
+
+  Shape shape_a = a.shape();
+  Shape shape_b = b.shape();
+  Shape shape_c = shape_a;
+  size_t n = shape_a.size();
+  Axes axes_trans;
+  axes_trans.resize(2 * n);
+  for (size_t i = 0; i < shape_b.size(); ++i) {
+    shape_c[i] *= shape_b[i];
+    axes_trans[2 * i] = i;
+    axes_trans[2 * i + 1] = i + n;
+  }
+
+  return reshape(
+      transpose(tensordot(reshape(a, shape_a + Shape(1)),
+                          reshape(b, Shape(1) + shape_b), Axes(n), Axes(0)),
+                axes_trans),
+      shape_c);
+};
 
 //! Compute tensor dot product.
 /*!

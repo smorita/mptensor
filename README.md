@@ -1,8 +1,10 @@
 # mptensor
 
 [![GitHub](https://img.shields.io/github/license/smorita/mptensor)][License]
-[![Build Status](https://travis-ci.org/smorita/mptensor.svg?branch=master)][TravisCI]
+[![build](https://github.com/smorita/mptensor/actions/workflows/build.yml/badge.svg)](https://github.com/smorita/mptensor/actions/workflows/build.yml)
+[![docs](https://github.com/smorita/mptensor/actions/workflows/docs.yml/badge.svg)](https://smorita.github.io/mptensor/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3735474.svg)](https://doi.org/10.5281/zenodo.3735474)
+
 
 "mptensor" is parallel C++ libarary for tensor calculations.
 It provides similar interfaces as Numpy and Scipy in Python.
@@ -20,12 +22,18 @@ It provides similar interfaces as Numpy and Scipy in Python.
 
 ### For document generation
 
-- Doxygen (< 1.8.12)
+- Doxygen (>= 1.9.1)
 
 ## How to Use
 
 1. Build and install mptensor library
 
+        # Modern CMake (>= 3.15)
+        cmake -B build
+        cmake --build build
+        sudo cmake --install build
+
+        # Traditional way
         mkdir build
         cd build
         cmake ../
@@ -37,9 +45,12 @@ It provides similar interfaces as Numpy and Scipy in Python.
 
 The default install directory is `/usr/local`. It can be changed by `-DCMAKE_INSTALL_PREFIX` option.
 
-    $ cmake -DCMAKE_INSTALL_PREFIX=/home/smorita/.local ../
+    # Modern CMake
+    cmake --install build --prefix your_install_prefix
+    # Traditional way
+    cmake -DCMAKE_INSTALL_PREFIX=your_install_path ../
 
-See also the [cmake page](https://cmake.org/cmake/help/v3.6/variable/CMAKE_INSTALL_PREFIX.html).
+See also the [CMake documentation](https://cmake.org/cmake/help/latest/manual/cmake.1.html).
 
 ## Documents
 
