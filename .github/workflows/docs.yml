@@ -9,24 +9,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
     - name: apt
-      run: sudo apt install doxygen graphviz
-      shell: bash
+      run: |
+        sudo apt update
+        sudo apt install -y doxygen graphviz
 
     - name: Generate Doxygen Documentation
       working-directory: ${{ github.workspace }}/doc/doxygen
       run: doxygen Doxyfile
-      shell: bash
       
-    - name: Create .nojekyll (ensures pages with underscores work on gh pages)
-      run: touch ${{ github.workspace }}/doc/doxygen/html/.nojekyll
-      shell: bash
-
-    - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4
+    - name: Upload static files as artifact
+      id: deployment
+      uses: actions/upload-pages-artifact@v5.0.0
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        branch: "gh-pages"
-        folder: ${{ github.workspace }}/doc/doxygen/html
+          path: ${{ github.workspace }}/doc/doxygen/html
+
+  deploy:
+    needs: build
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
