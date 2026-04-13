@@ -18,12 +18,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
     - name: apt
       run: |
         sudo apt update
-        sudo apt install openmpi-bin libopenmpi-dev libscalapack-openmpi-dev
+        sudo apt install -y cmake libopenmpi-dev libblas-dev liblapack-dev libscalapack-openmpi-dev
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
