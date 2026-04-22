@@ -1,5 +1,4 @@
 ---
 BasedOnStyle: Google
-Standard: Cpp03
-
+Standard: c++17
 ...
