@@ -22,7 +22,7 @@ It provides similar interfaces as Numpy and Scipy in Python.
 
 ### For document generation
 
-- Doxygen (>= 1.9.1)
+- Doxygen (>= 1.9.8)
 
 ## How to Use
 
