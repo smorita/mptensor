@@ -38,7 +38,6 @@
 #include <iomanip>
 #include <iostream>
 
-#include <mpi.h>
 #include <mptensor/mptensor.hpp>
 
 #include "ising.hpp"
@@ -47,7 +46,7 @@ namespace examples {
 namespace Ising_2D {
 
 using namespace mptensor;
-typedef Tensor<scalapack::Matrix, double> tensor;
+using tensor = DTensor;
 
 //! class for HOTRG
 class Hotrg {
@@ -188,13 +187,9 @@ inline void Hotrg::a2u_top_block_child(const tensor &a, const tensor &u,
 
 namespace {
 
-MPI_Comm comm;
-int mpirank;
-int mpisize;
-bool mpiroot;
-
 void output(int step, double n_spin, double f, double f_exact) {
-  if (mpiroot) {
+  using namespace mptensor;
+  if (mpi::is_root) {
     std::cout << step << "\t" << std::scientific << std::setprecision(6)
               << n_spin << "\t" << std::scientific << std::setprecision(10) << f
               << "\t" << (f - f_exact) / std::abs(f_exact) << std::endl;
@@ -207,14 +202,10 @@ void output(int step, double n_spin, double f, double f_exact) {
 int main(int argc, char **argv) {
   using namespace examples::Ising_2D;
   /* Start */
-  MPI_Init(&argc, &argv);
-  comm = MPI_COMM_WORLD;
-  MPI_Comm_rank(comm, &mpirank);
-  MPI_Comm_size(comm, &mpisize);
-  mpiroot = (mpirank == 0);
+  mpi::initialize(argc, argv);
 
   /* Get arguments */
-  if (mpiroot) {
+  if (mpi::is_root) {
     if (argc < 4) std::cerr << "Usage: hotrg.out chi step T\n";
     if (argc < 2) std::cerr << "Warning: Assuming chi = 8\n";
     if (argc < 3) std::cerr << "Warning: Assuming step = 16\n";
@@ -225,7 +216,7 @@ int main(int argc, char **argv) {
   const double temp = (argc < 4) ? Ising_Tc : atof(argv[3]);
   const double f_exact = exact_free_energy(temp);
 
-  if (mpiroot) {
+  if (mpi::is_root) {
     std::cout << "##### parameters #####\n"
               << "# T= " << std::setprecision(10) << temp << "\n"
               << "# chi= " << chi << "\n"
@@ -251,5 +242,4 @@ int main(int argc, char **argv) {
   }
 
   /* End */
-  MPI_Finalize();
 }

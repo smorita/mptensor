@@ -4,7 +4,7 @@ LDFLAGS=-L/opt/local/lib -lscalapack
 
 -include Makefile.option
 
-.PHONY: all mptensor tests clean doc doxygen
+.PHONY: all mptensor tests clean
 
 all: mptensor
 
@@ -14,11 +14,6 @@ mptensor:
 tests:
 	$(MAKE) -C tests
 
-doc doxygen:
-	$(MAKE) -C doc/doxygen
-
 clean:
 	$(MAKE) -C src clean
 	$(MAKE) -C tests clean
-	$(MAKE) -C doc/doxygen clean
-	rm -rf doxygen_docs

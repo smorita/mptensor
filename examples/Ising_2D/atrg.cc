@@ -32,13 +32,10 @@
   D. Adachi, T. Okubo, S. Todo: Phys. Rev. B \b 102, 054432 (2020)
 */
 
-
 #include <algorithm>
 #include <ctime>
 #include <iomanip>
 #include <iostream>
-
-#include <mpi.h>
 #include <mptensor/mptensor.hpp>
 
 #include "ising.hpp"
@@ -47,7 +44,6 @@ namespace examples {
 namespace Ising_2D {
 
 using namespace mptensor;
-typedef Tensor<scalapack::Matrix, double> tensor;
 
 //! class for ATRG
 class Atrg {
@@ -58,22 +54,23 @@ class Atrg {
   void update(int chi, int direction);
 
   double temp;
-  tensor a_up;    // 3-leg tensor. [Top][Right][Middle]
-  tensor a_down;  // 3-leg tensor. [Middle][Left][Down]
+  DTensor a_up;    // 3-leg tensor. [Top][Right][Middle]
+  DTensor a_down;  // 3-leg tensor. [Middle][Left][Down]
   double log_factor;
   double log_n_spin;
 
  private:
   void update_child(int chi);
-  void initialize_up(tensor& A, tensor& B);
-  void initialize_down(tensor& C, tensor& D);
-  void swap(int chi, tensor& B, tensor& C);
-  void update_from_ABCD(int chi, tensor& A, tensor& B, tensor& C, tensor& D);
+  void initialize_up(DTensor& A, DTensor& B);
+  void initialize_down(DTensor& C, DTensor& D);
+  void swap(int chi, DTensor& B, DTensor& C);
+  void update_from_ABCD(int chi, DTensor& A, DTensor& B, DTensor& C,
+                        DTensor& D);
 };
 
 Atrg::Atrg(double t) : temp(t) {
-  a_up = tensor(Shape(2, 2, 2));
-  a_down = tensor(Shape(2, 2, 2));
+  a_up = DTensor(Shape(2, 2, 2));
+  a_down = DTensor(Shape(2, 2, 2));
   const double c = sqrt(cosh(1.0 / temp));
   const double s = sqrt(sinh(1.0 / temp));
   Index idx;
@@ -123,8 +120,8 @@ void Atrg::update(int chi, int direction) {
   return;
 }
 
-void Atrg::initialize_up(tensor& A, tensor& B) {
-  tensor u, vt;
+void Atrg::initialize_up(DTensor& A, DTensor& B) {
+  DTensor u, vt;
   std::vector<double> s;
   svd(a_up, Axes(0, 1), Axes(2), u, s, vt);
   A = u;
@@ -132,8 +129,8 @@ void Atrg::initialize_up(tensor& A, tensor& B) {
   return;
 }
 
-void Atrg::initialize_down(tensor& C, tensor& D) {
-  tensor u, vt;
+void Atrg::initialize_down(DTensor& C, DTensor& D) {
+  DTensor u, vt;
   std::vector<double> s;
   svd(a_down, Axes(0), Axes(1, 2), u, s, vt);
   C = tensordot(a_up, u.multiply_vector(s, 1), Axes(2), Axes(0));
@@ -141,10 +138,10 @@ void Atrg::initialize_down(tensor& C, tensor& D) {
   return;
 }
 
-void Atrg::swap(int chi, tensor& B, tensor& C) {
+void Atrg::swap(int chi, DTensor& B, DTensor& C) {
   Shape shape = B.shape();
   size_t size = std::min(size_t(chi), shape[0] * shape[0]);
-  tensor u, vt;
+  DTensor u, vt;
   std::vector<double> s, sqrt_s(size);
 
   svd(tensordot(B, C, Axes(2), Axes(0)), Axes(0, 2), Axes(1, 3), u, s, vt);
@@ -158,11 +155,11 @@ void Atrg::swap(int chi, tensor& B, tensor& C) {
   return;
 }
 
-void Atrg::update_from_ABCD(int chi, tensor& A, tensor& B, tensor& C,
-                            tensor& D) {
+void Atrg::update_from_ABCD(int chi, DTensor& A, DTensor& B, DTensor& C,
+                            DTensor& D) {
   Shape shape = A.shape();
   size_t size = std::min(size_t(chi), shape[0] * shape[0]);
-  tensor u, vt;
+  DTensor u, vt;
   std::vector<double> s, sqrt_s(size);
 
   // truncated svd without outer tensordot should be implemented for O(chi^5)
@@ -184,14 +181,18 @@ void Atrg::update_from_ABCD(int chi, tensor& A, tensor& B, tensor& C,
 
 void Atrg::update_child(int chi) {
   Shape shape = a_up.shape();
-  tensor A, B, C, D;
-  initialize_up(A,
-                B);  // create A[Top][Right][Middle] & B[Middle][Left][Bottom]
-  initialize_down(C,
-                  D);  // create C[Top][Right][Middle] & D[Middle][Left][Bottom]
-  swap(chi, B,
-       C);  // swap tensors: B[Middle][Left][Bottom] & C[Top][Right][Middle] ->
-            // B[Middle][Right][Bottom] & C[Middle][Left][Top]
+  DTensor A, B, C, D;
+
+  // create A[Top][Right][Middle] & B[Middle][Left][Bottom]
+  initialize_up(A, B);
+
+  // create C[Top][Right][Middle] & D[Middle][Left][Bottom]
+  initialize_down(C, D);
+
+  // swap tensors: B[Middle][Left][Bottom] & C[Top][Right][Middle] ->
+  // B[Middle][Right][Bottom] & C[Middle][Left][Top]
+  swap(chi, B, C);
+
   update_from_ABCD(chi, A, B, C, D);
 
   log_factor *= 2.0;       // factor_new = factor_old^2
@@ -209,13 +210,8 @@ void Atrg::update_child(int chi) {
 
 namespace {
 
-MPI_Comm comm;
-int mpirank;
-int mpisize;
-bool mpiroot;
-
 void output(int step, double n_spin, double f, double f_exact) {
-  if (mpiroot) {
+  if (mptensor::mpi::is_root) {
     std::cout << step << "\t" << std::scientific << std::setprecision(6)
               << n_spin << "\t" << std::scientific << std::setprecision(10) << f
               << "\t" << (f - f_exact) / std::abs(f_exact) << std::endl;
@@ -228,14 +224,10 @@ void output(int step, double n_spin, double f, double f_exact) {
 int main(int argc, char** argv) {
   using namespace examples::Ising_2D;
   /* Start */
-  MPI_Init(&argc, &argv);
-  comm = MPI_COMM_WORLD;
-  MPI_Comm_rank(comm, &mpirank);
-  MPI_Comm_size(comm, &mpisize);
-  mpiroot = (mpirank == 0);
+  mpi::initialize(argc, argv);
 
   /* Get arguments */
-  if (mpiroot) {
+  if (mpi::is_root) {
     if (argc < 4) std::cerr << "Usage: atrg.out chi step T\n";
     if (argc < 2) std::cerr << "Warning: Assuming chi = 8\n";
     if (argc < 3) std::cerr << "Warning: Assuming step = 16\n";
@@ -246,7 +238,7 @@ int main(int argc, char** argv) {
   const double temp = (argc < 4) ? Ising_Tc : atof(argv[3]);
   const double f_exact = exact_free_energy(temp);
 
-  if (mpiroot) {
+  if (mpi::is_root) {
     std::cout << "##### parameters #####\n"
               << "# T= " << std::setprecision(10) << temp << "\n"
               << "# chi= " << chi << "\n"
@@ -272,5 +264,4 @@ int main(int argc, char** argv) {
   }
 
   /* End */
-  MPI_Finalize();
 }

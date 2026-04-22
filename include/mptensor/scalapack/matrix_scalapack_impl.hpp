@@ -39,8 +39,8 @@
 
 #include <mpi.h>
 
-#include "../complex.hpp"
-#include "../mpi_wrapper.hpp"
+#include "mptensor/complex.hpp"
+#include "mptensor/mpi/mpi_wrapper.hpp"
 #include "blacsgrid.hpp"
 
 /* ---------- PBLAS, SCALAPACK ---------- */
@@ -394,7 +394,7 @@ const Matrix<C> Matrix<C>::transpose() {
 
   /* create lists of local position and destination rank */
   std::vector<int> dest_rank(local_size());
-  std::vector<unsigned long int> local_position(local_size());
+  std::vector<size_t> local_position(local_size());
 
   for (size_t i = 0; i < local_size(); i++) {
     int dest;
@@ -500,7 +500,7 @@ void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
     send_counts[dest_rank[i]] += 1;
   }
 
-  MPI_Alltoall(send_counts, 1, MPI_INT, recv_counts, 1, MPI_INT, comm);
+  mpi_wrapper::alltoall(send_counts, 1, recv_counts, 1, comm);
 
   for (int rank = 0; rank < mpisize; ++rank) {
     send_displs[rank + 1] = send_counts[rank] + send_displs[rank];
@@ -509,8 +509,8 @@ void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
 
   const int send_size = local_size;  // send_displs[mpisize];
   const int recv_size = recv_displs[mpisize];
-  unsigned long int* send_pos = new unsigned long int[send_size];
-  unsigned long int* recv_pos = new unsigned long int[recv_size];
+  size_t* send_pos = new size_t[send_size];
+  size_t* recv_pos = new size_t[recv_size];
   C* send_value = new C[send_size];
   C* recv_value = new C[recv_size];
 
@@ -583,7 +583,7 @@ void replace_matrix_data(const std::vector<C>& V, const std::vector<int>& dest_r
     send_counts[dest_rank[i]] += 1;
   }
 
-  MPI_Alltoall(send_counts, 1, MPI_INT, recv_counts, 1, MPI_INT, comm);
+  mpi_wrapper::alltoall(send_counts, 1, recv_counts, 1, comm);
 
   for (int rank = 0; rank < mpisize; ++rank) {
     send_displs[rank + 1] = send_counts[rank] + send_displs[rank];
@@ -592,8 +592,8 @@ void replace_matrix_data(const std::vector<C>& V, const std::vector<int>& dest_r
 
   const int send_size = local_size;  // send_displs[mpisize];
   const int recv_size = recv_displs[mpisize];
-  unsigned long int* send_pos = new unsigned long int[send_size];
-  unsigned long int* recv_pos = new unsigned long int[recv_size];
+  size_t* send_pos = new size_t[send_size];
+  size_t* recv_pos = new size_t[recv_size];
   C* send_value = new C[send_size];
   C* recv_value = new C[recv_size];
 
@@ -671,11 +671,10 @@ void sum_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
       int recv_size;
       MPI_Status status;
       int tag = step;
-      MPI_Sendrecv(&send_size, 1, MPI_INT, dest, tag, &recv_size, 1, MPI_INT,
-                   source, tag, comm, &status);
+      mpi_wrapper::sendrecv(&send_size, 1, dest, tag, &recv_size, 1, source, tag, comm);
 
       /* Pack */
-      std::vector<unsigned long int> send_pos(send_size);
+      std::vector<size_t> send_pos(send_size);
       std::vector<C> send_value(send_size);
       size_t k = 0;
       for (size_t i = 0; i < local_size; i++) {
@@ -687,13 +686,11 @@ void sum_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
       }
 
       /* Send and Recieve */
-      std::vector<unsigned long int> recv_pos(recv_size);
+      std::vector<size_t> recv_pos(recv_size);
       std::vector<C> recv_value(recv_size);
-      MPI_Sendrecv(&(send_pos[0]), send_size, MPI_UNSIGNED_LONG, dest, tag,
-                   &(recv_pos[0]), recv_size, MPI_UNSIGNED_LONG, source, tag,
-                   comm, &status);
-      mpi_wrapper::send_recv_vector(send_value, dest, tag, recv_value, source,
-                                    tag, comm, status);
+      mpi_wrapper::sendrecv(send_pos, dest, tag, recv_pos, source, tag, comm);
+      mpi_wrapper::sendrecv(send_value, dest, tag, recv_value, source, tag,
+                            comm);
 
       /* Unpack */
       for (int i = 0; i < recv_size; ++i) {
@@ -711,7 +708,7 @@ double max_abs(const Matrix<C>& a) {
   for (size_t i = 0; i < n; ++i) {
     send = std::max(send, std::abs(a[i]));
   }
-  MPI_Allreduce(&send, &recv, 1, MPI_DOUBLE, MPI_MAX, a.get_comm());
+  mpi_wrapper::allreduce(&send, &recv, 1, MPI_MAX, a.get_comm());
   return recv;
 };
 
@@ -723,7 +720,23 @@ double min_abs(const Matrix<C>& a) {
   for (size_t i = 0; i < n; ++i) {
     send = std::min(send, std::abs(a[i]));
   }
-  MPI_Allreduce(&send, &recv, 1, MPI_DOUBLE, MPI_MIN, a.get_comm());
+  mpi_wrapper::allreduce(&send, &recv, 1, MPI_MIN, a.get_comm());
+  return recv;
+};
+
+template <typename C>
+C matrix_trace(const Matrix<C> &A) {
+  const size_t n = A.local_size();
+  size_t g_row, g_col;
+  C val = 0.0;
+
+  for (size_t i = 0; i < n; ++i) {
+    A.global_index(i, g_row, g_col);
+    if (g_row == g_col) val += A[i];
+  }
+
+  C recv;
+  mpi_wrapper::allreduce(&val, &recv, 1, MPI_SUM, A.get_comm());
   return recv;
 };
 

@@ -5,23 +5,23 @@ foreach(name ${PROGS})
 endforeach(name ${PROGS})
 
 if(ENABLE_MPI)
-  add_test(NAME test_save_mpi0001
+  add_test(NAME legacy/file_io/test_save_mpi0001
     COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 1 ${MPIEXEC_PREFLAGS} $<TARGET_FILE:test_save>)
-  add_test(NAME test_save_mpi0002
+  add_test(NAME legacy/file_io/test_save_mpi0002
     COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 2 ${MPIEXEC_PREFLAGS} $<TARGET_FILE:test_save>)
-  add_test(NAME test_save_mpi0003
+  add_test(NAME legacy/file_io/test_save_mpi0003
     COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 3 ${MPIEXEC_PREFLAGS} $<TARGET_FILE:test_save>)
-  add_test(NAME test_save_mpi0004
+  add_test(NAME legacy/file_io/test_save_mpi0004
     COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${MPIEXEC_PREFLAGS} $<TARGET_FILE:test_save>)
-  add_test(NAME test_load_mpi0001
+  add_test(NAME legacy/file_io/test_load_mpi0001
     COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 1 ${MPIEXEC_PREFLAGS} $<TARGET_FILE:test_load>)
-  add_test(NAME test_load_mpi0002
+  add_test(NAME legacy/file_io/test_load_mpi0002
     COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 2 ${MPIEXEC_PREFLAGS} $<TARGET_FILE:test_load>)
-  add_test(NAME test_load_mpi0003
+  add_test(NAME legacy/file_io/test_load_mpi0003
     COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 3 ${MPIEXEC_PREFLAGS} $<TARGET_FILE:test_load>)
-  add_test(NAME test_load_mpi0004
+  add_test(NAME legacy/file_io/test_load_mpi0004
     COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${MPIEXEC_PREFLAGS} $<TARGET_FILE:test_load>)
 else()
-  add_test(NAME test_save_serial COMMAND test_save)
-  add_test(NAME test_load_serial COMMAND test_load)
+  add_test(NAME legacy/file_io/test_save_serial COMMAND $<TARGET_FILE:test_save>)
+  add_test(NAME legacy/file_io/test_load_serial COMMAND $<TARGET_FILE:test_load>)
 endif()

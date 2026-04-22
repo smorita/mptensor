@@ -20,8 +20,8 @@
 
 /*!
   \file   version.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
-  \date   Mar 17 2020
+  \author Satoshi Morita <smorita@keio.jp>
+  \date   Apr 22 2026
 
   \brief  Version of mptensor.
 */
@@ -30,8 +30,8 @@
 #define _MPTENSOR_VERSION_HPP_
 
 #define MPTENSOR_VERSION_MAJOR 0
-#define MPTENSOR_VERSION_MINOR 3
+#define MPTENSOR_VERSION_MINOR 4
 #define MPTENSOR_VERSION_PATCH 0
-#define MPTENSOR_VERSION_STRING "0.3.0"
+#define MPTENSOR_VERSION_STRING "0.4.0"
 
 #endif  // _MPTENSOR_VERSION_HPP_

@@ -83,7 +83,7 @@ if(SCALAPACK_FOUND)
     # Check whether SGI MPT is used
     try_compile(_SGI_MPT
       ${CMAKE_CURRENT_BINARY_DIR}
-      ${CMAKE_CURRENT_SOURCE_DIR}/config/check_sgimpt.cc
+      ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_sgimpt.cc
       CMAKE_FLAGS "-DINCLUDE_DIRECTORIES:STRING=${MPI_CXX_INCLUDE_DIRS}"
       LINK_LIBRARIES ${MPI_CXX_LIBRARIES}
       OUTPUT_VARIABLE LOG)
@@ -96,7 +96,7 @@ if(SCALAPACK_FOUND)
     else(_SGI_MPT)
       try_compile(_OPENMPI
         ${CMAKE_CURRENT_BINARY_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/config/check_openmpi.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_openmpi.cc
         CMAKE_FLAGS "-DINCLUDE_DIRECTORIES:STRING=${MPI_CXX_INCLUDE_DIRS}"
         LINK_LIBRARIES ${MPI_CXX_LIBRARIES}
         OUTPUT_VARIABLE LOG)
