@@ -31,6 +31,7 @@
 
 #include <cstdio>
 #include <fstream>
+#include <vector>
 
 #include "mptensor/file_io/io_helper.hpp"
 #include "mptensor/matrix.hpp"
@@ -120,16 +121,14 @@ void Tensor<Matrix, C>::save_ver_0_2(const char *filename) const {
 
   // Save tensor elements
   {
-    char *datafile = new char[std::strlen(filename) + 16];
-    sprintf(datafile, "%s.%04d", filename, get_comm_rank());
+    std::vector<char> datafile(std::strlen(filename) + 16);
+    std::sprintf(datafile.data(), "%s.%04d", filename, get_comm_rank());
 
     // save_binary(datafile,get_matrix().head(),local_size());
-    std::ofstream fout(datafile, std::ofstream::binary);
+    std::ofstream fout(datafile.data(), std::ofstream::binary);
     fout.write(reinterpret_cast<const char *>(get_matrix().head()),
                sizeof(C) * local_size());
     fout.close();
-
-    delete[] datafile;
   }
 }
 

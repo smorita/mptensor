@@ -485,22 +485,16 @@ void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
   assert(local_position.size() == local_size);
 
   const int proc_size = mpisize + 1;
-  int* send_counts = new int[proc_size];
-  int* send_displs = new int[proc_size];
-  int* recv_counts = new int[proc_size];
-  int* recv_displs = new int[proc_size];
-  for (int rank = 0; rank < proc_size; ++rank) {
-    send_counts[rank] = 0;
-    send_displs[rank] = 0;
-    recv_counts[rank] = 0;
-    recv_displs[rank] = 0;
-  }
+  std::vector<int> send_counts(proc_size, 0);
+  std::vector<int> send_displs(proc_size, 0);
+  std::vector<int> recv_counts(proc_size, 0);
+  std::vector<int> recv_displs(proc_size, 0);
 
   for (size_t i = 0; i < local_size; ++i) {
     send_counts[dest_rank[i]] += 1;
   }
 
-  mpi_wrapper::alltoall(send_counts, 1, recv_counts, 1, comm);
+  mpi_wrapper::alltoall(&(send_counts[0]), 1, &(recv_counts[0]), 1, comm);
 
   for (int rank = 0; rank < mpisize; ++rank) {
     send_displs[rank + 1] = send_counts[rank] + send_displs[rank];
@@ -509,46 +503,33 @@ void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
 
   const int send_size = local_size;  // send_displs[mpisize];
   const int recv_size = recv_displs[mpisize];
-  size_t* send_pos = new size_t[send_size];
-  size_t* recv_pos = new size_t[recv_size];
-  C* send_value = new C[send_size];
-  C* recv_value = new C[recv_size];
+  std::vector<size_t> send_pos(send_size);
+  std::vector<size_t> recv_pos(recv_size);
+  std::vector<C> send_value(send_size);
+  std::vector<C> recv_value(recv_size);
 
   /* Pack */
-  // std::vector<int> pack_idx = send_displs;
-  int* pack_idx = new int[proc_size];
-  for (int rank = 0; rank < proc_size; ++rank) {
-    pack_idx[rank] = send_displs[rank];
+  {
+    std::vector<int> pack_idx(send_displs);
+    for (size_t i = 0; i < local_size; ++i) {
+      const int rank = dest_rank[i];
+      const int idx = pack_idx[rank];
+      send_value[idx] = mat[i];
+      send_pos[idx] = local_position[i];
+      pack_idx[rank] += 1;
+    }
   }
-  for (size_t i = 0; i < local_size; ++i) {
-    const int rank = dest_rank[i];
-    const int idx = pack_idx[rank];
-    send_value[idx] = mat[i];
-    send_pos[idx] = local_position[i];
-    pack_idx[rank] += 1;
-  }
-  delete[] pack_idx;
 
   /* Send and Recieve */
-  mpi_wrapper::alltoallv(send_pos, send_counts, send_displs, recv_pos,
-                         recv_counts, recv_displs, comm);
-  mpi_wrapper::alltoallv(send_value, send_counts, send_displs, recv_value,
-                         recv_counts, recv_displs, comm);
+  mpi_wrapper::alltoallv(&(send_pos[0]), &(send_counts[0]), &(send_displs[0]), &(recv_pos[0]),
+                         &(recv_counts[0]), &(recv_displs[0]), comm);
+  mpi_wrapper::alltoallv(&(send_value[0]), &(send_counts[0]), &(send_displs[0]), &(recv_value[0]),
+                         &(recv_counts[0]), &(recv_displs[0]), comm);
 
   /* Unpack */
   for (int i = 0; i < recv_size; ++i) {
     mat_new[recv_pos[i]] = recv_value[i];
   }
-
-  delete[] send_pos;
-  delete[] send_value;
-  delete[] recv_pos;
-  delete[] recv_value;
-
-  delete[] send_counts;
-  delete[] send_displs;
-  delete[] recv_counts;
-  delete[] recv_displs;
 }
 
 template <typename C>
@@ -568,22 +549,16 @@ void replace_matrix_data(const std::vector<C>& V, const std::vector<int>& dest_r
   assert(local_position.size() == local_size);
 
   const int proc_size = mpisize + 1;
-  int* send_counts = new int[proc_size];
-  int* send_displs = new int[proc_size];
-  int* recv_counts = new int[proc_size];
-  int* recv_displs = new int[proc_size];
-  for (int rank = 0; rank < proc_size; ++rank) {
-    send_counts[rank] = 0;
-    send_displs[rank] = 0;
-    recv_counts[rank] = 0;
-    recv_displs[rank] = 0;
-  }
+  std::vector<int> send_counts(proc_size, 0);
+  std::vector<int> send_displs(proc_size, 0);
+  std::vector<int> recv_counts(proc_size, 0);
+  std::vector<int> recv_displs(proc_size, 0);
 
   for (size_t i = 0; i < local_size; ++i) {
     send_counts[dest_rank[i]] += 1;
   }
 
-  mpi_wrapper::alltoall(send_counts, 1, recv_counts, 1, comm);
+  mpi_wrapper::alltoall(&(send_counts[0]), 1, &(recv_counts[0]), 1, comm);
 
   for (int rank = 0; rank < mpisize; ++rank) {
     send_displs[rank + 1] = send_counts[rank] + send_displs[rank];
@@ -592,46 +567,33 @@ void replace_matrix_data(const std::vector<C>& V, const std::vector<int>& dest_r
 
   const int send_size = local_size;  // send_displs[mpisize];
   const int recv_size = recv_displs[mpisize];
-  size_t* send_pos = new size_t[send_size];
-  size_t* recv_pos = new size_t[recv_size];
-  C* send_value = new C[send_size];
-  C* recv_value = new C[recv_size];
+  std::vector<size_t> send_pos(send_size);
+  std::vector<size_t> recv_pos(recv_size);
+  std::vector<C> send_value(send_size);
+  std::vector<C> recv_value(recv_size);
 
   /* Pack */
-  // std::vector<int> pack_idx = send_displs;
-  int* pack_idx = new int[proc_size];
-  for (int rank = 0; rank < proc_size; ++rank) {
-    pack_idx[rank] = send_displs[rank];
+  {
+    std::vector<int> pack_idx(send_displs);
+    for (size_t i = 0; i < local_size; ++i) {
+      const int rank = dest_rank[i];
+      const int idx = pack_idx[rank];
+      send_value[idx] = mat[i];
+      send_pos[idx] = local_position[i];
+      pack_idx[rank] += 1;
+    }
   }
-  for (size_t i = 0; i < local_size; ++i) {
-    const int rank = dest_rank[i];
-    const int idx = pack_idx[rank];
-    send_value[idx] = mat[i];
-    send_pos[idx] = local_position[i];
-    pack_idx[rank] += 1;
-  }
-  delete[] pack_idx;
 
   /* Send and Recieve */
-  mpi_wrapper::alltoallv(send_pos, send_counts, send_displs, recv_pos,
-                         recv_counts, recv_displs, comm);
-  mpi_wrapper::alltoallv(send_value, send_counts, send_displs, recv_value,
-                         recv_counts, recv_displs, comm);
+  mpi_wrapper::alltoallv(&(send_pos[0]), &(send_counts[0]), &(send_displs[0]), &(recv_pos[0]),
+                         &(recv_counts[0]), &(recv_displs[0]), comm);
+  mpi_wrapper::alltoallv(&(send_value[0]), &(send_counts[0]), &(send_displs[0]), &(recv_value[0]),
+                         &(recv_counts[0]), &(recv_displs[0]), comm);
 
   /* Unpack */
   for (int i = 0; i < recv_size; ++i) {
     mat_new[recv_pos[i]] = recv_value[i];
   }
-
-  delete[] send_pos;
-  delete[] send_value;
-  delete[] recv_pos;
-  delete[] recv_value;
-
-  delete[] send_counts;
-  delete[] send_displs;
-  delete[] recv_counts;
-  delete[] recv_displs;
 }
 
 template <typename C>

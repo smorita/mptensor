@@ -99,7 +99,7 @@ void Tensor<Matrix, C>::load(const std::string &filename) {
     }
 
     const size_t count = 2 * loaded_ndim;
-    size_t* buffer = new size_t[count];
+    std::vector<size_t> buffer(count);
 
     if (comm_root) {
       size_t k = 0;
@@ -109,12 +109,10 @@ void Tensor<Matrix, C>::load(const std::string &filename) {
       for (size_t i = 0; i < loaded_ndim; ++i) fin >> buffer[k++];
       fin.close();
     }
-    Mat.bcast(buffer, count, 0);
+    Mat.bcast(&(buffer[0]), count, 0);
 
-    loaded_shape.assign(loaded_ndim, buffer);
-    loaded_map.assign(loaded_ndim, (buffer + loaded_ndim));
-
-    delete[] buffer;
+    loaded_shape.assign(loaded_ndim, &(buffer[0]));
+    loaded_map.assign(loaded_ndim, &(buffer[loaded_ndim]));
   }
 
   assert(loaded_value_type == this_value_type);
@@ -180,19 +178,17 @@ void Tensor<Matrix, C>::load_ver_0_2(const char* filename) {
     Mat.bcast(&n, 1, 0);
 
     const size_t count = 2 * n + 1;
-    size_t* buffer = new size_t[count];
+    std::vector<size_t> buffer(count);
 
     if (get_comm_rank() == 0) {
       for (size_t i = 0; i < count; ++i) fin >> buffer[i];
       fin.close();
     }
-    Mat.bcast(buffer, count, 0);
+    Mat.bcast(&(buffer[0]), count, 0);
 
     urank = buffer[0];
-    shape.assign(n, (buffer + 1));
-    map.assign(n, (buffer + n + 1));
-
-    delete[] buffer;
+    shape.assign(n, &(buffer[1]));
+    map.assign(n, &(buffer[n + 1]));
   }
 
   // Initialize tensor shape
@@ -200,16 +196,14 @@ void Tensor<Matrix, C>::load_ver_0_2(const char* filename) {
 
   // Read tensor elements
   {
-    char* datafile = new char[std::strlen(filename) + 16];
-    sprintf(datafile, "%s.%04d", filename, get_comm_rank());
+    std::vector<char> datafile(std::strlen(filename) + 16);
+    std::sprintf(datafile.data(), "%s.%04d", filename, get_comm_rank());
 
     // load_binary(datafile,get_matrix().head(),local_size());
-    fin.open(datafile, std::ofstream::binary);
+    fin.open(datafile.data(), std::ofstream::binary);
     fin.read(reinterpret_cast<char*>(get_matrix().head()),
              sizeof(C) * local_size());
     fin.close();
-
-    delete[] datafile;
   }
 }
 
