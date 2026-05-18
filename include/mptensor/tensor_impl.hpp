@@ -276,8 +276,8 @@ inline void Tensor<Matrix, C>::make_l2g_map() const {
 #pragma omp parallel default(shared)
   {
     // Type int instead of size_t is used because of std::div()
-    int dim0[rank0];
-    int dim1[rank1];
+    std::vector<int> dim0(rank0);
+    std::vector<int> dim1(rank1);
     for (size_t i = 0; i < rank0; ++i) dim0[i] = int(Dim[axes_map0[i]]);
     for (size_t i = 0; i < rank1; ++i) dim1[i] = int(Dim[axes_map1[i]]);
 
@@ -1085,7 +1085,7 @@ Tensor<Matrix, C> transpose(const Tensor<Matrix, C> &T, const Axes &axes,
 #pragma omp parallel default(shared)
   {
     // Assuming axes_map of T_new is [0,1,2,...]
-    size_t d_offset[rank];
+    std::vector<size_t> d_offset(rank);
     size_t d_row(1), d_col(1);
     for (size_t r = 0; r < urank_new; ++r) {
       d_offset[r] = d_row;
@@ -1097,8 +1097,8 @@ Tensor<Matrix, C> transpose(const Tensor<Matrix, C> &T, const Axes &axes,
     }
 
     Axes axes_map = T.get_axes_map();
-    size_t axes_inv[rank];
-    size_t axes_trans[rank];
+    std::vector<size_t> axes_inv(rank);
+    std::vector<size_t> axes_trans(rank);
     for (size_t r = 0; r < rank; ++r) {
       axes_inv[axes[r]] = r;
     }
@@ -1106,11 +1106,11 @@ Tensor<Matrix, C> transpose(const Tensor<Matrix, C> &T, const Axes &axes,
       axes_trans[r] = axes_inv[axes_map[r]];
     }
 
-    size_t index_new[rank];
+    std::vector<size_t> index_new(rank);
 
 #pragma omp for
     for (size_t i = 0; i < local_size; ++i) {
-      T.global_index_l2g_map_transpose(i, axes_trans, index_new);
+      T.global_index_l2g_map_transpose(i, &(axes_trans[0]), &(index_new[0]));
 
       size_t g_row(0),
           g_col(0);  // indices of global matrix for transposed tensor
@@ -1672,13 +1672,13 @@ Tensor<Matrix, C> tensordot(const Tensor<Matrix, C> &a,
     const size_t rank = a.rank();
     const size_t rank_row = rank - axes_a.size();
     const size_t rank_col = axes_a.size();
-    size_t v[rank];
+    std::vector<size_t> v(rank);
     for (size_t i = 0; i < rank; ++i) v[i] = i;
     for (size_t i = 0; i < rank_col; ++i) v[axes_a[i]] = rank;
-    std::sort(v, v + rank);
+    std::sort(v.begin(), v.end());
     for (size_t i = 0; i < rank_col; ++i) v[rank_row + i] = axes_a[i];
 
-    trans_axes_a.assign(rank, v);
+    trans_axes_a.assign(rank, &(v[0]));
     urank_a = rank_row;
 
     for (size_t i = 0; i < rank_row; ++i) shape_c[i] = shape_a[v[i]];
@@ -1688,13 +1688,13 @@ Tensor<Matrix, C> tensordot(const Tensor<Matrix, C> &a,
     const size_t rank = b.rank();
     const size_t rank_row = axes_b.size();
     const size_t rank_col = rank - axes_b.size();
-    size_t v[rank];
+    std::vector<size_t> v(rank);
     for (size_t i = 0; i < rank; ++i) v[i] = i;
     for (size_t i = 0; i < rank_row; ++i) v[axes_b[i]] = 0;
-    std::sort(v, v + rank);
+    std::sort(v.begin(), v.end());
     for (size_t i = 0; i < rank_row; ++i) v[i] = axes_b[i];
 
-    trans_axes_b.assign(rank, v);
+    trans_axes_b.assign(rank, &(v[0]));
     urank_b = rank_row;
 
     for (size_t i = 0; i < rank_col; ++i)

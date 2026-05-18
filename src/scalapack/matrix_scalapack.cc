@@ -30,6 +30,7 @@
 #include <cassert>
 #include <cfloat>
 #include <complex>
+#include <vector>
 
 #include "mptensor/complex.hpp"
 #include "mptensor/matrix.hpp"
@@ -584,17 +585,14 @@ int matrix_eigh(Matrix<double> &A, Matrix<double> &B, std::vector<double> &W,
   std::vector<double> work;
   std::vector<int> iwork;
   int lwork, liwork;
-  int ifail[n];
-  int iclustr[A.get_comm_size() * 2];
-  double gap[A.get_comm_size()];
+  std::vector<int> ifail(n, 0);
+  std::vector<int> iclustr(A.get_comm_size() * 2, 0);
+  std::vector<double> gap(A.get_comm_size(), 0.0);
   int info;
   double work_size;
   int iwork_size;
   ia = ja = ib = jb = iz = jz = 1;
   lwork = liwork = -1;
-  for (int i = 0; i < n; ++i) ifail[i] = 0;
-  for (int i = 0; i < A.get_comm_size() * 2; ++i) iclustr[i] = 0;
-  for (int i = 0; i < A.get_comm_size(); ++i) gap[i] = 0.0;
 
   /* Get the size of workspace */
   pdsygvx_(&ibtype, &jobz, &range, &uplo, &n, A.head(), &ia, &ja,
@@ -602,7 +600,7 @@ int matrix_eigh(Matrix<double> &A, Matrix<double> &B, std::vector<double> &W,
            const_cast<int *>(B.descriptor()), &vl, &vu, &il, &iu, &abstol, &m,
            &nz, &(W[0]), &orfac, Z.head(), &iz, &jz,
            const_cast<int *>(Z.descriptor()), &work_size, &lwork, &iwork_size,
-           &liwork, ifail, iclustr, gap, &info);
+           &liwork, &(ifail[0]), &(iclustr[0]), &(gap[0]), &info);
 
   lwork = static_cast<int>(work_size);
   work.resize(lwork);
@@ -649,18 +647,15 @@ int matrix_eigh(Matrix<complex> &A, Matrix<complex> &B, std::vector<double> &W,
   std::vector<double> rwork;
   std::vector<int> iwork;
   int lwork, lrwork, liwork;
-  int ifail[n];
-  int iclustr[A.get_comm_size() * 2];
-  double gap[A.get_comm_size()];
+  std::vector<int> ifail(n, 0);
+  std::vector<int> iclustr(A.get_comm_size() * 2, 0);
+  std::vector<double> gap(A.get_comm_size(), 0.0);
   int info;
   complex work_size;
   double rwork_size;
   int iwork_size;
   ia = ja = ib = jb = iz = jz = 1;
   lwork = lrwork = liwork = -1;
-  for (int i = 0; i < n; ++i) ifail[i] = 0;
-  for (int i = 0; i < A.get_comm_size() * 2; ++i) iclustr[i] = 0;
-  for (int i = 0; i < A.get_comm_size(); ++i) gap[i] = 0.0;
 
   /* Get the size of workspace */
   pzhegvx_(&ibtype, &jobz, &range, &uplo, &n, A.head(), &ia, &ja,
@@ -668,7 +663,7 @@ int matrix_eigh(Matrix<complex> &A, Matrix<complex> &B, std::vector<double> &W,
            const_cast<int *>(B.descriptor()), &vl, &vu, &il, &iu, &abstol, &m,
            &nz, &(W[0]), &orfac, Z.head(), &iz, &jz,
            const_cast<int *>(Z.descriptor()), &work_size, &lwork, &rwork_size,
-           &lrwork, &iwork_size, &liwork, ifail, iclustr, gap, &info);
+           &lrwork, &iwork_size, &liwork, &(ifail[0]), &(iclustr[0]), &(gap[0]), &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
   lrwork = static_cast<int>(rwork_size);
@@ -682,7 +677,7 @@ int matrix_eigh(Matrix<complex> &A, Matrix<complex> &B, std::vector<double> &W,
            const_cast<int *>(B.descriptor()), &vl, &vu, &il, &iu, &abstol, &m,
            &nz, &(W[0]), &orfac, Z.head(), &iz, &jz,
            const_cast<int *>(Z.descriptor()), &(work[0]), &lwork, &(rwork[0]),
-           &lrwork, &(iwork[0]), &liwork, ifail, iclustr, gap, &info);
+           &lrwork, &(iwork[0]), &liwork, &(ifail[0]), &(iclustr[0]), &(gap[0]), &info);
 
   if (info > n) {
     std::cerr << "The tensor B is not positive definite." << std::endl;
