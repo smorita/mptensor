@@ -56,9 +56,9 @@ void Tensor<Matrix, C>::load(const std::string &filename) {
   std::string dummy;
   std::string version;
   size_t ibuf[8] = {0};
-  size_t& loaded_version_major = ibuf[0];
-  size_t& loaded_version_minor = ibuf[1];
-  size_t& loaded_version_patch = ibuf[2];
+  // size_t& loaded_version_major = ibuf[0];
+  // size_t& loaded_version_minor = ibuf[1];
+  // size_t& loaded_version_patch = ibuf[2];
   size_t& loaded_matrix_type = ibuf[3];
   size_t& loaded_value_type = ibuf[4];
   size_t& loaded_comm_size = ibuf[5];

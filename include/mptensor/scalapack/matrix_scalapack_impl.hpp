@@ -669,7 +669,7 @@ void sum_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
       /* Get recv_size */
       int send_size = send_size_list[dest];
       int recv_size;
-      MPI_Status status;
+      // MPI_Status status;
       int tag = step;
       mpi_wrapper::sendrecv(&send_size, 1, dest, tag, &recv_size, 1, source, tag, comm);
 
