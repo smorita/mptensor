@@ -33,69 +33,36 @@
 
 #ifndef _NO_MPI
 
-#include <vector>
 #include <mpi.h>
+
+#include <vector>
+
 #include "../complex.hpp"
 
 namespace mptensor {
 namespace mpi {
 
-//! Template function for MPI Datatype.
+//! Template variable for MPI Datatype.
 template <typename C>
-inline MPI_Datatype mpi_datatype();
+inline MPI_Datatype mpi_datatype = MPI_DATATYPE_NULL;
 
-template <>
-inline MPI_Datatype mpi_datatype<char>() {
-  return MPI_CHAR;
-};
-template <>
-inline MPI_Datatype mpi_datatype<signed char>() {
-  return MPI_SIGNED_CHAR;
-};
-template <>
-inline MPI_Datatype mpi_datatype<unsigned char>() {
-  return MPI_UNSIGNED_CHAR;
-};
-template <>
-inline MPI_Datatype mpi_datatype<short>() {
-  return MPI_SHORT;
-};
-template <>
-inline MPI_Datatype mpi_datatype<unsigned short>() {
-  return MPI_UNSIGNED_SHORT;
-};
-template <>
-inline MPI_Datatype mpi_datatype<int>() {
-  return MPI_INT;
-};
-template <>
-inline MPI_Datatype mpi_datatype<unsigned int>() {
-  return MPI_UNSIGNED;
-};
-template <>
-inline MPI_Datatype mpi_datatype<long int>() {
-  return MPI_LONG;
-};
-template <>
-inline MPI_Datatype mpi_datatype<unsigned long int>() {
-  return MPI_UNSIGNED_LONG;
-};
-template <>
-inline MPI_Datatype mpi_datatype<long long int>() {
-  return MPI_LONG_LONG;
-};
-template <>
-inline MPI_Datatype mpi_datatype<unsigned long long int>() {
-  return MPI_UNSIGNED_LONG_LONG;
-};
-template <>
-inline MPI_Datatype mpi_datatype<double>() {
-  return MPI_DOUBLE;
-};
-template <>
-inline MPI_Datatype mpi_datatype<complex>() {
-  return MPI_DOUBLE_COMPLEX;
-};
+//! \cond
+// clang-format off
+template <> inline MPI_Datatype mpi_datatype<char>                = MPI_CHAR;
+template <> inline MPI_Datatype mpi_datatype<signed char>         = MPI_SIGNED_CHAR;
+template <> inline MPI_Datatype mpi_datatype<unsigned char>       = MPI_UNSIGNED_CHAR;
+template <> inline MPI_Datatype mpi_datatype<short>               = MPI_SHORT;
+template <> inline MPI_Datatype mpi_datatype<unsigned short>      = MPI_UNSIGNED_SHORT;
+template <> inline MPI_Datatype mpi_datatype<int>                 = MPI_INT;
+template <> inline MPI_Datatype mpi_datatype<unsigned int>        = MPI_UNSIGNED;
+template <> inline MPI_Datatype mpi_datatype<long int>            = MPI_LONG;
+template <> inline MPI_Datatype mpi_datatype<unsigned long int>   = MPI_UNSIGNED_LONG;
+template <> inline MPI_Datatype mpi_datatype<long long int>       = MPI_LONG_LONG;
+template <> inline MPI_Datatype mpi_datatype<unsigned long long int> = MPI_UNSIGNED_LONG_LONG;
+template <> inline MPI_Datatype mpi_datatype<double>              = MPI_DOUBLE;
+template <> inline MPI_Datatype mpi_datatype<complex>             = MPI_DOUBLE_COMPLEX;
+// clang-format on
+//! \endcond
 
 //! Calculate a summation over MPI communicator.
 /*!
@@ -105,9 +72,9 @@ inline MPI_Datatype mpi_datatype<complex>() {
   \return summation of val.
 */
 template <typename C>
-inline C allreduce_sum(C val, const MPI_Comm &comm) {
+inline C allreduce_sum(C val, const MPI_Comm& comm) {
   C recv;
-  MPI_Allreduce(&val, &recv, 1, mpi_datatype<C>(), MPI_SUM, comm);
+  MPI_Allreduce(&val, &recv, 1, mpi_datatype<C>, MPI_SUM, comm);
   return recv;
 };
 
@@ -119,12 +86,12 @@ inline C allreduce_sum(C val, const MPI_Comm &comm) {
   \return resulted vector.
 */
 template <typename C>
-inline std::vector<C> allreduce_vec(const std::vector<C> &vec,
-                                    const MPI_Comm &comm) {
+inline std::vector<C> allreduce_vec(const std::vector<C>& vec,
+                                    const MPI_Comm& comm) {
   size_t n = vec.size();
   std::vector<C> recv(n);
-  MPI_Allreduce(const_cast<C *>(&(vec[0])), &(recv[0]), static_cast<int>(n),
-                mpi_datatype<C>(), MPI_SUM, comm);
+  MPI_Allreduce(const_cast<C*>(&(vec[0])), &(recv[0]), static_cast<int>(n),
+                mpi_datatype<C>, MPI_SUM, comm);
   return recv;
 };
 
@@ -137,9 +104,9 @@ inline std::vector<C> allreduce_vec(const std::vector<C> &vec,
   \param[in] comm MPI Communicator
 */
 template <typename C>
-inline void allreduce(const C *sendbuf, C *recvbuf, int count, MPI_Op op,
-                      const MPI_Comm &comm) {
-  MPI_Allreduce(const_cast<C *>(sendbuf), recvbuf, count, mpi_datatype<C>(), op,
+inline void allreduce(const C* sendbuf, C* recvbuf, int count, MPI_Op op,
+                      const MPI_Comm& comm) {
+  MPI_Allreduce(const_cast<C*>(sendbuf), recvbuf, count, mpi_datatype<C>, op,
                 comm);
 };
 
@@ -156,11 +123,11 @@ inline void allreduce(const C *sendbuf, C *recvbuf, int count, MPI_Op op,
   \param[in] comm MPI Communicator
 */
 template <typename C>
-inline void sendrecv(const C *sendbuf, int sendcount, int dest, int sendtag,
-                     C *recvbuf, int recvcount, int source, int recvtag,
-                     const MPI_Comm &comm) {
-  MPI_Sendrecv(const_cast<C *>(sendbuf), sendcount, mpi_datatype<C>(), dest,
-               sendtag, recvbuf, recvcount, mpi_datatype<C>(), source, recvtag,
+inline void sendrecv(const C* sendbuf, int sendcount, int dest, int sendtag,
+                     C* recvbuf, int recvcount, int source, int recvtag,
+                     const MPI_Comm& comm) {
+  MPI_Sendrecv(const_cast<C*>(sendbuf), sendcount, mpi_datatype<C>, dest,
+               sendtag, recvbuf, recvcount, mpi_datatype<C>, source, recvtag,
                comm, MPI_STATUS_IGNORE);
 };
 
@@ -175,13 +142,13 @@ inline void sendrecv(const C *sendbuf, int sendcount, int dest, int sendtag,
   \param[in] comm MPI Communicator
 */
 template <typename C>
-inline void sendrecv(const std::vector<C> &send_vec, int dest, int sendtag,
-                     std::vector<C> &recv_vec, int source, int recvtag,
-                     const MPI_Comm &comm) {
-  MPI_Sendrecv(const_cast<C *>(&(send_vec[0])),
-               static_cast<int>(send_vec.size()), mpi_datatype<C>(), dest,
+inline void sendrecv(const std::vector<C>& send_vec, int dest, int sendtag,
+                     std::vector<C>& recv_vec, int source, int recvtag,
+                     const MPI_Comm& comm) {
+  MPI_Sendrecv(const_cast<C*>(&(send_vec[0])),
+               static_cast<int>(send_vec.size()), mpi_datatype<C>, dest,
                sendtag, &(recv_vec[0]), static_cast<int>(recv_vec.size()),
-               mpi_datatype<C>(), source, recvtag, comm, MPI_STATUS_IGNORE);
+               mpi_datatype<C>, source, recvtag, comm, MPI_STATUS_IGNORE);
 };
 
 //! Wrapper of MPI_Alltoall
@@ -193,10 +160,10 @@ inline void sendrecv(const std::vector<C> &send_vec, int dest, int sendtag,
   \param[in] comm Communicator over which data is to be exchanged.
 */
 template <typename C>
-inline void alltoall(const C *sendbuf, int sendcount, C *recvbuf, int recvcount,
-                     const MPI_Comm &comm) {
-  MPI_Alltoall(const_cast<C *>(sendbuf), sendcount, mpi_datatype<C>(), recvbuf,
-               recvcount, mpi_datatype<C>(), comm);
+inline void alltoall(const C* sendbuf, int sendcount, C* recvbuf, int recvcount,
+                     const MPI_Comm& comm) {
+  MPI_Alltoall(const_cast<C*>(sendbuf), sendcount, mpi_datatype<C>, recvbuf,
+               recvcount, mpi_datatype<C>, comm);
 };
 
 //! Wrapper of MPI_Alltoallv
@@ -215,13 +182,13 @@ inline void alltoall(const C *sendbuf, int sendcount, C *recvbuf, int recvcount,
   \param[in] comm Communicator over which data is to be exchanged.
 */
 template <typename C>
-inline void alltoallv(const C *sendbuf, const int *sendcounts,
-                      const int *sdispls, C *recvbuf, const int *recvcounts,
-                      const int *rdispls, const MPI_Comm &comm) {
-  MPI_Alltoallv(const_cast<C *>(sendbuf), const_cast<int *>(sendcounts),
-                const_cast<int *>(sdispls), mpi_datatype<C>(), recvbuf,
-                const_cast<int *>(recvcounts), const_cast<int *>(rdispls),
-                mpi_datatype<C>(), comm);
+inline void alltoallv(const C* sendbuf, const int* sendcounts,
+                      const int* sdispls, C* recvbuf, const int* recvcounts,
+                      const int* rdispls, const MPI_Comm& comm) {
+  MPI_Alltoallv(const_cast<C*>(sendbuf), const_cast<int*>(sendcounts),
+                const_cast<int*>(sdispls), mpi_datatype<C>, recvbuf,
+                const_cast<int*>(recvcounts), const_cast<int*>(rdispls),
+                mpi_datatype<C>, comm);
 };
 
 //! Wrapper of MPI_Bcast
@@ -232,8 +199,8 @@ inline void alltoallv(const C *sendbuf, const int *sendcounts,
   \param comm Communicator.
 */
 template <typename C>
-inline void bcast(C *buffer, int count, int root, const MPI_Comm &comm) {
-  MPI_Bcast(buffer, count, mpi_datatype<C>(), root, comm);
+inline void bcast(C* buffer, int count, int root, const MPI_Comm& comm) {
+  MPI_Bcast(buffer, count, mpi_datatype<C>, root, comm);
 };
 
 }  // namespace mpi
