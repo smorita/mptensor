@@ -33,14 +33,12 @@
 
 #ifndef _NO_MPI
 
-#include <mpi.h>
-
 #include <vector>
+#include <mpi.h>
+#include "../complex.hpp"
 
 namespace mptensor {
-
-//! Wrappers of MPI library
-namespace mpi_wrapper {
+namespace mpi {
 
 //! Template function for MPI Datatype.
 template <typename C>
@@ -238,7 +236,7 @@ inline void bcast(C *buffer, int count, int root, const MPI_Comm &comm) {
   MPI_Bcast(buffer, count, mpi_datatype<C>(), root, comm);
 };
 
-}  // namespace mpi_wrapper
+}  // namespace mpi
 }  // namespace mptensor
 
 #endif  // _NO_MPI

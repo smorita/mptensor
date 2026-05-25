@@ -423,7 +423,7 @@ inline std::vector<C> Matrix<C>::flatten() {
     global_index(i, g_row, g_col);
     vec[g_row + g_col * nr] = V[i];
   }
-  return mpi_wrapper::allreduce_vec(vec, get_comm());
+  return mpi::allreduce_vec(vec, get_comm());
 };
 
 template <typename C>
@@ -433,13 +433,13 @@ inline void Matrix<C>::barrier() const {
 
 template <typename C>
 inline C Matrix<C>::allreduce_sum(C value) const {
-  return mpi_wrapper::allreduce_sum(value, get_comm());
+  return mpi::allreduce_sum(value, get_comm());
 }
 
 template <typename C>
 template <typename D>
 inline void Matrix<C>::bcast(D* buffer, int count, int root) const {
-  mpi_wrapper::bcast(buffer, count, root, get_comm());
+  mpi::bcast(buffer, count, root, get_comm());
 }
 
 template <typename C>
@@ -494,7 +494,7 @@ void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
     send_counts[dest_rank[i]] += 1;
   }
 
-  mpi_wrapper::alltoall(&(send_counts[0]), 1, &(recv_counts[0]), 1, comm);
+  mpi::alltoall(&(send_counts[0]), 1, &(recv_counts[0]), 1, comm);
 
   for (int rank = 0; rank < mpisize; ++rank) {
     send_displs[rank + 1] = send_counts[rank] + send_displs[rank];
@@ -521,9 +521,9 @@ void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
   }
 
   /* Send and Recieve */
-  mpi_wrapper::alltoallv(&(send_pos[0]), &(send_counts[0]), &(send_displs[0]), &(recv_pos[0]),
+  mpi::alltoallv(&(send_pos[0]), &(send_counts[0]), &(send_displs[0]), &(recv_pos[0]),
                          &(recv_counts[0]), &(recv_displs[0]), comm);
-  mpi_wrapper::alltoallv(&(send_value[0]), &(send_counts[0]), &(send_displs[0]), &(recv_value[0]),
+  mpi::alltoallv(&(send_value[0]), &(send_counts[0]), &(send_displs[0]), &(recv_value[0]),
                          &(recv_counts[0]), &(recv_displs[0]), comm);
 
   /* Unpack */
@@ -558,7 +558,7 @@ void replace_matrix_data(const std::vector<C>& V, const std::vector<int>& dest_r
     send_counts[dest_rank[i]] += 1;
   }
 
-  mpi_wrapper::alltoall(&(send_counts[0]), 1, &(recv_counts[0]), 1, comm);
+  mpi::alltoall(&(send_counts[0]), 1, &(recv_counts[0]), 1, comm);
 
   for (int rank = 0; rank < mpisize; ++rank) {
     send_displs[rank + 1] = send_counts[rank] + send_displs[rank];
@@ -585,9 +585,9 @@ void replace_matrix_data(const std::vector<C>& V, const std::vector<int>& dest_r
   }
 
   /* Send and Recieve */
-  mpi_wrapper::alltoallv(&(send_pos[0]), &(send_counts[0]), &(send_displs[0]), &(recv_pos[0]),
+  mpi::alltoallv(&(send_pos[0]), &(send_counts[0]), &(send_displs[0]), &(recv_pos[0]),
                          &(recv_counts[0]), &(recv_displs[0]), comm);
-  mpi_wrapper::alltoallv(&(send_value[0]), &(send_counts[0]), &(send_displs[0]), &(recv_value[0]),
+  mpi::alltoallv(&(send_value[0]), &(send_counts[0]), &(send_displs[0]), &(recv_value[0]),
                          &(recv_counts[0]), &(recv_displs[0]), comm);
 
   /* Unpack */
@@ -633,7 +633,7 @@ void sum_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
       int recv_size;
       // MPI_Status status;
       int tag = step;
-      mpi_wrapper::sendrecv(&send_size, 1, dest, tag, &recv_size, 1, source, tag, comm);
+      mpi::sendrecv(&send_size, 1, dest, tag, &recv_size, 1, source, tag, comm);
 
       /* Pack */
       std::vector<size_t> send_pos(send_size);
@@ -650,8 +650,8 @@ void sum_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
       /* Send and Recieve */
       std::vector<size_t> recv_pos(recv_size);
       std::vector<C> recv_value(recv_size);
-      mpi_wrapper::sendrecv(send_pos, dest, tag, recv_pos, source, tag, comm);
-      mpi_wrapper::sendrecv(send_value, dest, tag, recv_value, source, tag,
+      mpi::sendrecv(send_pos, dest, tag, recv_pos, source, tag, comm);
+      mpi::sendrecv(send_value, dest, tag, recv_value, source, tag,
                             comm);
 
       /* Unpack */
@@ -670,7 +670,7 @@ double max_abs(const Matrix<C>& a) {
   for (size_t i = 0; i < n; ++i) {
     send = std::max(send, std::abs(a[i]));
   }
-  mpi_wrapper::allreduce(&send, &recv, 1, MPI_MAX, a.get_comm());
+  mpi::allreduce(&send, &recv, 1, MPI_MAX, a.get_comm());
   return recv;
 };
 
@@ -682,7 +682,7 @@ double min_abs(const Matrix<C>& a) {
   for (size_t i = 0; i < n; ++i) {
     send = std::min(send, std::abs(a[i]));
   }
-  mpi_wrapper::allreduce(&send, &recv, 1, MPI_MIN, a.get_comm());
+  mpi::allreduce(&send, &recv, 1, MPI_MIN, a.get_comm());
   return recv;
 };
 
@@ -698,7 +698,7 @@ C matrix_trace(const Matrix<C> &A) {
   }
 
   C recv;
-  mpi_wrapper::allreduce(&val, &recv, 1, MPI_SUM, A.get_comm());
+  mpi::allreduce(&val, &recv, 1, MPI_SUM, A.get_comm());
   return recv;
 };
 

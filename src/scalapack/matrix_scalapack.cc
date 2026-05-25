@@ -730,7 +730,7 @@ double max(const Matrix<double> &a) {
   double send = -DBL_MAX;
   double recv;
   if (n > 0) send = *(std::max_element(a.head(), a.head() + n));
-  mpi_wrapper::allreduce(&send, &recv, 1, MPI_MAX, a.get_comm());
+  mpi::allreduce(&send, &recv, 1, MPI_MAX, a.get_comm());
   return recv;
 };
 
@@ -740,7 +740,7 @@ double min(const Matrix<double> &a) {
   double send = DBL_MAX;
   double recv;
   if (n > 0) send = *(std::min_element(a.head(), a.head() + n));
-  mpi_wrapper::allreduce(&send, &recv, 1, MPI_MIN, a.get_comm());
+  mpi::allreduce(&send, &recv, 1, MPI_MIN, a.get_comm());
   return recv;
 };
 

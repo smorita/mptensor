@@ -40,8 +40,9 @@ namespace mpi {
 
 #ifdef _NO_MPI
 using comm_type = int;
+extern const comm_type MPI_COMM_WORLD;
 #else
-using comm_type = MPI_Comm;
+using comm_type = MPI_Comm;  /// Type for MPI communicator
 #endif
 
 extern int rank;
@@ -55,9 +56,5 @@ void get_info(const comm_type &comm, int &rank, int &size, bool &is_root);
 
 }  // namespace mpi
 }  // namespace mptensor
-
-#ifdef _NO_MPI
-extern const mptensor::mpi::comm_type MPI_COMM_WORLD;
-#endif
 
 #endif  // _MPTENSOR_MPI_HPP_

@@ -57,10 +57,16 @@ void get_info(const comm_type &comm, int &rank, int &size, bool &is_root) {
 
 #else  // _NO_MPI
 
-int rank = -1;
-int size = -1;
-bool is_root = false;
+int rank = -1; /// Rank of the calling process in the communicator
+int size = -1; /// Number of processes in the communicator
+bool is_root = false; /// True if the calling process is the root (rank 0), false otherwise
 
+/// @brief Initialize MPI environment and get MPI information
+/// @param argc Number of command-line arguments
+/// @param argv Array of command-line arguments
+///
+/// This function should be called before any MPI communication.
+/// It also registers the finalize function to be called at exit.
 void initialize(int argc, char **argv) {
   int initialized;
   MPI_Initialized(&initialized);
@@ -71,6 +77,9 @@ void initialize(int argc, char **argv) {
   atexit(finalize);
 }
 
+/// @brief Finalize MPI environment
+///
+/// This function is registered to be called at exit by initialize().
 void finalize() {
   int finalized;
   MPI_Finalized(&finalized);
@@ -79,10 +88,17 @@ void finalize() {
   }
 }
 
+/// @brief Barrier synchronization among processes in the communicator
+/// @param comm MPI communicator
 void barrier(const comm_type &comm) {
   MPI_Barrier(comm);
 }
 
+/// @brief Get MPI information: rank, size, and whether the process is the root
+/// @param comm MPI communicator
+/// @param rank Rank of the calling process in the communicator
+/// @param size Number of processes in the communicator
+/// @param is_root True if the calling process is the root (rank 0), false otherwise
 void get_info(const comm_type &comm, int &rank, int &size, bool &is_root) {
   MPI_Comm_rank(comm, &rank);
   MPI_Comm_size(comm, &size);
@@ -92,7 +108,3 @@ void get_info(const comm_type &comm, int &rank, int &size, bool &is_root) {
 #endif
 }
 }
-
-#ifdef _NO_MPI
-const mptensor::mpi::comm_type MPI_COMM_WORLD = 0;
-#endif
