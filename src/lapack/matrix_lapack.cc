@@ -30,8 +30,8 @@
 #include <complex>
 
 #include "mptensor/complex.hpp"
-#include "mptensor/matrix.hpp"
-#include "mptensor/lapack/matrix_lapack.hpp"
+#include "mptensor/matrix/matrix.hpp"
+#include "mptensor/matrix/lapack/matrix_lapack.hpp"
 
 typedef mptensor::complex complex;
 

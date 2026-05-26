@@ -19,23 +19,30 @@
 */
 
 /*!
-  \file   matrix_interface_doc.hpp
+  \file   interface_doc.hpp
   \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
 
   \brief  Documentation of Matrix class interface.
 */
 
-#ifndef _MATRIX_INTERFACE_DOC_HPP_
-#define _MATRIX_INTERFACE_DOC_HPP_
+#ifndef _INTERFACE_DOC_HPP_
+#define _INTERFACE_DOC_HPP_
 
 namespace mptensor {
 
-//! Nameclass for Matrix inteface.
+//! Namespace for matrix classes.
+/*!
+  This is an inline namespace, so the \c matrix:: qualifier can be omitted.
+  e.g., \c mptensor::lapack::Matrix is equivalent to \c mptensor::matrix::lapack::Matrix.
+*/
+inline namespace matrix {
+
+//! Nameclass for Matrix interface.
 /*!
   The list of member functions and non-member functions,
   which should be implemented in a Matrix class.
  */
-namespace matrix_interface {
+namespace interface {
 
 //! Inteface of Matrix class.
 /*!
@@ -217,7 +224,8 @@ double max_abs(const Matrix<C>& a);
 template <typename C>
 double min_abs(const Matrix<C>& a);
 
-}  // namespace matrix_interface
+}  // namespace interface
+}  // inline namespace matrix
 }  // namespace mptensor
 
-#endif  // _MATRIX_INTERFACE_DOC_HPP_
+#endif  // _INTERFACE_DOC_HPP_

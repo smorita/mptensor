@@ -33,8 +33,8 @@
 #include <vector>
 
 #include "mptensor/complex.hpp"
-#include "mptensor/matrix.hpp"
-#include "mptensor/scalapack/matrix_scalapack.hpp"
+#include "mptensor/matrix/matrix.hpp"
+#include "mptensor/matrix/scalapack/matrix_scalapack.hpp"
 
 typedef mptensor::complex complex;
 

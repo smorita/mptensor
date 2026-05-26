@@ -35,9 +35,11 @@
 #include <vector>
 #include <string>
 
-#include "../complex.hpp"
+#include "mptensor/complex.hpp"
+#include "matrix_lapack.hpp"
 
 namespace mptensor {
+inline namespace matrix {
 
 //! Namespace for the non-distributed Matrix class with LAPACK.
 namespace lapack {
@@ -406,6 +408,7 @@ double min_abs(const Matrix<C>& a) {
 };
 
 }  // namespace lapack
+}  // inline namespace matrix
 }  // namespace mptensor
 
 #endif  // _MATRIX_LAPACK_IMPL_HPP_

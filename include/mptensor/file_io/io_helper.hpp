@@ -35,7 +35,7 @@
 #include <string>
 #include <vector>
 
-#include "mptensor/matrix.hpp"
+#include "mptensor/matrix/matrix.hpp"
 
 namespace mptensor {
 namespace io_helper {

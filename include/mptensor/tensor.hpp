@@ -37,7 +37,7 @@
 
 #include "complex.hpp"
 #include "index.hpp"
-#include "matrix.hpp"
+#include "matrix/matrix.hpp"
 
 namespace mptensor {
 

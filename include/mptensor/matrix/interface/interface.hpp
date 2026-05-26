@@ -19,20 +19,23 @@
 */
 
 /*!
-  \file   matrix_interface.hpp
+  \file   interface.hpp
   \author Satoshi Morita
 
   \brief  Interface of Matrix class.
 */
 
-#ifndef _MATRIX_INTERFACE_HPP_
-#define _MATRIX_INTERFACE_HPP_
+#ifndef _INTERFACE_HPP_
+#define _INTERFACE_HPP_
 
 #include <iostream>
 #include <vector>
 
+#include "mptensor/complex.hpp"
+
 namespace mptensor {
-namespace matrix_interface {
+inline namespace matrix {
+namespace interface {
 
 template <typename C>
 class Matrix {
@@ -141,9 +144,10 @@ double max_abs(const Matrix<C>& a);
 template <typename C>
 double min_abs(const Matrix<C>& a);
 
-}  // namespace matrix_interface
+}  // namespace interface
+}  // inline namespace matrix
 }  // namespace mptensor
 
-#include "matrix_interface_doc.hpp"
+#include "interface_doc.hpp"
 
-#endif  // _MATRIX_INTERFACE_HPP_
+#endif  // _INTERFACE_HPP_

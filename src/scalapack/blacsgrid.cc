@@ -34,7 +34,7 @@
 #include <iostream>
 #include <vector>
 
-#include "mptensor/scalapack/blacsgrid.hpp"
+#include "mptensor/matrix/scalapack/blacsgrid.hpp"
 
 /* BLACS */
 extern "C" {

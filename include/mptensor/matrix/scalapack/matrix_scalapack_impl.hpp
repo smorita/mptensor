@@ -42,6 +42,7 @@
 #include "mptensor/complex.hpp"
 #include "mptensor/mpi/mpi_wrapper.hpp"
 #include "blacsgrid.hpp"
+#include "matrix_scalapack.hpp"
 
 /* ---------- PBLAS, SCALAPACK ---------- */
 extern "C" {
@@ -51,6 +52,7 @@ void descinit_(int desca[], int* M, int* N, int* MB, int* NB, int* irsrc,
 }
 
 namespace mptensor {
+inline namespace matrix {
 
 //! Namespace for the distributed Matrix class with ScaLAPACK, PBLAS, and BLACS.
 namespace scalapack {
@@ -703,6 +705,7 @@ C matrix_trace(const Matrix<C> &A) {
 };
 
 }  // namespace scalapack
+}  // inline namespace matrix
 }  // namespace mptensor
 
 #endif  // _MATRIX_SCALAPACK_IMPL_HPP_

@@ -34,6 +34,7 @@
 #include <vector>
 
 namespace mptensor {
+inline namespace matrix {
 namespace scalapack {
 
 class BlacsGrid {
@@ -71,6 +72,7 @@ inline int BlacsGrid::mpirank(int prow, int pcol) const {
 inline int BlacsGrid::mpirank() const { return myrank; }
 
 }  // namespace scalapack
+}  // inline namespace matrix
 }  // namespace mptensor
 
 #endif  // _NO_MPI
