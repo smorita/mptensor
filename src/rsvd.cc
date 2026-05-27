@@ -32,8 +32,8 @@
 #include "mptensor/rsvd.hpp"
 #include "mptensor/complex.hpp"
 
-typedef typename std::mt19937 gen_t;
-typedef typename std::uniform_real_distribution<double> dist_t;
+using gen_t  = std::mt19937;
+using dist_t = std::uniform_real_distribution<double>;
 
 namespace mptensor {
 namespace random_tensor {

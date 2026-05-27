@@ -38,7 +38,7 @@ namespace mptensor {
 
 class Index {
  public:
-  typedef std::vector<size_t> index_t;
+  using index_t = std::vector<size_t>;
   Index();
   Index(const index_t& index);
 

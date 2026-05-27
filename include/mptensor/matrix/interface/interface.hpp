@@ -40,8 +40,8 @@ namespace interface {
 template <typename C>
 class Matrix {
  public:
-  typedef C value_type;   //!< \c double or \c complex
-  typedef int comm_type;  //!< Set \c MPI_Comm for MPI programm.
+  using value_type = C;    //!< \c double or \c complex
+  using comm_type  = int;  //!< Set \c MPI_Comm for MPI program.
 
   constexpr static size_t matrix_type_tag = MATRIX_TYPE_TAG_INTERFACE;
   constexpr static char* matrix_type_name = (char*)"Interface";

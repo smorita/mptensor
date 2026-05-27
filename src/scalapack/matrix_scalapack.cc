@@ -36,7 +36,7 @@
 #include "mptensor/matrix/matrix.hpp"
 #include "mptensor/matrix/scalapack/matrix_scalapack.hpp"
 
-typedef mptensor::complex complex;
+using complex = mptensor::complex;
 
 /* PBLAS, SCALAPACK */
 extern "C" {

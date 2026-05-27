@@ -33,7 +33,7 @@
 #include "mptensor/matrix/matrix.hpp"
 #include "mptensor/matrix/lapack/matrix_lapack.hpp"
 
-typedef mptensor::complex complex;
+using complex = mptensor::complex;
 
 /* BLAS, LAPACK */
 extern "C" {

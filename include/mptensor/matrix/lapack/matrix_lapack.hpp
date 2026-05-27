@@ -44,8 +44,8 @@ namespace lapack {
 template <typename C>
 class Matrix {
  public:
-  typedef C value_type;
-  typedef int comm_type;
+  using value_type = C;
+  using comm_type  = int;
 
   constexpr static size_t matrix_type_tag = MATRIX_TYPE_TAG_LAPACK;
   constexpr static char* matrix_type_name = (char*)"LAPACK";

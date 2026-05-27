@@ -35,7 +35,7 @@ namespace mptensor {
 
 //! Alias for the value type of complex numbers
 //! \ingroup Complex
-typedef std::complex<double> complex;
+using complex = std::complex<double>;
 
 template <typename C>
 constexpr size_t value_type_tag();

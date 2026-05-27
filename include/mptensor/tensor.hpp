@@ -42,8 +42,8 @@
 namespace mptensor {
 
 /* Alias */
-typedef Index Axes;
-typedef Index Shape;
+using Axes  = Index;
+using Shape = Index;
 
 /* Class definition */
 //! Tensor class. The main object of mptensor.
@@ -53,10 +53,9 @@ typedef Index Shape;
 template <template <typename> class Matrix, typename C>
 class Tensor {
  public:
-  typedef C value_type;                             //!< \c double or \c complex
-  typedef Matrix<C> matrix_type;                    //!< type of Matrix class
-  typedef typename Matrix<C>::comm_type comm_type;  //!< type of communicator.
-  /*!< \c MPI_Comm or \c int. */
+  using value_type  = C;                              //!< \c double or \c complex
+  using matrix_type = Matrix<C>;                      //!< type of Matrix class
+  using comm_type   = typename Matrix<C>::comm_type;  //!< type of communicator. \c MPI_Comm or \c int.
 
   //! \ingroup TensorConstructor
   //! \{
