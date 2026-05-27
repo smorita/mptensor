@@ -29,7 +29,7 @@
 #ifndef _TENSOR_RSVD_HPP_
 #define _TENSOR_RSVD_HPP_
 
-#include "tensor.hpp"
+#include "mptensor/tensor.hpp"
 
 namespace mptensor {
 
@@ -63,5 +63,5 @@ inline void set_seed(unsigned int seed);
 
 }  // namespace mptensor
 
-#include "rsvd_impl.hpp"
+#include "mptensor/rsvd_impl.hpp"
 #endif  // _TENSOR_RSVD_HPP_

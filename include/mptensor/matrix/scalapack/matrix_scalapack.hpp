@@ -35,7 +35,8 @@
 
 #include <mpi.h>
 
-#include "blacsgrid.hpp"
+#include "mptensor/complex.hpp"
+#include "mptensor/matrix/scalapack/blacsgrid.hpp"
 
 namespace mptensor {
 inline namespace matrix {
@@ -199,7 +200,7 @@ double min(const Matrix<C>& a);
 }  // inline namespace matrix
 }  // namespace mptensor
 
-#include "matrix_scalapack_impl.hpp"
+#include "mptensor/matrix/scalapack/matrix_scalapack_impl.hpp"
 
 #endif  // _NO_MPI
 #endif  // _MATRIX_SCALAPACK_HPP_

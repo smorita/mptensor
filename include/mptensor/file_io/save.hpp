@@ -34,7 +34,6 @@
 #include <vector>
 
 #include "mptensor/file_io/io_helper.hpp"
-#include "mptensor/matrix/matrix.hpp"
 #include "mptensor/tensor.hpp"
 #include "mptensor/version.hpp"
 

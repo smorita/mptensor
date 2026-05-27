@@ -19,34 +19,16 @@
 */
 
 /*!
-  \file   mptensor.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
-  \date   Jun 26 2016
+  \file   file_io.hpp
+  \author Satoshi Morita <smorita@keio.jp>
 
-  \brief  Top header file of mptensor.
+  \brief  Header file for file I/O functions.
 */
 
-#ifndef _MPTENSOR_HPP_
-#define _MPTENSOR_HPP_
+#ifndef _MPTENSOR_FILE_IO_HPP_
+#define _MPTENSOR_FILE_IO_HPP_
 
-#include "mptensor/version.hpp"
-#include "mptensor/mpi/mpi.hpp"
+#include "mptensor/file_io/save.hpp"
+#include "mptensor/file_io/load.hpp"
 
-#include "mptensor/tensor.hpp"
-
-#include "mptensor/file_io/file_io.hpp"
-#include "mptensor/rsvd.hpp"
-
-namespace mptensor {
-
-#ifdef _NO_MPI
-using DTensor = Tensor<lapack::Matrix, double>;
-using ZTensor = Tensor<lapack::Matrix, complex>;
-#else
-using DTensor = Tensor<scalapack::Matrix, double>;
-using ZTensor = Tensor<scalapack::Matrix, complex>;
-#endif
-
-}  // namespace mptensor
-
-#endif  // _MPTENSOR_HPP_
+#endif  // _MPTENSOR_FILE_IO_HPP_

@@ -39,10 +39,8 @@
 
 #include <mpi.h>
 
-#include "mptensor/complex.hpp"
 #include "mptensor/mpi/mpi_wrapper.hpp"
-#include "blacsgrid.hpp"
-#include "matrix_scalapack.hpp"
+#include "mptensor/matrix/scalapack/matrix_scalapack.hpp"
 
 /* ---------- PBLAS, SCALAPACK ---------- */
 extern "C" {

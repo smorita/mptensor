@@ -148,6 +148,6 @@ double min_abs(const Matrix<C>& a);
 }  // inline namespace matrix
 }  // namespace mptensor
 
-#include "interface_doc.hpp"
+#include "mptensor/matrix/interface/interface_doc.hpp"
 
 #endif  // _INTERFACE_HPP_

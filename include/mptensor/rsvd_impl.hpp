@@ -32,11 +32,11 @@
 #include <cassert>
 #include <vector>
 
-#include "complex.hpp"
-#include "index.hpp"
-#include "matrix/matrix.hpp"
-#include "rsvd.hpp"
-#include "tensor.hpp"
+#include "mptensor/complex.hpp"
+#include "mptensor/index.hpp"
+#include "mptensor/matrix/matrix.hpp"
+#include "mptensor/rsvd.hpp"
+#include "mptensor/tensor.hpp"
 
 namespace mptensor {
 

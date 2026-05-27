@@ -181,6 +181,6 @@ double min(const Matrix<C>& a);
 }  // inline namespace matrix
 }  // namespace mptensor
 
-#include "matrix_lapack_impl.hpp"
+#include "mptensor/matrix/lapack/matrix_lapack_impl.hpp"
 
 #endif  // _MATRIX_LAPACK_HPP_

@@ -35,8 +35,7 @@
 #include <vector>
 #include <string>
 
-#include "mptensor/complex.hpp"
-#include "matrix_lapack.hpp"
+#include "mptensor/matrix/lapack/matrix_lapack.hpp"
 
 namespace mptensor {
 inline namespace matrix {

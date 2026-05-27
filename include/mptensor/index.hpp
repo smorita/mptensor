@@ -43,7 +43,7 @@ class Index {
   Index(const index_t& index);
 
 // constructors like as Index(size_t j0,size_t j1,size_t j2);
-#include "index_constructor.hpp"
+#include "mptensor/index_constructor.hpp"
 
   const size_t& operator[](size_t i) const;
   size_t& operator[](size_t i);

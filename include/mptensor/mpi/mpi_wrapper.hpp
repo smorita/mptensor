@@ -37,7 +37,7 @@
 
 #include <vector>
 
-#include "../complex.hpp"
+#include "mptensor/complex.hpp"
 
 namespace mptensor {
 namespace mpi {

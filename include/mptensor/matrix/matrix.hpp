@@ -35,9 +35,9 @@ constexpr size_t MATRIX_TYPE_TAG_LAPACK = 1;
 constexpr size_t MATRIX_TYPE_TAG_SCALAPACK = 2;
 
 #ifndef _NO_MPI
-#include "scalapack/matrix_scalapack.hpp"
+#include "mptensor/matrix/scalapack/matrix_scalapack.hpp"
 #endif  // _NO_MPI
 
-#include "lapack/matrix_lapack.hpp"
+#include "mptensor/matrix/lapack/matrix_lapack.hpp"
 
 #endif  // _MATRIX_HPP_

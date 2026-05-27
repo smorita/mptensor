@@ -35,9 +35,9 @@
 #include <string>
 #include <vector>
 
-#include "complex.hpp"
-#include "index.hpp"
-#include "matrix/matrix.hpp"
+#include "mptensor/complex.hpp"
+#include "mptensor/index.hpp"
+#include "mptensor/matrix/matrix.hpp"
 
 namespace mptensor {
 
@@ -341,9 +341,6 @@ std::ostream &operator<<(std::ostream &out, const Tensor<Matrix, C> &t);
 
 }  // namespace mptensor
 
-#include "tensor_impl.hpp"
-#include "rsvd.hpp"
-#include "file_io/save.hpp"
-#include "file_io/load.hpp"
+#include "mptensor/tensor_impl.hpp"
 
 #endif  // _TENSOR_HPP_
