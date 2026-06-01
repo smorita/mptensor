@@ -51,6 +51,9 @@ class Matrix {
   using value_type = C;
   using comm_type  = MPI_Comm;
 
+  template <typename D>
+  using rebind = Matrix<D>;
+
   constexpr static size_t matrix_type_tag = MATRIX_TYPE_TAG_SCALAPACK;
   constexpr static char* matrix_type_name = (char*)"ScaLAPACK";
 

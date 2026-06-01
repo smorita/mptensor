@@ -47,6 +47,9 @@ class Matrix {
   using value_type = C;
   using comm_type  = int;
 
+  template <typename D>
+  using rebind = Matrix<D>;
+
   constexpr static size_t matrix_type_tag = MATRIX_TYPE_TAG_LAPACK;
   constexpr static char* matrix_type_name = (char*)"LAPACK";
 
