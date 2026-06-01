@@ -49,8 +49,8 @@ namespace mptensor {
   \note \c [rank_no] in the name of binary files has at least 4 digit, (ex.
   filename.0001.bin).
 */
-template <template <typename> class Matrix, typename C>
-void Tensor<Matrix, C>::load(const std::string &filename) {
+template <typename MatrixType>
+void Tensor<MatrixType>::load(const std::string &filename) {
   const bool comm_root = (get_comm_rank() == 0);
   std::ifstream fin;
   std::string dummy;
@@ -64,8 +64,8 @@ void Tensor<Matrix, C>::load(const std::string &filename) {
   size_t& loaded_comm_size = ibuf[5];
   size_t& loaded_ndim = ibuf[6];
   size_t& loaded_urank = ibuf[7];
-  const size_t this_matrix_type = Matrix<C>::matrix_type_tag;
-  const size_t this_value_type = value_type_tag<C>();
+  const size_t this_matrix_type = MatrixType::matrix_type_tag;
+  const size_t this_value_type = value_type_tag<value_type>();
   const size_t this_comm_size = get_comm_size();
   Shape loaded_shape;
   Axes loaded_map;
@@ -156,8 +156,8 @@ void Tensor<Matrix, C>::load(const std::string &filename) {
   \note \c rank_no in the name of binary files has at least 4 digit, (ex.
   filename.0001).
 */
-template <template <typename> class Matrix, typename C>
-void Tensor<Matrix, C>::load_ver_0_2(const char* filename) {
+template <typename MatrixType>
+void Tensor<MatrixType>::load_ver_0_2(const char* filename) {
   std::ifstream fin;
   size_t n;
   size_t urank;
@@ -202,7 +202,7 @@ void Tensor<Matrix, C>::load_ver_0_2(const char* filename) {
     // load_binary(datafile,get_matrix().head(),local_size());
     fin.open(datafile.data(), std::ofstream::binary);
     fin.read(reinterpret_cast<char*>(get_matrix().head()),
-             sizeof(C) * local_size());
+             sizeof(value_type) * local_size());
     fin.close();
   }
 }

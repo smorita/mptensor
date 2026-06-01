@@ -40,11 +40,11 @@
 namespace mptensor {
 
 #ifdef _NO_MPI
-using DTensor = Tensor<lapack::Matrix, double>;
-using ZTensor = Tensor<lapack::Matrix, complex>;
+using DTensor = Tensor<lapack::Matrix<double>>;
+using ZTensor = Tensor<lapack::Matrix<complex>>;
 #else
-using DTensor = Tensor<scalapack::Matrix, double>;
-using ZTensor = Tensor<scalapack::Matrix, complex>;
+using DTensor = Tensor<scalapack::Matrix<double>>;
+using ZTensor = Tensor<scalapack::Matrix<complex>>;
 #endif
 
 }  // namespace mptensor

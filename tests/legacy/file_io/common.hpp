@@ -7,15 +7,15 @@
 #include <mptensor/mptensor.hpp>
 
 using namespace mptensor;
-using sdtensor = Tensor<lapack::Matrix, double>;
-using sztensor = Tensor<lapack::Matrix, complex>;
+using sdtensor = Tensor<lapack::Matrix<double>>;
+using sztensor = Tensor<lapack::Matrix<complex>>;
 
 #ifdef _NO_MPI
-using pdtensor = Tensor<lapack::Matrix, double>;
-using pztensor = Tensor<lapack::Matrix, complex>;
+using pdtensor = Tensor<lapack::Matrix<double>>;
+using pztensor = Tensor<lapack::Matrix<complex>>;
 #else
-using pdtensor = Tensor<scalapack::Matrix, double>;
-using pztensor = Tensor<scalapack::Matrix, complex>;
+using pdtensor = Tensor<scalapack::Matrix<double>>;
+using pztensor = Tensor<scalapack::Matrix<complex>>;
 #endif
 
 template <typename tensor>

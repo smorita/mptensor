@@ -50,12 +50,15 @@ using Shape = Index;
 /*!
   \ingroup Tensor
 */
-template <template <typename> class Matrix, typename C>
+template <typename MatrixType>
 class Tensor {
  public:
-  using value_type  = C;                              //!< \c double or \c complex
-  using matrix_type = Matrix<C>;                      //!< type of Matrix class
-  using comm_type   = typename Matrix<C>::comm_type;  //!< type of communicator. \c MPI_Comm or \c int.
+  using value_type  = typename MatrixType::value_type;  //!< \c double or \c complex
+  using matrix_type = MatrixType;                       //!< type of Matrix class
+  using comm_type   = typename MatrixType::comm_type;   //!< type of communicator. \c MPI_Comm or \c int.
+
+  template <typename D>
+  using rebind = Tensor<typename MatrixType::template rebind<D>>;  //!< Tensor with scalar type replaced by \c D.
 
   //! \ingroup TensorConstructor
   //! \{
@@ -64,8 +67,8 @@ class Tensor {
   explicit Tensor(const comm_type &);
   Tensor(const comm_type &, const Shape &);
   Tensor(const comm_type &, const Shape &, size_t upper_rank);
-  Tensor(const comm_type &, const Tensor<lapack::Matrix, C> &);
-  Tensor(const comm_type &, const std::vector<C> &);
+  Tensor(const comm_type &, const Tensor<lapack::Matrix<value_type>> &);
+  Tensor(const comm_type &, const std::vector<value_type> &);
   //! \}
 
   const Shape &shape() const;
@@ -75,8 +78,8 @@ class Tensor {
   size_t get_upper_rank() const;
   const Axes &get_axes_map() const;
 
-  const Matrix<C> &get_matrix() const;
-  Matrix<C> &get_matrix();
+  const MatrixType &get_matrix() const;
+  MatrixType &get_matrix();
 
   const comm_type &get_comm() const;
   int get_comm_size() const;
@@ -87,11 +90,11 @@ class Tensor {
   void local_position(const Index &idx, int &comm_rank,
                       size_t &local_idx) const;
 
-  const C &operator[](size_t local_idx) const;
-  C &operator[](size_t local_idx);
+  const value_type &operator[](size_t local_idx) const;
+  value_type &operator[](size_t local_idx);
 
-  bool get_value(const Index &idx, C &val) const;
-  void set_value(const Index &idx, C val);
+  bool get_value(const Index &idx, value_type &val) const;
+  void set_value(const Index &idx, value_type val);
 
   void print_info(std::ostream &out, const std::string &tag = "") const;
   void print_info_mpi(std::ostream &, const std::string &tag = "") const;
@@ -99,41 +102,41 @@ class Tensor {
   void save(const std::string &filename) const;
   void load(const std::string &filename);
 
-  Tensor<Matrix, C> &transpose(const Axes &axes);
+  Tensor<MatrixType> &transpose(const Axes &axes);
 
   template <typename D>
-  Tensor<Matrix, C> &multiply_vector(const std::vector<D> &vec, size_t n_axes);
+  Tensor<MatrixType> &multiply_vector(const std::vector<D> &vec, size_t n_axes);
   template <typename D0, typename D1>
-  Tensor<Matrix, C> &multiply_vector(const std::vector<D0> &vec0,
-                                     size_t n_axes0,
-                                     const std::vector<D1> &vec1,
-                                     size_t n_axes1);
+  Tensor<MatrixType> &multiply_vector(const std::vector<D0> &vec0,
+                                      size_t n_axes0,
+                                      const std::vector<D1> &vec1,
+                                      size_t n_axes1);
   template <typename D0, typename D1, typename D2>
-  Tensor<Matrix, C> &multiply_vector(
+  Tensor<MatrixType> &multiply_vector(
       const std::vector<D0> &vec0, size_t n_axes0, const std::vector<D1> &vec1,
       size_t n_axes1, const std::vector<D2> &vec2, size_t n_axes2);
   template <typename D0, typename D1, typename D2, typename D3>
-  Tensor<Matrix, C> &multiply_vector(
+  Tensor<MatrixType> &multiply_vector(
       const std::vector<D0> &vec0, size_t n_axes0, const std::vector<D1> &vec1,
       size_t n_axes1, const std::vector<D2> &vec2, size_t n_axes2,
       const std::vector<D3> &vec3, size_t n_axes3);
 
-  Tensor<Matrix, C> &set_slice(const Tensor &a, size_t n_axes, size_t i_begin,
-                               size_t i_end);
-  Tensor<Matrix, C> &set_slice(const Tensor &a, const Index &index_begin,
-                               const Index &index_end);
+  Tensor<MatrixType> &set_slice(const Tensor &a, size_t n_axes, size_t i_begin,
+                                size_t i_end);
+  Tensor<MatrixType> &set_slice(const Tensor &a, const Index &index_begin,
+                                const Index &index_end);
 
-  Tensor<lapack::Matrix, C> gather();
-  std::vector<C> flatten();
+  Tensor<lapack::Matrix<value_type>> gather();
+  std::vector<value_type> flatten();
 
-  Tensor<Matrix, C> &operator+=(const Tensor &rhs);
-  Tensor<Matrix, C> &operator-=(const Tensor &rhs);
-  Tensor<Matrix, C> &operator*=(C rhs);
-  Tensor<Matrix, C> &operator/=(C rhs);
-  Tensor<Matrix, C> &operator=(C rhs);
+  Tensor<MatrixType> &operator+=(const Tensor &rhs);
+  Tensor<MatrixType> &operator-=(const Tensor &rhs);
+  Tensor<MatrixType> &operator*=(value_type rhs);
+  Tensor<MatrixType> &operator/=(value_type rhs);
+  Tensor<MatrixType> &operator=(value_type rhs);
 
   template <typename UnaryOperation>
-  Tensor<Matrix, C> &map(UnaryOperation op);
+  Tensor<MatrixType> &map(UnaryOperation op);
 
   void prep_global_to_local() const;
   void prep_local_to_global() const;
@@ -147,8 +150,8 @@ class Tensor {
                            size_t &local_idx) const;
 
  private:
-  Matrix<C> Mat;  //!< local storage.
-  Shape Dim;      //!< Shape of tensor.
+  MatrixType Mat;  //!< local storage.
+  Shape Dim;       //!< Shape of tensor.
 
   size_t upper_rank;  //!< Upper rank for matrix representation.
 
@@ -176,167 +179,169 @@ class Tensor {
 /* Operations */
 //! \ingroup ShapeChange
 //! \{
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> transpose(Tensor<Matrix, C> a, const Axes &axes);
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> transpose(const Tensor<Matrix, C> &a, const Axes &axes,
-                            size_t urank_new);
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> reshape(const Tensor<Matrix, C> &a, const Shape &shape_new);
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> slice(const Tensor<Matrix, C> &a, size_t n_axes,
-                        size_t i_begin, size_t i_end);
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> slice(const Tensor<Matrix, C> &a, const Index &index_begin,
-                        const Index &index_end);
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> extend(const Tensor<Matrix, C> &a, const Shape &shape_new);
+template <typename MatrixType>
+Tensor<MatrixType> transpose(Tensor<MatrixType> a, const Axes &axes);
+template <typename MatrixType>
+Tensor<MatrixType> transpose(const Tensor<MatrixType> &a, const Axes &axes,
+                             size_t urank_new);
+template <typename MatrixType>
+Tensor<MatrixType> reshape(const Tensor<MatrixType> &a, const Shape &shape_new);
+template <typename MatrixType>
+Tensor<MatrixType> slice(const Tensor<MatrixType> &a, size_t n_axes,
+                         size_t i_begin, size_t i_end);
+template <typename MatrixType>
+Tensor<MatrixType> slice(const Tensor<MatrixType> &a, const Index &index_begin,
+                         const Index &index_end);
+template <typename MatrixType>
+Tensor<MatrixType> extend(const Tensor<MatrixType> &a, const Shape &shape_new);
 //! \}
 
 //! \ingroup LinearAlgebra
 //! \{
-template <template <typename> class Matrix, typename C>
-C trace(const Tensor<Matrix, C> &a);
-template <template <typename> class Matrix, typename C>
-C trace(const Tensor<Matrix, C> &a, const Axes &axes_1, const Axes &axes_2);
-template <template <typename> class Matrix, typename C>
-C trace(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b,
-        const Axes &axes_a, const Axes &axes_b);
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> contract(const Tensor<Matrix, C> &a, const Axes &axes_1,
-                           const Axes &axes_2);
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> tensordot(const Tensor<Matrix, C> &a,
-                            const Tensor<Matrix, C> &b, const Axes &axes_a,
-                            const Axes &axes_b);
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> kron(const Tensor<Matrix, C> &a,
-                       const Tensor<Matrix, C> &b);
+template <typename MatrixType>
+typename MatrixType::value_type trace(const Tensor<MatrixType> &a);
+template <typename MatrixType>
+typename MatrixType::value_type trace(const Tensor<MatrixType> &a, const Axes &axes_1, const Axes &axes_2);
+template <typename MatrixType>
+typename MatrixType::value_type trace(const Tensor<MatrixType> &a, const Tensor<MatrixType> &b,
+                                      const Axes &axes_a, const Axes &axes_b);
+template <typename MatrixType>
+Tensor<MatrixType> contract(const Tensor<MatrixType> &a, const Axes &axes_1,
+                            const Axes &axes_2);
+template <typename MatrixType>
+Tensor<MatrixType> tensordot(const Tensor<MatrixType> &a,
+                             const Tensor<MatrixType> &b, const Axes &axes_a,
+                             const Axes &axes_b);
+template <typename MatrixType>
+Tensor<MatrixType> kron(const Tensor<MatrixType> &a,
+                        const Tensor<MatrixType> &b);
 //! \}
 
 //! \ingroup Decomposition
 //! \{
-template <template <typename> class Matrix, typename C>
-int svd(const Tensor<Matrix, C> &a, std::vector<double> &s);
-template <template <typename> class Matrix, typename C>
-int svd(const Tensor<Matrix, C> &a, Tensor<Matrix, C> &u,
-        std::vector<double> &s, Tensor<Matrix, C> &vt);
-template <template <typename> class Matrix, typename C>
-int svd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
+template <typename MatrixType>
+int svd(const Tensor<MatrixType> &a, std::vector<double> &s);
+template <typename MatrixType>
+int svd(const Tensor<MatrixType> &a, Tensor<MatrixType> &u,
+        std::vector<double> &s, Tensor<MatrixType> &vt);
+template <typename MatrixType>
+int svd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
         std::vector<double> &s);
-template <template <typename> class Matrix, typename C>
-int svd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
-        Tensor<Matrix, C> &u, std::vector<double> &s, Tensor<Matrix, C> &vt);
+template <typename MatrixType>
+int svd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
+        Tensor<MatrixType> &u, std::vector<double> &s, Tensor<MatrixType> &vt);
 
-template <template <typename> class Matrix, typename C>
-int psvd(const Tensor<Matrix, C> &a, std::vector<double> &s,
+template <typename MatrixType>
+int psvd(const Tensor<MatrixType> &a, std::vector<double> &s,
          const size_t target_rank);
-template <template <typename> class Matrix, typename C>
-int psvd(const Tensor<Matrix, C> &a, Tensor<Matrix, C> &u,
-         std::vector<double> &s, Tensor<Matrix, C> &vt,
+template <typename MatrixType>
+int psvd(const Tensor<MatrixType> &a, Tensor<MatrixType> &u,
+         std::vector<double> &s, Tensor<MatrixType> &vt,
          const size_t target_rank);
-template <template <typename> class Matrix, typename C>
-int psvd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
+template <typename MatrixType>
+int psvd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
          std::vector<double> &s, const size_t target_rank);
-template <template <typename> class Matrix, typename C>
-int psvd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
-         Tensor<Matrix, C> &u, std::vector<double> &s, Tensor<Matrix, C> &vt,
+template <typename MatrixType>
+int psvd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
+         Tensor<MatrixType> &u, std::vector<double> &s, Tensor<MatrixType> &vt,
          const size_t target_rank);
 
-template <template <typename> class Matrix, typename C>
-int qr(const Tensor<Matrix, C> &a, Tensor<Matrix, C> &q, Tensor<Matrix, C> &r);
-template <template <typename> class Matrix, typename C>
-int qr(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
-       Tensor<Matrix, C> &q, Tensor<Matrix, C> &r);
+template <typename MatrixType>
+int qr(const Tensor<MatrixType> &a, Tensor<MatrixType> &q, Tensor<MatrixType> &r);
+template <typename MatrixType>
+int qr(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
+       Tensor<MatrixType> &q, Tensor<MatrixType> &r);
 
-template <template <typename> class Matrix, typename C>
-int eigh(const Tensor<Matrix, C> &a, std::vector<double> &eigval,
-         Tensor<Matrix, C> &eigvec);
-template <template <typename> class Matrix, typename C>
-int eigh(const Tensor<Matrix, C> &a, std::vector<double> &eigval);
-template <template <typename> class Matrix, typename C>
-int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
-         std::vector<double> &eigval, Tensor<Matrix, C> &eigvec);
-template <template <typename> class Matrix, typename C>
-int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
+template <typename MatrixType>
+int eigh(const Tensor<MatrixType> &a, std::vector<double> &eigval,
+         Tensor<MatrixType> &eigvec);
+template <typename MatrixType>
+int eigh(const Tensor<MatrixType> &a, std::vector<double> &eigval);
+template <typename MatrixType>
+int eigh(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
+         std::vector<double> &eigval, Tensor<MatrixType> &eigvec);
+template <typename MatrixType>
+int eigh(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
          std::vector<double> &eigval);
-template <template <typename> class Matrix, typename C>
-int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row_a,
-         const Axes &axes_col_a, const Tensor<Matrix, C> &b,
+template <typename MatrixType>
+int eigh(const Tensor<MatrixType> &a, const Axes &axes_row_a,
+         const Axes &axes_col_a, const Tensor<MatrixType> &b,
          const Axes &axes_row_b, const Axes &axes_col_b,
-         std::vector<double> &eigval, Tensor<Matrix, C> &eigvec);
+         std::vector<double> &eigval, Tensor<MatrixType> &eigvec);
 
 
-template <template <typename> class Matrix, typename C>
-int eig(const Tensor<Matrix, C> &a, std::vector<complex> &eigval,
-        Tensor<Matrix, complex> &eigvec);
-template <template <typename> class Matrix, typename C>
-int eig(const Tensor<Matrix, C> &a, std::vector<complex> &eigval);
-template <template <typename> class Matrix, typename C>
-int eig(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
-        std::vector<complex> &eigval, Tensor<Matrix, complex> &eigvec);
-template <template <typename> class Matrix, typename C>
-int eig(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
+template <typename MatrixType>
+int eig(const Tensor<MatrixType> &a, std::vector<complex> &eigval,
+        typename Tensor<MatrixType>::template rebind<complex> &eigvec);
+template <typename MatrixType>
+int eig(const Tensor<MatrixType> &a, std::vector<complex> &eigval);
+template <typename MatrixType>
+int eig(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
+        std::vector<complex> &eigval,
+        typename Tensor<MatrixType>::template rebind<complex> &eigvec);
+template <typename MatrixType>
+int eig(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
         std::vector<complex> &eigval);
 //! \}
 
 //! \ingroup LinearEq
 //! \{
-template <template <typename> class Matrix, typename C>
-int solve(const Tensor<Matrix, C> &a, const std::vector<C> &b,
-          std::vector<C> &x);
-template <template <typename> class Matrix, typename C>
-int solve(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b,
-          Tensor<Matrix, C> &x);
-template <template <typename> class Matrix, typename C>
-int solve(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b,
-          Tensor<Matrix, C> &x, const Axes &axes_row_a, const Axes &axes_col_a,
+template <typename MatrixType>
+int solve(const Tensor<MatrixType> &a,
+          const std::vector<typename MatrixType::value_type> &b,
+          std::vector<typename MatrixType::value_type> &x);
+template <typename MatrixType>
+int solve(const Tensor<MatrixType> &a, const Tensor<MatrixType> &b,
+          Tensor<MatrixType> &x);
+template <typename MatrixType>
+int solve(const Tensor<MatrixType> &a, const Tensor<MatrixType> &b,
+          Tensor<MatrixType> &x, const Axes &axes_row_a, const Axes &axes_col_a,
           const Axes &axes_row_b, const Axes &axes_col_b);
 //! \}
 
 //! \ingroup Arithmetic
 //! \{
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> operator+(Tensor<Matrix, C> rhs);
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> operator-(Tensor<Matrix, C> rhs);
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> operator+(Tensor<Matrix, C> lhs,
-                            const Tensor<Matrix, C> &rhs);
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> operator-(Tensor<Matrix, C> lhs,
-                            const Tensor<Matrix, C> &rhs);
-template <template <typename> class Matrix, typename C, typename D>
-Tensor<Matrix, C> operator*(Tensor<Matrix, C> lhs, D rhs);
-template <template <typename> class Matrix, typename C, typename D>
-Tensor<Matrix, C> operator/(Tensor<Matrix, C> lhs, D rhs);
-template <template <typename> class Matrix, typename C, typename D>
-Tensor<Matrix, C> operator*(D lhs, Tensor<Matrix, C> rhs);
+template <typename MatrixType>
+Tensor<MatrixType> operator+(Tensor<MatrixType> rhs);
+template <typename MatrixType>
+Tensor<MatrixType> operator-(Tensor<MatrixType> rhs);
+template <typename MatrixType>
+Tensor<MatrixType> operator+(Tensor<MatrixType> lhs,
+                             const Tensor<MatrixType> &rhs);
+template <typename MatrixType>
+Tensor<MatrixType> operator-(Tensor<MatrixType> lhs,
+                             const Tensor<MatrixType> &rhs);
+template <typename MatrixType, typename D>
+Tensor<MatrixType> operator*(Tensor<MatrixType> lhs, D rhs);
+template <typename MatrixType, typename D>
+Tensor<MatrixType> operator/(Tensor<MatrixType> lhs, D rhs);
+template <typename MatrixType, typename D>
+Tensor<MatrixType> operator*(D lhs, Tensor<MatrixType> rhs);
 //! \}
 
 //! \ingroup Misc
 //! \{
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> sqrt(
-    Tensor<Matrix, C> t);  //!< Take square-root of each element.
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> conj(
-    Tensor<Matrix, C> t);  //!< Take conjugate of each element.
+template <typename MatrixType>
+Tensor<MatrixType> sqrt(
+    Tensor<MatrixType> t);  //!< Take square-root of each element.
+template <typename MatrixType>
+Tensor<MatrixType> conj(
+    Tensor<MatrixType> t);  //!< Take conjugate of each element.
 
-template <template <typename> class Matrix, typename C>
-double max(const Tensor<Matrix, C> &t);
-template <template <typename> class Matrix, typename C>
-double min(const Tensor<Matrix, C> &t);
-template <template <typename> class Matrix, typename C>
-double max_abs(const Tensor<Matrix, C> &t);
-template <template <typename> class Matrix, typename C>
-double min_abs(const Tensor<Matrix, C> &t);
+template <typename MatrixType>
+double max(const Tensor<MatrixType> &t);
+template <typename MatrixType>
+double min(const Tensor<MatrixType> &t);
+template <typename MatrixType>
+double max_abs(const Tensor<MatrixType> &t);
+template <typename MatrixType>
+double min_abs(const Tensor<MatrixType> &t);
 //! \}
 
 //! \ingroup Output
 //! \{
-template <template <typename> class Matrix, typename C>
-std::ostream &operator<<(std::ostream &out, const Tensor<Matrix, C> &t);
+template <typename MatrixType>
+std::ostream &operator<<(std::ostream &out, const Tensor<MatrixType> &t);
 //! \}
 
 }  // namespace mptensor

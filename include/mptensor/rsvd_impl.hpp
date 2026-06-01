@@ -78,9 +78,9 @@ void fill(tensor_t &t) {
   \param[in] oversamp Oversampling parameter for randomized algorithm
   \return  Information from linear-algebra library.
 */
-template <template <typename> class Matrix, typename C>
-int rsvd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
-         Tensor<Matrix, C> &u, std::vector<double> &s, Tensor<Matrix, C> &vt,
+template <typename MatrixType>
+int rsvd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
+         Tensor<MatrixType> &u, std::vector<double> &s, Tensor<MatrixType> &vt,
          const size_t target_rank, const size_t oversamp) {
   assert(axes_row.size() > 0);
   assert(axes_col.size() > 0);
@@ -92,10 +92,10 @@ int rsvd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
   int info;
 
   Axes axes = axes_row + axes_col;
-  Tensor<Matrix, C> a_t = transpose(a, axes, rank_row);
+  Tensor<MatrixType> a_t = transpose(a, axes, rank_row);
   const Shape &shape = a_t.shape();
 
-  Tensor<Matrix, C> q;
+  Tensor<MatrixType> q;
   {
     Shape shape_omega;
     shape_omega.resize(rank_col + 1);
@@ -103,10 +103,10 @@ int rsvd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
     shape_omega[rank_col] = target_rank + oversamp;
 
     // Tensor<Matrix,C> omega = random_tensor<C>(a.get_comm(), shape_omega);
-    Tensor<Matrix, C> omega(a.get_comm(), shape_omega, rank_col);
+    Tensor<MatrixType> omega(a.get_comm(), shape_omega, rank_col);
     random_tensor::fill(omega);
 
-    Tensor<Matrix, C> r;
+    Tensor<MatrixType> r;
     qr(tensordot(a_t, omega, range(rank_row, rank), range(0, rank_col)),
        range(0, rank_row), Axes(rank_row), q, r);
   }
@@ -121,9 +121,9 @@ int rsvd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 };
 
 //! RSVD with \c oversamp = \c target_rank.
-template <template <typename> class Matrix, typename C>
-int rsvd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
-         Tensor<Matrix, C> &u, std::vector<double> &s, Tensor<Matrix, C> &vt,
+template <typename MatrixType>
+int rsvd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
+         Tensor<MatrixType> &u, std::vector<double> &s, Tensor<MatrixType> &vt,
          const size_t target_rank) {
   return rsvd(a, axes_row, axes_col, u, s, vt, target_rank, target_rank);
 };
@@ -147,26 +147,26 @@ int rsvd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
   \param[in] oversamp Oversampling parameter for randomized algorithm
   \return  Information from linear-algebra library.
 */
-template <template <typename> class Matrix, typename C, typename Func1,
+template <typename MatrixType, typename Func1,
           typename Func2>
 int rsvd(Func1 &multiply_row, Func2 &multiply_col, const Shape &shape_row,
-         const Shape &shape_col, Tensor<Matrix, C> &u, std::vector<double> &s,
-         Tensor<Matrix, C> &vt, const size_t target_rank,
+         const Shape &shape_col, Tensor<MatrixType> &u, std::vector<double> &s,
+         Tensor<MatrixType> &vt, const size_t target_rank,
          const size_t oversamp) {
   const size_t rank_row = shape_row.size();
   const size_t rank_col = shape_col.size();
 
   int info;
-  Tensor<Matrix, C> q;
+  Tensor<MatrixType> q;
   {
     Shape shape_omega = shape_col;
     shape_omega.resize(rank_col + 1);
     shape_omega[rank_col] = target_rank + oversamp;
 
-    Tensor<Matrix, C> omega(u.get_comm(), shape_omega, rank_col);
+    Tensor<MatrixType> omega(u.get_comm(), shape_omega, rank_col);
     random_tensor::fill(omega);
 
-    Tensor<Matrix, C> r;
+    Tensor<MatrixType> r;
     qr(multiply_col(omega), range(0, rank_row), Axes(rank_row), q, r);
   }
 
@@ -180,11 +180,11 @@ int rsvd(Func1 &multiply_row, Func2 &multiply_col, const Shape &shape_row,
 }
 
 //! RSVD with \c oversamp = \c target_rank.
-template <template <typename> class Matrix, typename C, typename Func1,
+template <typename MatrixType, typename Func1,
           typename Func2>
 int rsvd(Func1 &multiply_row, Func2 &multiply_col, const Shape &shape_row,
-         const Shape &shape_col, Tensor<Matrix, C> &u, std::vector<double> &s,
-         Tensor<Matrix, C> &vt, const size_t target_rank) {
+         const Shape &shape_col, Tensor<MatrixType> &u, std::vector<double> &s,
+         Tensor<MatrixType> &vt, const size_t target_rank) {
   return rsvd(multiply_row, multiply_col, shape_row, shape_col, u, s, vt,
               target_rank, target_rank);
 };

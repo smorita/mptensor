@@ -36,6 +36,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <type_traits>
 #include <vector>
 
 #include "mptensor/complex.hpp"
@@ -66,8 +67,8 @@ bool check_square(const Shape &shape, size_t urank);
   \note Communicator is set to MPI_COMM_WORLD or MPI_COMM_SELF depending on
   Matrix class.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C>::Tensor() : Mat(), upper_rank(0), axes_map(){};
+template <typename MatrixType>
+Tensor<MatrixType>::Tensor() : Mat(), upper_rank(0), axes_map(){};
 
 //! Constructor of tensor.
 /*!
@@ -75,8 +76,8 @@ Tensor<Matrix, C>::Tensor() : Mat(), upper_rank(0), axes_map(){};
   \note Communicator is set to MPI_COMM_WORLD or MPI_COMM_SELF depending on
   Matrix class. \note Upper rank for matrix representation is set to \c rank/2.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C>::Tensor(const Shape &shape) : Mat() {
+template <typename MatrixType>
+Tensor<MatrixType>::Tensor(const Shape &shape) : Mat() {
   init(shape, shape.size() / 2);
 };
 
@@ -84,8 +85,8 @@ Tensor<Matrix, C>::Tensor(const Shape &shape) : Mat() {
 /*!
   \param[in] comm Communicator.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C>::Tensor(const comm_type &comm)
+template <typename MatrixType>
+Tensor<MatrixType>::Tensor(const comm_type &comm)
     : Mat(comm), upper_rank(0), axes_map(){};
 
 //! Constructor of tensor.
@@ -94,8 +95,8 @@ Tensor<Matrix, C>::Tensor(const comm_type &comm)
   \param[in] shape Shape of tensor.
   \note Upper rank for matrix representation is set to \c rank/2.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C>::Tensor(const comm_type &comm, const Shape &shape)
+template <typename MatrixType>
+Tensor<MatrixType>::Tensor(const comm_type &comm, const Shape &shape)
     : Mat(comm) {
   init(shape, shape.size() / 2);
 };
@@ -106,8 +107,8 @@ Tensor<Matrix, C>::Tensor(const comm_type &comm, const Shape &shape)
   \param[in] shape Shape of tensor.
   \param[in] upper_rank Upper rank for matrix representation.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C>::Tensor(const comm_type &comm, const Shape &shape,
+template <typename MatrixType>
+Tensor<MatrixType>::Tensor(const comm_type &comm, const Shape &shape,
                           const size_t upper_rank)
     : Mat(comm) {
   init(shape, upper_rank);
@@ -119,9 +120,9 @@ Tensor<Matrix, C>::Tensor(const comm_type &comm, const Shape &shape,
   \param[in] t Non-distributed tensor.
   \attention It is assumed that all processes have the same data.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C>::Tensor(const comm_type &comm,
-                          const Tensor<lapack::Matrix, C> &t)
+template <typename MatrixType>
+Tensor<MatrixType>::Tensor(const comm_type &comm,
+                          const Tensor<lapack::Matrix<value_type>> &t)
     : Mat(comm) {
   init(t.shape(), t.get_upper_rank());
   const size_t n = Mat.local_size();
@@ -139,8 +140,8 @@ Tensor<Matrix, C>::Tensor(const comm_type &comm,
   \param[in] v Non-distributed vector.
   \attention It is assumed that all processes have the same data.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C>::Tensor(const comm_type &comm, const std::vector<C> &v)
+template <typename MatrixType>
+Tensor<MatrixType>::Tensor(const comm_type &comm, const std::vector<value_type> &v)
     : Mat(comm) {
   init(Shape(v.size()), 0);
   const size_t n = Mat.local_size();
@@ -154,14 +155,14 @@ Tensor<Matrix, C>::Tensor(const comm_type &comm, const std::vector<C> &v)
 /* ---------- inline member functions ---------- */
 
 //! Shape of tensor.
-template <template <typename> class Matrix, typename C>
-inline const Shape &Tensor<Matrix, C>::shape() const {
+template <typename MatrixType>
+inline const Shape &Tensor<MatrixType>::shape() const {
   return Dim;
 };
 
 //! Rank of tensor.
-template <template <typename> class Matrix, typename C>
-inline size_t Tensor<Matrix, C>::rank() const {
+template <typename MatrixType>
+inline size_t Tensor<MatrixType>::rank() const {
   return Dim.size();
 };
 
@@ -169,20 +170,20 @@ inline size_t Tensor<Matrix, C>::rank() const {
 /*!
   \note Same as rank(). This function is for numpy compatibility with numpy.
  */
-template <template <typename> class Matrix, typename C>
-inline size_t Tensor<Matrix, C>::ndim() const {
+template <typename MatrixType>
+inline size_t Tensor<MatrixType>::ndim() const {
   return Dim.size();
 };
 
 //! Size of local storage.
-template <template <typename> class Matrix, typename C>
-inline size_t Tensor<Matrix, C>::local_size() const {
+template <typename MatrixType>
+inline size_t Tensor<MatrixType>::local_size() const {
   return Mat.local_size();
 };
 
 //! Upper rank for matrix representation
-template <template <typename> class Matrix, typename C>
-inline size_t Tensor<Matrix, C>::get_upper_rank() const {
+template <typename MatrixType>
+inline size_t Tensor<MatrixType>::get_upper_rank() const {
   return upper_rank;
 };
 
@@ -193,39 +194,39 @@ inline size_t Tensor<Matrix, C>::get_upper_rank() const {
   Let `V` a 3-leg tensor with `shape=[10, 20, 30]` and `axes_map=[0, 1, 2]`.
   When we transpose `V` as `T = V.transpose(Axes(1, 2, 0));`, `T` has `shape=[20, 30, 10]` and `axes_map=[2, 0, 1]`. Thus, `axes_map` satisfies `axes_map[iV] = iT`.
 */
-template <template <typename> class Matrix, typename C>
-inline const Axes &Tensor<Matrix, C>::get_axes_map() const {
+template <typename MatrixType>
+inline const Axes &Tensor<MatrixType>::get_axes_map() const {
   return axes_map;
 };
 
 //! distributed Matrix
-template <template <typename> class Matrix, typename C>
-inline const Matrix<C> &Tensor<Matrix, C>::get_matrix() const {
+template <typename MatrixType>
+inline const MatrixType &Tensor<MatrixType>::get_matrix() const {
   return Mat;
 };
 
 //! distributed Matrix
-template <template <typename> class Matrix, typename C>
-inline Matrix<C> &Tensor<Matrix, C>::get_matrix() {
+template <typename MatrixType>
+inline MatrixType &Tensor<MatrixType>::get_matrix() {
   return Mat;
 };
 
 //! Communicator
-template <template <typename> class Matrix, typename C>
-inline const typename Tensor<Matrix, C>::comm_type &
-Tensor<Matrix, C>::get_comm() const {
+template <typename MatrixType>
+inline const typename Tensor<MatrixType>::comm_type &
+Tensor<MatrixType>::get_comm() const {
   return Mat.get_comm();
 };
 
 //! Size of communicator
-template <template <typename> class Matrix, typename C>
-inline int Tensor<Matrix, C>::get_comm_size() const {
+template <typename MatrixType>
+inline int Tensor<MatrixType>::get_comm_size() const {
   return Mat.get_comm_size();
 };
 
 //! Rank of process
-template <template <typename> class Matrix, typename C>
-inline int Tensor<Matrix, C>::get_comm_rank() const {
+template <typename MatrixType>
+inline int Tensor<MatrixType>::get_comm_rank() const {
   return Mat.get_comm_rank();
 };
 
@@ -233,8 +234,8 @@ inline int Tensor<Matrix, C>::get_comm_rank() const {
 /*!
   \attention This function does not check validity of local index.
  */
-template <template <typename> class Matrix, typename C>
-inline const C &Tensor<Matrix, C>::operator[](size_t local_idx) const {
+template <typename MatrixType>
+inline const typename MatrixType::value_type &Tensor<MatrixType>::operator[](size_t local_idx) const {
   return Mat[local_idx];
 }
 
@@ -242,26 +243,26 @@ inline const C &Tensor<Matrix, C>::operator[](size_t local_idx) const {
 /*!
   \attention This function does not check validity of local index.
  */
-template <template <typename> class Matrix, typename C>
-inline C &Tensor<Matrix, C>::operator[](size_t local_idx) {
+template <typename MatrixType>
+inline typename MatrixType::value_type &Tensor<MatrixType>::operator[](size_t local_idx) {
   return Mat[local_idx];
 }
 
 //! Preprocess for fast conversion from global index to local one.
-template <template <typename> class Matrix, typename C>
-inline void Tensor<Matrix, C>::prep_global_to_local() const {
+template <typename MatrixType>
+inline void Tensor<MatrixType>::prep_global_to_local() const {
   Mat.prep_global_to_local();
 };
 
 //! Preprocess for fast conversion from local index to global one.
-template <template <typename> class Matrix, typename C>
-inline void Tensor<Matrix, C>::prep_local_to_global() const {
+template <typename MatrixType>
+inline void Tensor<MatrixType>::prep_local_to_global() const {
   Mat.prep_local_to_global();
 };
 
 //! Preprocess for fast conversion from local index to global one.
-template <template <typename> class Matrix, typename C>
-inline void Tensor<Matrix, C>::make_l2g_map() const {
+template <typename MatrixType>
+inline void Tensor<MatrixType>::make_l2g_map() const {
   const size_t rank = Dim.size();
   const size_t rank0 = upper_rank;
   const size_t rank1 = rank - rank0;  // lower_rank
@@ -316,8 +317,8 @@ inline void Tensor<Matrix, C>::make_l2g_map() const {
 
   \warning The size of gindex should be larger than the rank of tensor.
 */
-template <template <typename> class Matrix, typename C>
-inline void Tensor<Matrix, C>::global_index_l2g_map(size_t lindex,
+template <typename MatrixType>
+inline void Tensor<MatrixType>::global_index_l2g_map(size_t lindex,
                                                     size_t gindex[]) const {
   const size_t rank = Dim.size();
   const size_t rank0 = upper_rank;
@@ -349,8 +350,8 @@ inline void Tensor<Matrix, C>::global_index_l2g_map(size_t lindex,
   \warning The size of axes_trans and index_new should be larger than the rank
   of tensor.
 */
-template <template <typename> class Matrix, typename C>
-inline void Tensor<Matrix, C>::global_index_l2g_map_transpose(
+template <typename MatrixType>
+inline void Tensor<MatrixType>::global_index_l2g_map_transpose(
     size_t lindex, const size_t axes_trans[], size_t index_new[]) const {
   const size_t rank = Dim.size();
   const size_t rank0 = upper_rank;
@@ -372,8 +373,8 @@ inline void Tensor<Matrix, C>::global_index_l2g_map_transpose(
   return;
 };
 
-template <template <typename> class Matrix, typename C>
-inline void Tensor<Matrix, C>::local_position_fast(size_t g_row, size_t g_col,
+template <typename MatrixType>
+inline void Tensor<MatrixType>::local_position_fast(size_t g_row, size_t g_col,
                                                    int &comm_rank,
                                                    size_t &local_idx) const {
   Mat.local_position(g_row, g_col, comm_rank, local_idx);
@@ -386,8 +387,8 @@ inline void Tensor<Matrix, C>::local_position_fast(size_t g_row, size_t g_col,
   \param shape Shape of tensor.
   \param urank Upper rank for matrix representation.
 */
-template <template <typename> class Matrix, typename C>
-inline void Tensor<Matrix, C>::init(const Shape &shape, size_t urank) {
+template <typename MatrixType>
+inline void Tensor<MatrixType>::init(const Shape &shape, size_t urank) {
   init(shape, urank, range(shape.size()));
 }
 
@@ -397,8 +398,8 @@ inline void Tensor<Matrix, C>::init(const Shape &shape, size_t urank) {
   \param urank Upper rank for matrix representation.
   \param map Axes mapping.
 */
-template <template <typename> class Matrix, typename C>
-void Tensor<Matrix, C>::init(const Shape &shape, size_t urank,
+template <typename MatrixType>
+void Tensor<MatrixType>::init(const Shape &shape, size_t urank,
                              const Axes &map) {
   Dim = shape;
   axes_map = map;
@@ -420,8 +421,8 @@ void Tensor<Matrix, C>::init(const Shape &shape, size_t urank,
   \param out Output stream.
   \param tag (optional) A tag which is inserted at the head of the line.
 */
-template <template <typename> class Matrix, typename C>
-void Tensor<Matrix, C>::print_info(std::ostream &out,
+template <typename MatrixType>
+void Tensor<MatrixType>::print_info(std::ostream &out,
                                    const std::string &tag) const {
   if (tag.size() > 0) {
     out << tag << ":\t";
@@ -438,12 +439,12 @@ void Tensor<Matrix, C>::print_info(std::ostream &out,
   function at the same time. \param out Output stream. \param tag (optional) A
   tag which is inserted at the head of each line.
 */
-template <template <typename> class Matrix, typename C>
-void Tensor<Matrix, C>::print_info_mpi(std::ostream &out,
+template <typename MatrixType>
+void Tensor<MatrixType>::print_info_mpi(std::ostream &out,
                                        const std::string &tag) const {
   const int mpisize = get_comm_size();
   const int mpirank = get_comm_rank();
-  const typename Tensor<Matrix, C>::comm_type &comm = get_comm();
+  const typename Tensor<MatrixType>::comm_type &comm = get_comm();
   Mat.barrier();
   for (int i = 0; i < mpisize; ++i) {
     if (i == mpirank) {
@@ -466,8 +467,8 @@ void Tensor<Matrix, C>::print_info_mpi(std::ostream &out,
 
   \return True if my process has the element specified by the global index.
 */
-template <template <typename> class Matrix, typename C>
-bool Tensor<Matrix, C>::local_index(const Index &gindex, size_t &lindex) const {
+template <typename MatrixType>
+bool Tensor<MatrixType>::local_index(const Index &gindex, size_t &lindex) const {
   const size_t rank = gindex.size();
   assert(rank == Dim.size());
   assert(rank > 0);
@@ -491,8 +492,8 @@ bool Tensor<Matrix, C>::local_index(const Index &gindex, size_t &lindex) const {
   \param[in] lindex Local index
   \return Global index
 */
-template <template <typename> class Matrix, typename C>
-Index Tensor<Matrix, C>::global_index(size_t lindex) const {
+template <typename MatrixType>
+Index Tensor<MatrixType>::global_index(size_t lindex) const {
   const size_t rank = Dim.size();
   Index gindex;
   size_t g_row, g_col;
@@ -521,8 +522,8 @@ Index Tensor<Matrix, C>::global_index(size_t lindex) const {
 
   \warning The size of gindex should be larger than the rank of tensor.
 */
-template <template <typename> class Matrix, typename C>
-void Tensor<Matrix, C>::global_index_fast(size_t lindex, Index &gindex) const {
+template <typename MatrixType>
+void Tensor<MatrixType>::global_index_fast(size_t lindex, Index &gindex) const {
   const size_t rank = Dim.size();
   size_t g_row, g_col;
   Mat.global_index(lindex, g_row, g_col);
@@ -548,8 +549,8 @@ void Tensor<Matrix, C>::global_index_fast(size_t lindex, Index &gindex) const {
   \param[out] val Value of the element.
   \return True if my process has the element specified by the global index.
 */
-template <template <typename> class Matrix, typename C>
-bool Tensor<Matrix, C>::get_value(const Index &idx, C &val) const {
+template <typename MatrixType>
+bool Tensor<MatrixType>::get_value(const Index &idx, value_type &val) const {
   size_t li;
   if (local_index(idx, li)) {
     val = Mat[li];
@@ -566,8 +567,8 @@ bool Tensor<Matrix, C>::get_value(const Index &idx, C &val) const {
   \param[in] idx Global index.
   \param[in] val Value of the element.
 */
-template <template <typename> class Matrix, typename C>
-void Tensor<Matrix, C>::set_value(const Index &idx, C val) {
+template <typename MatrixType>
+void Tensor<MatrixType>::set_value(const Index &idx, value_type val) {
   size_t li;
   if (local_index(idx, li)) {
     Mat[li] = val;
@@ -580,8 +581,8 @@ void Tensor<Matrix, C>::set_value(const Index &idx, C val) {
   \param[out] comm_rank Rank which has the element at the global index.
   \param[out] local_idx Local index in comm_rank.
 */
-template <template <typename> class Matrix, typename C>
-void Tensor<Matrix, C>::local_position(const Index &index, int &comm_rank,
+template <typename MatrixType>
+void Tensor<MatrixType>::local_position(const Index &index, int &comm_rank,
                                        size_t &local_idx) const {
   const size_t rank = Dim.size();
   size_t g_row(0), g_col(0);
@@ -607,12 +608,12 @@ void Tensor<Matrix, C>::local_position(const Index &index, int &comm_rank,
 
   \note This function may cause communications.
 */
-template <template <typename> class Matrix, typename C>
-void Tensor<Matrix, C>::change_configuration(const size_t new_upper_rank,
+template <typename MatrixType>
+void Tensor<MatrixType>::change_configuration(const size_t new_upper_rank,
                                              const Axes &new_axes_map) {
   if ((upper_rank == new_upper_rank) && (axes_map == new_axes_map)) return;
 
-  Tensor<Matrix, C> T_old(*this);
+  Tensor<MatrixType> T_old(*this);
 
   const size_t rank = this->rank();
   Shape dim;
@@ -663,8 +664,8 @@ void Tensor<Matrix, C>::change_configuration(const size_t new_upper_rank,
   When \c axes=[1,2,0], \f$ T_{ijk} \f$ is transformed into \f$ T_{jki} \f$.
   \param[in] axes Order of axes.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> &Tensor<Matrix, C>::transpose(const Axes &axes) {
+template <typename MatrixType>
+Tensor<MatrixType> &Tensor<MatrixType>::transpose(const Axes &axes) {
   const size_t rank = Dim.size();
   assert(debug::check_transpose_axes(axes, rank));
 
@@ -695,9 +696,9 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::transpose(const Axes &axes) {
   \attention The size of \c vec should be larger than the bond dimension of \c
   n_axes.
 */
-template <template <typename> class Matrix, typename C>
+template <typename MatrixType>
 template <typename D>
-Tensor<Matrix, C> &Tensor<Matrix, C>::multiply_vector(const std::vector<D> &vec,
+Tensor<MatrixType> &Tensor<MatrixType>::multiply_vector(const std::vector<D> &vec,
                                                       size_t n_axes) {
   assert(Dim[n_axes] <= vec.size());
   const size_t local_size = this->local_size();
@@ -728,9 +729,9 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::multiply_vector(const std::vector<D> &vec,
   \attention The size of \c vecX should be larger than the bond dimension of \c
   n_axesX.
 */
-template <template <typename> class Matrix, typename C>
+template <typename MatrixType>
 template <typename D0, typename D1>
-Tensor<Matrix, C> &Tensor<Matrix, C>::multiply_vector(
+Tensor<MatrixType> &Tensor<MatrixType>::multiply_vector(
     const std::vector<D0> &vec0, size_t n_axes0, const std::vector<D1> &vec1,
     size_t n_axes1) {
   assert(Dim[n_axes0] <= vec0.size());
@@ -765,9 +766,9 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::multiply_vector(
   \attention The size of \c vecX should be larger than the bond dimension of \c
   n_axesX.
 */
-template <template <typename> class Matrix, typename C>
+template <typename MatrixType>
 template <typename D0, typename D1, typename D2>
-Tensor<Matrix, C> &Tensor<Matrix, C>::multiply_vector(
+Tensor<MatrixType> &Tensor<MatrixType>::multiply_vector(
     const std::vector<D0> &vec0, size_t n_axes0, const std::vector<D1> &vec1,
     size_t n_axes1, const std::vector<D2> &vec2, size_t n_axes2) {
   assert(Dim[n_axes0] <= vec0.size());
@@ -805,9 +806,9 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::multiply_vector(
   \attention The size of \c vecX should be larger than the bond dimension of \c
   n_axesX.
 */
-template <template <typename> class Matrix, typename C>
+template <typename MatrixType>
 template <typename D0, typename D1, typename D2, typename D3>
-Tensor<Matrix, C> &Tensor<Matrix, C>::multiply_vector(
+Tensor<MatrixType> &Tensor<MatrixType>::multiply_vector(
     const std::vector<D0> &vec0, size_t n_axes0, const std::vector<D1> &vec1,
     size_t n_axes1, const std::vector<D2> &vec2, size_t n_axes2,
     const std::vector<D3> &vec3, size_t n_axes3) {
@@ -842,8 +843,8 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::multiply_vector(
   \param[in] i_begin Start index of slice.
   \param[in] i_end End index of slice.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> &Tensor<Matrix, C>::set_slice(const Tensor<Matrix, C> &a,
+template <typename MatrixType>
+Tensor<MatrixType> &Tensor<MatrixType>::set_slice(const Tensor<MatrixType> &a,
                                                 const size_t n_axes,
                                                 const size_t i_begin,
                                                 const size_t i_end) {
@@ -897,8 +898,8 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::set_slice(const Tensor<Matrix, C> &a,
   \param[in] index_begin Start indices.
   \param[in] index_end End indices.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> &Tensor<Matrix, C>::set_slice(const Tensor<Matrix, C> &a,
+template <typename MatrixType>
+Tensor<MatrixType> &Tensor<MatrixType>::set_slice(const Tensor<MatrixType> &a,
                                                 const Index &index_begin,
                                                 const Index &index_end) {
   const size_t nr = rank();
@@ -951,13 +952,13 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::set_slice(const Tensor<Matrix, C> &a,
   \return A non-distributed global tensor.
   \attention A non-distributed global tensor may require huge memory.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<lapack::Matrix, C> Tensor<Matrix, C>::gather() {
+template <typename MatrixType>
+Tensor<lapack::Matrix<typename MatrixType::value_type>> Tensor<MatrixType>::gather() {
   const size_t n = rank();
   if (!(axes_map == range(n))) {
     change_configuration(n / 2, range(n));
   }
-  Tensor<lapack::Matrix, C> T(get_comm(), get_matrix().flatten());
+  Tensor<lapack::Matrix<typename MatrixType::value_type>> T(get_comm(), get_matrix().flatten());
   return reshape(T, Dim);
 }
 
@@ -967,8 +968,8 @@ Tensor<lapack::Matrix, C> Tensor<Matrix, C>::gather() {
   \return A flattened vector, which is global (not distriuted).
   \attention A flattened vector may require huge memory.
 */
-template <template <typename> class Matrix, typename C>
-std::vector<C> Tensor<Matrix, C>::flatten() {
+template <typename MatrixType>
+std::vector<typename MatrixType::value_type> Tensor<MatrixType>::flatten() {
   const size_t n = rank();
   if (!(axes_map == range(n))) {
     change_configuration(n / 2, range(n));
@@ -977,8 +978,8 @@ std::vector<C> Tensor<Matrix, C>::flatten() {
 }
 
 //! Addition assignment.
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> &Tensor<Matrix, C>::operator+=(const Tensor<Matrix, C> &rhs) {
+template <typename MatrixType>
+Tensor<MatrixType> &Tensor<MatrixType>::operator+=(const Tensor<MatrixType> &rhs) {
   assert(Dim == rhs.shape());
   change_configuration(rhs.get_upper_rank(), rhs.get_axes_map());
   Mat += rhs.get_matrix();
@@ -986,8 +987,8 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::operator+=(const Tensor<Matrix, C> &rhs) {
 }
 
 //! Subtraction assignment.
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> &Tensor<Matrix, C>::operator-=(const Tensor<Matrix, C> &rhs) {
+template <typename MatrixType>
+Tensor<MatrixType> &Tensor<MatrixType>::operator-=(const Tensor<MatrixType> &rhs) {
   assert(Dim == rhs.shape());
   change_configuration(rhs.get_upper_rank(), rhs.get_axes_map());
   Mat -= rhs.get_matrix();
@@ -995,22 +996,22 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::operator-=(const Tensor<Matrix, C> &rhs) {
 }
 
 //! Scalar-multiplication assignment.
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> &Tensor<Matrix, C>::operator*=(C rhs) {
+template <typename MatrixType>
+Tensor<MatrixType> &Tensor<MatrixType>::operator*=(value_type rhs) {
   Mat *= rhs;
   return (*this);
 }
 
 //! Scalar-division assignment.
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> &Tensor<Matrix, C>::operator/=(C rhs) {
+template <typename MatrixType>
+Tensor<MatrixType> &Tensor<MatrixType>::operator/=(value_type rhs) {
   Mat /= rhs;
   return (*this);
 }
 
 //! Initialize all elements by rhs.
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> &Tensor<Matrix, C>::operator=(C rhs) {
+template <typename MatrixType>
+Tensor<MatrixType> &Tensor<MatrixType>::operator=(value_type rhs) {
   const size_t n = Mat.local_size();
   for (int i = 0; i < n; ++i) Mat[i] = rhs;
   return (*this);
@@ -1021,9 +1022,9 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::operator=(C rhs) {
   \param op Unary operation.
   \return Result.
 */
-template <template <typename> class Matrix, typename C>
+template <typename MatrixType>
 template <typename UnaryOperation>
-Tensor<Matrix, C> &Tensor<Matrix, C>::map(UnaryOperation op) {
+Tensor<MatrixType> &Tensor<MatrixType>::map(UnaryOperation op) {
   Mat.map(op);
   return (*this);
 }
@@ -1037,8 +1038,8 @@ Tensor<Matrix, C> &Tensor<Matrix, C>::map(UnaryOperation op) {
   \param[in] axes Order of axes
   \return Transposed tensor
 */
-template <template <typename> class Matrix, typename C>
-inline Tensor<Matrix, C> transpose(Tensor<Matrix, C> T, const Axes &axes) {
+template <typename MatrixType>
+inline Tensor<MatrixType> transpose(Tensor<MatrixType> T, const Axes &axes) {
   return T.transpose(axes);
 }
 
@@ -1052,8 +1053,8 @@ inline Tensor<Matrix, C> transpose(Tensor<Matrix, C> T, const Axes &axes) {
 
   \note This function may cause communications.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> transpose(const Tensor<Matrix, C> &T, const Axes &axes,
+template <typename MatrixType>
+Tensor<MatrixType> transpose(const Tensor<MatrixType> &T, const Axes &axes,
                             size_t urank_new) {
   const size_t rank = T.rank();
   assert(debug::check_transpose_axes(axes, rank));
@@ -1072,7 +1073,7 @@ Tensor<Matrix, C> transpose(const Tensor<Matrix, C> &T, const Axes &axes,
   }
 
   /* new tensor */
-  Tensor<Matrix, C> T_new(T.get_comm(), dim_new, urank_new);
+  Tensor<MatrixType> T_new(T.get_comm(), dim_new, urank_new);
 
   /* create lists of local position and destination rank */
   const size_t local_size = T.local_size();
@@ -1145,8 +1146,8 @@ Tensor<Matrix, C> transpose(const Tensor<Matrix, C> &T, const Axes &axes,
   The total size of tensor does not change.
   \warning mptensor uses the column major, unlike NumPy.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> reshape(const Tensor<Matrix, C> &T, const Shape &shape_new) {
+template <typename MatrixType>
+Tensor<MatrixType> reshape(const Tensor<MatrixType> &T, const Shape &shape_new) {
   assert(debug::check_total_size(shape_new, T.shape()));
 
   const Shape &shape = T.shape();
@@ -1154,7 +1155,7 @@ Tensor<Matrix, C> reshape(const Tensor<Matrix, C> &T, const Shape &shape_new) {
   const size_t rank_new = shape_new.size();
 
   /* initialize new tensor */
-  Tensor<Matrix, C> T_new(T.get_comm(), shape_new);
+  Tensor<MatrixType> T_new(T.get_comm(), shape_new);
 
   /* create lists of local position and destination rank */
   const size_t local_size = T.local_size();
@@ -1211,8 +1212,8 @@ Tensor<Matrix, C> reshape(const Tensor<Matrix, C> &T, const Shape &shape_new) {
 
   \return Sliced tensor.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> slice(const Tensor<Matrix, C> &T, size_t n_axes,
+template <typename MatrixType>
+Tensor<MatrixType> slice(const Tensor<MatrixType> &T, size_t n_axes,
                         size_t i_begin, size_t i_end) {
   const int mpisize = T.get_comm_size();
   const Shape &shape = T.shape();
@@ -1224,7 +1225,7 @@ Tensor<Matrix, C> slice(const Tensor<Matrix, C> &T, size_t n_axes,
   shape_new[n_axes] = i_end - i_begin;
 
   /* initialize new tensor */
-  Tensor<Matrix, C> T_new(T.get_comm(), shape_new);
+  Tensor<MatrixType> T_new(T.get_comm(), shape_new);
 
   /* create lists of local position and destination rank */
   const size_t local_size = T.local_size();
@@ -1279,8 +1280,8 @@ Tensor<Matrix, C> slice(const Tensor<Matrix, C> &T, size_t n_axes,
 
   \return Sliced tensor.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> slice(const Tensor<Matrix, C> &T, const Index &index_begin,
+template <typename MatrixType>
+Tensor<MatrixType> slice(const Tensor<MatrixType> &T, const Index &index_begin,
                         const Index &index_end) {
   const int mpisize = T.get_comm_size();
   const Shape &shape = T.shape();
@@ -1297,7 +1298,7 @@ Tensor<Matrix, C> slice(const Tensor<Matrix, C> &T, const Index &index_begin,
   }
 
   /* initialize new tensor */
-  Tensor<Matrix, C> T_new(T.get_comm(), shape_new);
+  Tensor<MatrixType> T_new(T.get_comm(), shape_new);
 
   /* create lists of local position and destination rank */
   const size_t local_size = T.local_size();
@@ -1359,13 +1360,13 @@ Tensor<Matrix, C> slice(const Tensor<Matrix, C> &T, const Index &index_begin,
 
   \note New shape should be larger than the original shape.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> extend(const Tensor<Matrix, C> &T, const Shape &shape_new) {
+template <typename MatrixType>
+Tensor<MatrixType> extend(const Tensor<MatrixType> &T, const Shape &shape_new) {
   assert(T.rank() == shape_new.size());
   assert(debug::check_extend(T.shape(), shape_new));
 
   /* initialize new tensor */
-  Tensor<Matrix, C> T_new(T.get_comm(), shape_new);
+  Tensor<MatrixType> T_new(T.get_comm(), shape_new);
 
   /* create lists of local position and destination rank */
   const size_t local_size = T.local_size();
@@ -1405,8 +1406,8 @@ Tensor<Matrix, C> extend(const Tensor<Matrix, C> &T, const Shape &shape_new) {
 
   \return Value of trace. \f$ \sum_i M_{ii} \f$
 */
-template <template <typename> class Matrix, typename C>
-C trace(const Tensor<Matrix, C> &M) {
+template <typename MatrixType>
+typename MatrixType::value_type trace(const Tensor<MatrixType> &M) {
   assert(M.rank() == 2);
   return matrix_trace(M.get_matrix());
 };
@@ -1425,8 +1426,8 @@ C trace(const Tensor<Matrix, C> &M) {
 
   \return Value of tensor.
 */
-template <template <typename> class Matrix, typename C>
-C trace(const Tensor<Matrix, C> &T, const Axes &axes_1, const Axes &axes_2) {
+template <typename MatrixType>
+typename MatrixType::value_type trace(const Tensor<MatrixType> &T, const Axes &axes_1, const Axes &axes_2) {
   assert(axes_1.size() == axes_2.size());
   assert(axes_1.size() + axes_2.size() == T.rank());
   assert(debug::check_trace_axes(axes_1, axes_2, T.rank()));
@@ -1437,7 +1438,7 @@ C trace(const Tensor<Matrix, C> &T, const Axes &axes_1, const Axes &axes_2) {
   const size_t l = axes_1.size();
   Index index;
   bool check;
-  C sum(0.0);
+  typename MatrixType::value_type sum(0.0);
 
   index.resize(T.rank());
   for (size_t i = 0; i < n; ++i) {
@@ -1471,8 +1472,8 @@ C trace(const Tensor<Matrix, C> &T, const Axes &axes_1, const Axes &axes_2) {
 
   \note This function is more effective than tensordot and MPI_Bcast.
 */
-template <template <typename> class Matrix, typename C>
-C trace(const Tensor<Matrix, C> &A, const Tensor<Matrix, C> &B,
+template <typename MatrixType>
+typename MatrixType::value_type trace(const Tensor<MatrixType> &A, const Tensor<MatrixType> &B,
         const Axes &axes_a, const Axes &axes_b) {
   assert(A.rank() == B.rank());
   assert(A.rank() == axes_a.size());
@@ -1494,8 +1495,8 @@ C trace(const Tensor<Matrix, C> &A, const Tensor<Matrix, C> &B,
   }
 
   const size_t n = A.local_size();
-  Tensor<Matrix, C> B_t = transpose(B, axes, A.get_upper_rank());
-  C sum(0.0);
+  Tensor<MatrixType> B_t = transpose(B, axes, A.get_upper_rank());
+  typename MatrixType::value_type sum(0.0);
 
   for (size_t i = 0; i < n; ++i) {
     sum += A[i] * B_t[i];
@@ -1515,8 +1516,8 @@ C trace(const Tensor<Matrix, C> &A, const Tensor<Matrix, C> &B,
 
   \return Contracted tensor.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> contract(const Tensor<Matrix, C> &T, const Axes &axes_1,
+template <typename MatrixType>
+Tensor<MatrixType> contract(const Tensor<MatrixType> &T, const Axes &axes_1,
                            const Axes &axes_2) {
   const int mpisize = T.get_comm_size();
   assert(axes_1.size() == axes_2.size());
@@ -1543,7 +1544,7 @@ Tensor<Matrix, C> contract(const Tensor<Matrix, C> &T, const Axes &axes_1,
   }
 
   /* initialize new tensor */
-  Tensor<Matrix, C> T_new(T.get_comm(), shape_new);
+  Tensor<MatrixType> T_new(T.get_comm(), shape_new);
 
   /* create lists of local position and destination rank */
   std::vector<int> dest_mpirank(T.local_size());
@@ -1608,8 +1609,8 @@ Tensor<Matrix, C> contract(const Tensor<Matrix, C> &T, const Axes &axes_1,
   \warning To be consistent with the reshape operation, the new indices of the Kronecker product are determined by the column major, unlike in NumPy. Thus, if the shapes of A and B are [r0, r1] and [s0, s1], the Kronecker product of A and B satisfies
   \code reshape(kron(A, B), [r0, s0, r1, s1])[i, j, k, l] = A[i, k] * B[j, l] \endcode
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> kron(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b) {
+template <typename MatrixType>
+Tensor<MatrixType> kron(const Tensor<MatrixType> &a, const Tensor<MatrixType> &b) {
   assert(a.rank() == b.rank());
   assert(a.get_comm() == b.get_comm());
 
@@ -1644,9 +1645,9 @@ Tensor<Matrix, C> kron(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b) {
 
   \return Result.
 */
-template <template <typename> class Matrix, typename C>
-Tensor<Matrix, C> tensordot(const Tensor<Matrix, C> &a,
-                            const Tensor<Matrix, C> &b, const Axes &axes_a,
+template <typename MatrixType>
+Tensor<MatrixType> tensordot(const Tensor<MatrixType> &a,
+                            const Tensor<MatrixType> &b, const Axes &axes_a,
                             const Axes &axes_b) {
   assert(axes_a.size() == axes_b.size());
   assert(a.get_comm() == b.get_comm());
@@ -1656,7 +1657,7 @@ Tensor<Matrix, C> tensordot(const Tensor<Matrix, C> &a,
     assert(shape_a[axes_a[i]] == shape_b[axes_b[i]]);
   }
 
-  const typename Tensor<Matrix, C>::comm_type &comm = a.get_comm();
+  const typename Tensor<MatrixType>::comm_type &comm = a.get_comm();
 
   Shape shape_c;
   const size_t rank_row_c = a.rank() - axes_a.size();
@@ -1701,7 +1702,7 @@ Tensor<Matrix, C> tensordot(const Tensor<Matrix, C> &a,
       shape_c[i + rank_row_c] = shape_b[v[i + rank_row]];
   }
 
-  Tensor<Matrix, C> c(comm, shape_c, rank_row_c);
+  Tensor<MatrixType> c(comm, shape_c, rank_row_c);
   matrix_product(transpose(a, trans_axes_a, urank_a).get_matrix(),
                  transpose(b, trans_axes_b, urank_b).get_matrix(),
                  c.get_matrix());
@@ -1718,8 +1719,8 @@ Tensor<Matrix, C> tensordot(const Tensor<Matrix, C> &a,
 
   \return Information from linear-algebra library.
 */
-template <template <typename> class Matrix, typename C>
-int svd(const Tensor<Matrix, C> &a, std::vector<double> &s) {
+template <typename MatrixType>
+int svd(const Tensor<MatrixType> &a, std::vector<double> &s) {
   assert(a.rank() == 2);
   int info;
   info = svd(a, Axes(0), Axes(1), s);
@@ -1739,9 +1740,9 @@ int svd(const Tensor<Matrix, C> &a, std::vector<double> &s) {
 
   \return Information from linear-algebra library.
 */
-template <template <typename> class Matrix, typename C>
-int svd(const Tensor<Matrix, C> &a, Tensor<Matrix, C> &u,
-        std::vector<double> &s, Tensor<Matrix, C> &vt) {
+template <typename MatrixType>
+int svd(const Tensor<MatrixType> &a, Tensor<MatrixType> &u,
+        std::vector<double> &s, Tensor<MatrixType> &vt) {
   assert(a.rank() == 2);
   int info;
   info = svd(a, Axes(0), Axes(1), u, s, vt);
@@ -1759,8 +1760,8 @@ int svd(const Tensor<Matrix, C> &a, Tensor<Matrix, C> &u,
 
   \return Information from linear-algebra library.
 */
-template <template <typename> class Matrix, typename C>
-int svd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
+template <typename MatrixType>
+int svd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
         std::vector<double> &s) {
   assert(axes_row.size() > 0);
   assert(axes_col.size() > 0);
@@ -1771,7 +1772,7 @@ int svd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   Axes axes = axes_row + axes_col;
 
-  Tensor<Matrix, C> a_t = transpose(a, axes, urank);
+  Tensor<MatrixType> a_t = transpose(a, axes, urank);
   const Shape &shape = a_t.shape();
 
   size_t d_row(1), d_col(1);
@@ -1807,9 +1808,9 @@ int svd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   \return Information from linear-algebra library.
 */
-template <template <typename> class Matrix, typename C>
-int svd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
-        Tensor<Matrix, C> &u, std::vector<double> &s, Tensor<Matrix, C> &vt) {
+template <typename MatrixType>
+int svd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
+        Tensor<MatrixType> &u, std::vector<double> &s, Tensor<MatrixType> &vt) {
   assert(axes_row.size() > 0);
   assert(axes_col.size() > 0);
   assert(debug::check_svd_axes(axes_row, axes_col, a.rank()));
@@ -1819,7 +1820,7 @@ int svd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   Axes axes = axes_row + axes_col;
 
-  Tensor<Matrix, C> a_t = transpose(a, axes, urank);
+  Tensor<MatrixType> a_t = transpose(a, axes, urank);
   const Shape &shape = a_t.shape();
 
   size_t d_row(1), d_col(1);
@@ -1840,8 +1841,8 @@ int svd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
   size_t urank_u = urank;
   size_t urank_vt = 1;
 
-  u = Tensor<Matrix, C>(a.get_comm(), shape_u, urank_u);
-  vt = Tensor<Matrix, C>(a.get_comm(), shape_vt, urank_vt);
+  u = Tensor<MatrixType>(a.get_comm(), shape_u, urank_u);
+  vt = Tensor<MatrixType>(a.get_comm(), shape_vt, urank_vt);
   s.resize(size);
 
   int info;
@@ -1862,8 +1863,8 @@ int svd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   \attention Computational cost is the same as full SVD.
 */
-template <template <typename> class Matrix, typename C>
-int psvd(const Tensor<Matrix, C> &a, std::vector<double> &s,
+template <typename MatrixType>
+int psvd(const Tensor<MatrixType> &a, std::vector<double> &s,
          const size_t target_rank) {
   int info = svd(a, s);
   if (s.size() > target_rank) s.resize(target_rank);
@@ -1886,9 +1887,9 @@ int psvd(const Tensor<Matrix, C> &a, std::vector<double> &s,
 
   \attention Computational cost is the same as full SVD.
 */
-template <template <typename> class Matrix, typename C>
-int psvd(const Tensor<Matrix, C> &a, Tensor<Matrix, C> &u,
-         std::vector<double> &s, Tensor<Matrix, C> &vt,
+template <typename MatrixType>
+int psvd(const Tensor<MatrixType> &a, Tensor<MatrixType> &u,
+         std::vector<double> &s, Tensor<MatrixType> &vt,
          const size_t target_rank) {
   int info = svd(a, u, s, vt);
   if (s.size() > target_rank) {
@@ -1913,8 +1914,8 @@ int psvd(const Tensor<Matrix, C> &a, Tensor<Matrix, C> &u,
 
   \attention Computational cost is the same as full SVD.
 */
-template <template <typename> class Matrix, typename C>
-int psvd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
+template <typename MatrixType>
+int psvd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
          std::vector<double> &s, const size_t target_rank) {
   int info = svd(a, axes_row, axes_col, s);
   if (s.size() > target_rank) s.resize(target_rank);
@@ -1944,9 +1945,9 @@ int psvd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   \attention Computational cost is the same as full SVD.
 */
-template <template <typename> class Matrix, typename C>
-int psvd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
-         Tensor<Matrix, C> &u, std::vector<double> &s, Tensor<Matrix, C> &vt,
+template <typename MatrixType>
+int psvd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
+         Tensor<MatrixType> &u, std::vector<double> &s, Tensor<MatrixType> &vt,
          const size_t target_rank) {
   int info = svd(a, axes_row, axes_col, u, s, vt);
   if (s.size() > target_rank) {
@@ -1970,8 +1971,8 @@ int psvd(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   \return Information from linear-algebra library.
 */
-template <template <typename> class Matrix, typename C>
-int qr(const Tensor<Matrix, C> &a, Tensor<Matrix, C> &q, Tensor<Matrix, C> &r) {
+template <typename MatrixType>
+int qr(const Tensor<MatrixType> &a, Tensor<MatrixType> &q, Tensor<MatrixType> &r) {
   assert(a.rank() == 2);
   int info;
   info = qr(a, Axes(0), Axes(1), q, r);
@@ -2002,9 +2003,9 @@ int qr(const Tensor<Matrix, C> &a, Tensor<Matrix, C> &q, Tensor<Matrix, C> &r) {
 
   \return Information from linear-algebra library.
 */
-template <template <typename> class Matrix, typename C>
-int qr(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
-       Tensor<Matrix, C> &q, Tensor<Matrix, C> &r) {
+template <typename MatrixType>
+int qr(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
+       Tensor<MatrixType> &q, Tensor<MatrixType> &r) {
   assert(axes_row.size() > 0);
   assert(axes_col.size() > 0);
   assert(debug::check_svd_axes(axes_row, axes_col, a.rank()));
@@ -2024,9 +2025,9 @@ int qr(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
   size_t size = (d_row < d_col) ? d_row : d_col;
 
   // rank-2 tensors (matrices)
-  Tensor<Matrix, C> mat_q =
+  Tensor<MatrixType> mat_q =
       reshape(transpose(a, axes, urank), Shape(d_row, d_col));
-  Tensor<Matrix, C> mat_r(mat_q.get_comm(), mat_q.shape(), 1);
+  Tensor<MatrixType> mat_r(mat_q.get_comm(), mat_q.shape(), 1);
 
   // QR decomposition. Elements of mat_q change from a to q.
   int info;
@@ -2067,18 +2068,18 @@ int qr(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   \return Information from linear-algebra library.
 */
-template <template <typename> class Matrix, typename C>
-int eigh(const Tensor<Matrix, C> &a, std::vector<double> &w,
-         Tensor<Matrix, C> &z) {
+template <typename MatrixType>
+int eigh(const Tensor<MatrixType> &a, std::vector<double> &w,
+         Tensor<MatrixType> &z) {
   assert(a.rank() == 2);
   Shape shape = a.shape();
   assert(shape[0] == shape[1]);
 
-  Tensor<Matrix, C> a_t = transpose(a, Axes(0, 1), 1);
+  Tensor<MatrixType> a_t = transpose(a, Axes(0, 1), 1);
 
   size_t n = shape[0];
   w.resize(n);
-  z = Tensor<Matrix, C>(a.get_comm(), Shape(n, n), 1);
+  z = Tensor<MatrixType>(a.get_comm(), Shape(n, n), 1);
 
   int info;
   info = matrix_eigh(a_t.get_matrix(), w, z.get_matrix());
@@ -2093,13 +2094,13 @@ int eigh(const Tensor<Matrix, C> &a, std::vector<double> &w,
 
   \return Information from linear-algebra library.
 */
-template <template <typename> class Matrix, typename C>
-int eigh(const Tensor<Matrix, C> &a, std::vector<double> &w) {
+template <typename MatrixType>
+int eigh(const Tensor<MatrixType> &a, std::vector<double> &w) {
   assert(a.rank() == 2);
   Shape shape = a.shape();
   assert(shape[0] == shape[1]);
 
-  Tensor<Matrix, C> a_t = transpose(a, Axes(0, 1), 1);
+  Tensor<MatrixType> a_t = transpose(a, Axes(0, 1), 1);
 
   size_t n = shape[0];
   w.resize(n);
@@ -2131,9 +2132,9 @@ int eigh(const Tensor<Matrix, C> &a, std::vector<double> &w) {
 
   \warning Input tensor should be Hermite.
 */
-template <template <typename> class Matrix, typename C>
-int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
-         std::vector<double> &w, Tensor<Matrix, C> &z) {
+template <typename MatrixType>
+int eigh(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
+         std::vector<double> &w, Tensor<MatrixType> &z) {
   assert(axes_row.size() > 0);
   assert(axes_col.size() > 0);
 
@@ -2142,7 +2143,7 @@ int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   Axes axes = axes_row + axes_col;
 
-  Tensor<Matrix, C> a_t = transpose(a, axes, urank);
+  Tensor<MatrixType> a_t = transpose(a, axes, urank);
   const Shape &shape = a_t.shape();
 
   size_t d_row(1), d_col(1);
@@ -2157,7 +2158,7 @@ int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
   for (size_t i = 0; i < urank; ++i) shape_z[i] = shape[i];
   shape_z[urank] = size;
 
-  z = Tensor<Matrix, C>(a.get_comm(), shape_z, urank);
+  z = Tensor<MatrixType>(a.get_comm(), shape_z, urank);
   w.resize(size);
 
   int info;
@@ -2176,8 +2177,8 @@ int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   \warning Input tensor should be Hermite.
 */
-template <template <typename> class Matrix, typename C>
-int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
+template <typename MatrixType>
+int eigh(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
          std::vector<double> &w) {
   assert(axes_row.size() > 0);
   assert(axes_col.size() > 0);
@@ -2187,7 +2188,7 @@ int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   Axes axes = axes_row + axes_col;
 
-  Tensor<Matrix, C> a_t = transpose(a, axes, urank);
+  Tensor<MatrixType> a_t = transpose(a, axes, urank);
   const Shape &shape = a_t.shape();
 
   size_t d_row(1), d_col(1);
@@ -2236,11 +2237,11 @@ int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   \note The shape of \c z is determined by \c axes_col_a.
 */
-template <template <typename> class Matrix, typename C>
-int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row_a,
-         const Axes &axes_col_a, const Tensor<Matrix, C> &b,
+template <typename MatrixType>
+int eigh(const Tensor<MatrixType> &a, const Axes &axes_row_a,
+         const Axes &axes_col_a, const Tensor<MatrixType> &b,
          const Axes &axes_row_b, const Axes &axes_col_b, std::vector<double> &w,
-         Tensor<Matrix, C> &z) {
+         Tensor<MatrixType> &z) {
   assert(axes_row_a.size() > 0);
   assert(axes_col_a.size() > 0);
   assert(axes_row_b.size() > 0);
@@ -2252,8 +2253,8 @@ int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row_a,
   const size_t urank_b = axes_row_b.size();
   Axes axes_a = axes_row_a + axes_col_a;
   Axes axes_b = axes_row_b + axes_col_b;
-  Tensor<Matrix, C> a_t = transpose(a, axes_a, urank_a);
-  Tensor<Matrix, C> b_t = transpose(b, axes_b, urank_b);
+  Tensor<MatrixType> a_t = transpose(a, axes_a, urank_a);
+  Tensor<MatrixType> b_t = transpose(b, axes_b, urank_b);
   const Shape &shape_a = a_t.shape();
   const Shape &shape_b = b_t.shape();
   size_t d_row_a(1), d_col_a(1);
@@ -2273,7 +2274,7 @@ int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row_a,
   for (size_t i = urank_a; i < rank_a; ++i) shape_z[i - urank_a] = shape_a[i];
   shape_z[rank_a - urank_a] = size;
 
-  z = Tensor<Matrix, C>(a.get_comm(), shape_z, urank_a);
+  z = Tensor<MatrixType>(a.get_comm(), shape_z, urank_a);
   w.resize(size);
 
   int info;
@@ -2291,24 +2292,24 @@ int eigh(const Tensor<Matrix, C> &a, const Axes &axes_row_a,
   \return Information from linear-algebra library.
   \warning This function may require huge memory because it uses LAPACK routines.
 */
-template <template <typename> class Matrix, typename C>
-int eig(const Tensor<Matrix, C> &a, std::vector<complex> &w,
-        Tensor<Matrix, complex> &z) {
+template <typename MatrixType>
+int eig(const Tensor<MatrixType> &a, std::vector<complex> &w,
+        typename Tensor<MatrixType>::template rebind<complex> &z) {
   assert(a.rank() == 2);
   Shape shape = a.shape();
   assert(shape[0] == shape[1]);
 
-  Tensor<lapack::Matrix, C> a_t = transpose(a, Axes(0, 1), 1).gather();
+  Tensor<lapack::Matrix<typename MatrixType::value_type>> a_t = transpose(a, Axes(0, 1), 1).gather();
 
   size_t n = shape[0];
   w.resize(n);
 
-  Tensor<lapack::Matrix, complex> z_t(a.get_comm(), Shape(n, n), 1);
+  Tensor<lapack::Matrix<complex>> z_t(a.get_comm(), Shape(n, n), 1);
 
   int info;
   info = matrix_eig(a_t.get_matrix(), w, z_t.get_matrix());
 
-  z = Tensor<Matrix, complex>(a.get_comm(), z_t);
+  z = typename Tensor<MatrixType>::template rebind<complex>(a.get_comm(), z_t);
 
   return info;
 };
@@ -2321,13 +2322,13 @@ int eig(const Tensor<Matrix, C> &a, std::vector<complex> &w,
   \return Information from linear-algebra library.
   \warning This function may require huge memory because it uses LAPACK routines.
 */
-template <template <typename> class Matrix, typename C>
-int eig(const Tensor<Matrix, C> &a, std::vector<complex> &w) {
+template <typename MatrixType>
+int eig(const Tensor<MatrixType> &a, std::vector<complex> &w) {
   assert(a.rank() == 2);
   Shape shape = a.shape();
   assert(shape[0] == shape[1]);
 
-  Tensor<lapack::Matrix, C> a_t = transpose(a, Axes(0, 1), 1).gather();
+  Tensor<lapack::Matrix<typename MatrixType::value_type>> a_t = transpose(a, Axes(0, 1), 1).gather();
 
   size_t n = shape[0];
   w.resize(n);
@@ -2358,9 +2359,9 @@ int eig(const Tensor<Matrix, C> &a, std::vector<complex> &w) {
 
   \warning This function may require huge memory because it uses LAPACK routines.
 */
-template <template <typename> class Matrix, typename C>
-int eig(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
-        std::vector<complex> &w, Tensor<Matrix, complex> &z) {
+template <typename MatrixType>
+int eig(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
+        std::vector<complex> &w, typename Tensor<MatrixType>::template rebind<complex> &z) {
   assert(axes_row.size() > 0);
   assert(axes_col.size() > 0);
 
@@ -2369,7 +2370,7 @@ int eig(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   Axes axes = axes_row + axes_col;
 
-  Tensor<lapack::Matrix, C> a_t = transpose(a, axes, urank).gather();
+  Tensor<lapack::Matrix<typename MatrixType::value_type>> a_t = transpose(a, axes, urank).gather();
   const Shape &shape = a_t.shape();
 
   size_t d_row(1), d_col(1);
@@ -2384,14 +2385,14 @@ int eig(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
   for (size_t i = 0; i < urank; ++i) shape_z[i] = shape[i];
   shape_z[urank] = size;
 
-  Tensor<lapack::Matrix, complex> z_t(a.get_comm(), shape_z, urank);
+  Tensor<lapack::Matrix<complex>> z_t(a.get_comm(), shape_z, urank);
 
   w.resize(size);
 
   int info;
   info = matrix_eig(a_t.get_matrix(), w, z_t.get_matrix());
 
-  z = Tensor<Matrix, complex>(a.get_comm(), z_t);
+  z = typename Tensor<MatrixType>::template rebind<complex>(a.get_comm(), z_t);
 
   return info;
 };
@@ -2407,8 +2408,8 @@ int eig(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   \warning This function may require huge memory because it uses LAPACK routines.
 */
-template <template <typename> class Matrix, typename C>
-int eig(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
+template <typename MatrixType>
+int eig(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
         std::vector<complex> &w) {
   assert(axes_row.size() > 0);
   assert(axes_col.size() > 0);
@@ -2418,7 +2419,7 @@ int eig(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   Axes axes = axes_row + axes_col;
 
-  Tensor<lapack::Matrix, C> a_t = transpose(a, axes, urank).gather();
+  Tensor<lapack::Matrix<typename MatrixType::value_type>> a_t = transpose(a, axes, urank).gather();
   const Shape &shape = a_t.shape();
 
   size_t d_row(1), d_col(1);
@@ -2443,16 +2444,16 @@ int eig(const Tensor<Matrix, C> &a, const Axes &axes_row, const Axes &axes_col,
 
   \return Information from linear-algebra library.
 */
-template <template <typename> class Matrix, typename C>
-int solve(const Tensor<Matrix, C> &a, const std::vector<C> &b,
-          std::vector<C> &x) {
+template <typename MatrixType>
+int solve(const Tensor<MatrixType> &a, const std::vector<typename MatrixType::value_type> &b,
+          std::vector<typename MatrixType::value_type> &x) {
   assert(a.rank() == 2);
   assert(a.shape()[0] == a.shape()[1]);
   assert(a.shape()[0] == b.size());
 
-  Tensor<Matrix, C> x_t;
+  Tensor<MatrixType> x_t;
   int info;
-  info = solve(a, Tensor<Matrix, C>(a.get_comm(), b), x_t, Axes(0), Axes(1),
+  info = solve(a, Tensor<MatrixType>(a.get_comm(), b), x_t, Axes(0), Axes(1),
                Axes(0), Axes());
   x = x_t.flatten();
 
@@ -2467,9 +2468,9 @@ int solve(const Tensor<Matrix, C> &a, const std::vector<C> &b,
 
   \return Information from linear-algebra library.
 */
-template <template <typename> class Matrix, typename C>
-int solve(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b,
-          Tensor<Matrix, C> &x) {
+template <typename MatrixType>
+int solve(const Tensor<MatrixType> &a, const Tensor<MatrixType> &b,
+          Tensor<MatrixType> &x) {
   assert(a.rank() == 2);
   assert(b.rank() == 2 || b.rank() == 1);
   assert(a.shape()[0] == a.shape()[1]);
@@ -2513,9 +2514,9 @@ int solve(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b,
   \endcode
   solves \f$ \sum_{kl} A_{ijkl} X_{kl} = B_{ij} \f$.
 */
-template <template <typename> class Matrix, typename C>
-int solve(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b,
-          Tensor<Matrix, C> &x, const Axes &axes_row_a, const Axes &axes_col_a,
+template <typename MatrixType>
+int solve(const Tensor<MatrixType> &a, const Tensor<MatrixType> &b,
+          Tensor<MatrixType> &x, const Axes &axes_row_a, const Axes &axes_col_a,
           const Axes &axes_row_b, const Axes &axes_col_b) {
   assert(a.rank() == axes_row_a.size() + axes_col_a.size());
   assert(b.rank() == axes_row_b.size() + axes_col_b.size());
@@ -2533,8 +2534,8 @@ int solve(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b,
   Axes axes_a = axes_row_a + axes_col_a;
   Axes axes_b = axes_row_b + axes_col_b;
 
-  Tensor<Matrix, C> a_t = transpose(a, axes_a, rank_row_a);
-  Tensor<Matrix, C> b_t = transpose(b, axes_b, rank_row_b);
+  Tensor<MatrixType> a_t = transpose(a, axes_a, rank_row_a);
+  Tensor<MatrixType> b_t = transpose(b, axes_b, rank_row_b);
   const Shape &shape_a = a_t.shape();
   const Shape &shape_b = b_t.shape();
 
@@ -2553,80 +2554,82 @@ int solve(const Tensor<Matrix, C> &a, const Tensor<Matrix, C> &b,
 };
 
 //! Unary plus
-template <template <typename> class Matrix, typename C>
-inline Tensor<Matrix, C> operator+(Tensor<Matrix, C> rhs) {
+template <typename MatrixType>
+inline Tensor<MatrixType> operator+(Tensor<MatrixType> rhs) {
   return rhs;
 }
 //! Unary minus
-template <template <typename> class Matrix, typename C>
-inline Tensor<Matrix, C> operator-(Tensor<Matrix, C> rhs) {
+template <typename MatrixType>
+inline Tensor<MatrixType> operator-(Tensor<MatrixType> rhs) {
   return (rhs *= -1.0);
 }
 //! Addition
-template <template <typename> class Matrix, typename C>
-inline Tensor<Matrix, C> operator+(Tensor<Matrix, C> lhs,
-                                   const Tensor<Matrix, C> &rhs) {
+template <typename MatrixType>
+inline Tensor<MatrixType> operator+(Tensor<MatrixType> lhs,
+                                   const Tensor<MatrixType> &rhs) {
   return (lhs += rhs);
 }
 //! Subtraction
-template <template <typename> class Matrix, typename C>
-inline Tensor<Matrix, C> operator-(Tensor<Matrix, C> lhs,
-                                   const Tensor<Matrix, C> &rhs) {
+template <typename MatrixType>
+inline Tensor<MatrixType> operator-(Tensor<MatrixType> lhs,
+                                   const Tensor<MatrixType> &rhs) {
   return (lhs -= rhs);
 }
 //! Tensor-scalar multiplication
-template <template <typename> class Matrix, typename C, typename D>
-inline Tensor<Matrix, C> operator*(Tensor<Matrix, C> lhs, D rhs) {
+template <typename MatrixType, typename D>
+inline Tensor<MatrixType> operator*(Tensor<MatrixType> lhs, D rhs) {
   return (lhs *= rhs);
 }
 //! Scalar division
-template <template <typename> class Matrix, typename C, typename D>
-inline Tensor<Matrix, C> operator/(Tensor<Matrix, C> lhs, D rhs) {
+template <typename MatrixType, typename D>
+inline Tensor<MatrixType> operator/(Tensor<MatrixType> lhs, D rhs) {
   return (lhs /= rhs);
 }
 //! Scalar-tensor multiplication
-template <template <typename> class Matrix, typename C, typename D>
-inline Tensor<Matrix, C> operator*(D lhs, Tensor<Matrix, C> rhs) {
+template <typename MatrixType, typename D>
+inline Tensor<MatrixType> operator*(D lhs, Tensor<MatrixType> rhs) {
   return (rhs *= lhs);
 }
 
 //! Return the maximum element. For complex, same as max_abs().
-template <template <typename> class Matrix, typename C>
-inline double max(const Tensor<Matrix, C> &t) {
+template <typename MatrixType>
+inline double max(const Tensor<MatrixType> &t) {
   return max(t.get_matrix());
 }
 //! Return the minimum element. For complex, same as min_abs().
-template <template <typename> class Matrix, typename C>
-inline double min(const Tensor<Matrix, C> &t) {
+template <typename MatrixType>
+inline double min(const Tensor<MatrixType> &t) {
   return min(t.get_matrix());
 }
 //! Return maximum of the absolute value of an element.
-template <template <typename> class Matrix, typename C>
-inline double max_abs(const Tensor<Matrix, C> &t) {
+template <typename MatrixType>
+inline double max_abs(const Tensor<MatrixType> &t) {
   return max_abs(t.get_matrix());
 }
 //! Return minimum of the absolute value of an element.
-template <template <typename> class Matrix, typename C>
-inline double min_abs(const Tensor<Matrix, C> &t) {
+template <typename MatrixType>
+inline double min_abs(const Tensor<MatrixType> &t) {
   return min_abs(t.get_matrix());
 }
 
 //! \cond
-template <template <typename> class Matrix>
-inline Tensor<Matrix, double> sqrt(Tensor<Matrix, double> t) {
-  return t.map(static_cast<double (*)(double)>(&std::sqrt));
+template <typename MatrixType>
+inline Tensor<MatrixType> sqrt(Tensor<MatrixType> t) {
+  using value_type = typename MatrixType::value_type;
+  if constexpr (std::is_same_v<value_type, double>) {
+    return t.map(static_cast<double (*)(double)>(&std::sqrt));
+  } else {
+    return t.map(static_cast<complex (*)(const complex &)>(&std::sqrt));
+  }
 }
-template <template <typename> class Matrix>
-inline Tensor<Matrix, complex> sqrt(Tensor<Matrix, complex> t) {
-  return t.map(static_cast<complex (*)(const complex &)>(&std::sqrt));
-}
-template <template <typename> class Matrix>
-inline Tensor<Matrix, double> conj(Tensor<Matrix, double> t) {
-  return t;
-}
-template <template <typename> class Matrix>
-inline Tensor<Matrix, complex> conj(Tensor<Matrix, complex> t) {
-  return t.map(static_cast<complex (*)(const complex &)>(&std::conj));
+template <typename MatrixType>
+inline Tensor<MatrixType> conj(Tensor<MatrixType> t) {
+  using value_type = typename MatrixType::value_type;
+  if constexpr (std::is_same_v<value_type, double>) {
+    return t;
+  } else {
+    return t.map(static_cast<complex (*)(const complex &)>(&std::conj));
+  }
 }
 //! \endcond
 
@@ -2635,8 +2638,8 @@ inline Tensor<Matrix, complex> conj(Tensor<Matrix, complex> t) {
   \param[out] out Output stream.
   \param[in] t Tensor to be output.
 */
-template <template <typename> class Matrix, typename C>
-std::ostream &operator<<(std::ostream &out, const Tensor<Matrix, C> &t) {
+template <typename MatrixType>
+std::ostream &operator<<(std::ostream &out, const Tensor<MatrixType> &t) {
   std::size_t dim = t.ndim();
   if (t.get_comm_size() == 1) {
     std::size_t size = t.local_size();
@@ -2654,7 +2657,8 @@ std::ostream &operator<<(std::ostream &out, const Tensor<Matrix, C> &t) {
         for (size_t i = 0; i < count; ++i) out << '[';
       }
 
-      C val;
+      using value_type = typename MatrixType::value_type;
+      value_type val;
       t.get_value(idx, val);
       out << ' ' << val << ' ';
 

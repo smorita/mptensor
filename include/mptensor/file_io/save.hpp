@@ -49,17 +49,17 @@ namespace mptensor {
   \note \c rank_no in the name of binary files has at least 4 digit, (ex.
   filename.0001.bin).
 */
-template <template <typename> class Matrix, typename C>
-void Tensor<Matrix, C>::save(const std::string &filename) const {
+template <typename MatrixType>
+void Tensor<MatrixType>::save(const std::string &filename) const {
   // Create the base file
   if (get_comm_rank() == 0) {
     size_t n = ndim();
     std::ofstream fout(filename);
     fout << "mptensor " << MPTENSOR_VERSION_STRING << "\n";
-    fout << "matrix_type= " << Matrix<C>::matrix_type_tag;
-    fout << " (" << Matrix<C>::matrix_type_name << ")\n";
-    fout << "value_type= " << value_type_tag<C>();
-    fout << " (" << value_type_name<C>() << ")\n";
+    fout << "matrix_type= " << MatrixType::matrix_type_tag;
+    fout << " (" << MatrixType::matrix_type_name << ")\n";
+    fout << "value_type= " << value_type_tag<value_type>();
+    fout << " (" << value_type_name<value_type>() << ")\n";
     fout << "comm_size= " << get_comm_size() << "\n";
     fout << "ndim= " << n << "\n";
     fout << "upper_rank= " << upper_rank << "\n";
@@ -80,7 +80,7 @@ void Tensor<Matrix, C>::save(const std::string &filename) const {
     std::ofstream fout(io_helper::binary_filename(filename, get_comm_rank()),
                        std::ofstream::binary);
     fout.write(reinterpret_cast<const char *>(get_matrix().head()),
-               sizeof(C) * local_size());
+               sizeof(value_type) * local_size());
     fout.close();
   }
 
@@ -102,8 +102,8 @@ void Tensor<Matrix, C>::save(const std::string &filename) const {
   \note \c rank_no in the name of binary files has at least 4 digit, (ex.
   filename.0001).
 */
-template <template <typename> class Matrix, typename C>
-void Tensor<Matrix, C>::save_ver_0_2(const char *filename) const {
+template <typename MatrixType>
+void Tensor<MatrixType>::save_ver_0_2(const char *filename) const {
   std::ofstream fout;
 
   // Create the base file
@@ -126,7 +126,7 @@ void Tensor<Matrix, C>::save_ver_0_2(const char *filename) const {
     // save_binary(datafile,get_matrix().head(),local_size());
     std::ofstream fout(datafile.data(), std::ofstream::binary);
     fout.write(reinterpret_cast<const char *>(get_matrix().head()),
-               sizeof(C) * local_size());
+               sizeof(value_type) * local_size());
     fout.close();
   }
 }
