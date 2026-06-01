@@ -19,7 +19,7 @@
 */
 
 /*!
-  \file   tests/reshape.cc
+  \file   reshape.cc
   \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
   \date   April 24 2015
   \brief  Test code for reshape
