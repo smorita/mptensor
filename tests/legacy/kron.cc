@@ -19,7 +19,7 @@
 */
 
 /*!
-  \file   tensordot.cc
+  \file   kron.cc
   \author Satoshi Morita <smorita@keio.jp>
   \date   May 09 2023
   \brief  Test code for kron

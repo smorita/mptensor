@@ -19,7 +19,7 @@
 */
 
 /*!
-  \file   mptensor/rsvd.cc
+  \file   rsvd.cc
   \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
   \date   Feb 3 2016
 
