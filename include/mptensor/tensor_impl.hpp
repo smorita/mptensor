@@ -268,8 +268,13 @@ inline void Tensor<MatrixType>::make_l2g_map() const {
   const size_t rank1 = rank - rank0;  // lower_rank
   const size_t l_row = Mat.local_row_size();
   const size_t l_col = Mat.local_col_size();
-  const size_t *axes_map0 = &(axes_map[0]);
-  const size_t *axes_map1 = &(axes_map[rank0]);
+  // When rank0 (== upper_rank) or rank1 (== lower_rank) is zero, the
+  // corresponding range is empty; taking the base address of an empty range
+  // (&axes_map[rank0] one past the end, or &l2g_map_row[0] on an empty vector)
+  // is undefined behavior and aborts under _GLIBCXX_ASSERTIONS. Guard with a
+  // null pointer that is never dereferenced (the matching loops are skipped).
+  const size_t *axes_map0 = rank0 > 0 ? &(axes_map[0]) : nullptr;
+  const size_t *axes_map1 = rank1 > 0 ? &(axes_map[rank0]) : nullptr;
 
   l2g_map_row.resize(l_row * rank0);
   l2g_map_col.resize(l_col * rank1);
@@ -285,24 +290,28 @@ inline void Tensor<MatrixType>::make_l2g_map() const {
     int g_row, g_col;  // global matrix row- and column-index
     std::div_t divresult;
     size_t *map;
+    if (rank0 > 0) {
 #pragma omp for
-    for (size_t k = 0; k < l_row; ++k) {
-      map = &(l2g_map_row[k * rank0]);
-      g_row = int(Mat.global_row_index(k));
-      for (size_t i = 0; i < rank0; ++i) {
-        divresult = std::div(g_row, dim0[i]);
-        map[i] = divresult.rem;
-        g_row = divresult.quot;
+      for (size_t k = 0; k < l_row; ++k) {
+        map = &(l2g_map_row[k * rank0]);
+        g_row = int(Mat.global_row_index(k));
+        for (size_t i = 0; i < rank0; ++i) {
+          divresult = std::div(g_row, dim0[i]);
+          map[i] = divresult.rem;
+          g_row = divresult.quot;
+        }
       }
     }
+    if (rank1 > 0) {
 #pragma omp for
-    for (size_t k = 0; k < l_col; ++k) {
-      map = &(l2g_map_col[k * rank1]);
-      g_col = int(Mat.global_col_index(k));
-      for (size_t i = 0; i < rank1; ++i) {
-        divresult = std::div(g_col, dim1[i]);
-        map[i] = divresult.rem;
-        g_col = divresult.quot;
+      for (size_t k = 0; k < l_col; ++k) {
+        map = &(l2g_map_col[k * rank1]);
+        g_col = int(Mat.global_col_index(k));
+        for (size_t i = 0; i < rank1; ++i) {
+          divresult = std::div(g_col, dim1[i]);
+          map[i] = divresult.rem;
+          g_col = divresult.quot;
+        }
       }
     }
   }
@@ -325,10 +334,12 @@ inline void Tensor<MatrixType>::global_index_l2g_map(size_t lindex,
   const size_t rank1 = rank - rank0;  // lower_rank
   const size_t lindex_row = Mat.local_row_index(lindex);
   const size_t lindex_col = Mat.local_col_index(lindex);
-  const size_t *map_row = &(l2g_map_row[lindex_row * rank0]);
-  const size_t *map_col = &(l2g_map_col[lindex_col * rank1]);
-  const size_t *axes_map0 = &(axes_map[0]);
-  const size_t *axes_map1 = &(axes_map[rank0]);
+  // Guard against empty upper/lower ranges (see make_l2g_map): a null base
+  // pointer is safe because the matching loop below is then empty.
+  const size_t *map_row = rank0 > 0 ? &(l2g_map_row[lindex_row * rank0]) : nullptr;
+  const size_t *map_col = rank1 > 0 ? &(l2g_map_col[lindex_col * rank1]) : nullptr;
+  const size_t *axes_map0 = rank0 > 0 ? &(axes_map[0]) : nullptr;
+  const size_t *axes_map1 = rank1 > 0 ? &(axes_map[rank0]) : nullptr;
   for (size_t i = 0; i < rank0; ++i) {
     gindex[axes_map0[i]] = map_row[i];
   }
@@ -358,8 +369,10 @@ inline void Tensor<MatrixType>::global_index_l2g_map_transpose(
   const size_t rank1 = rank - rank0;  // lower_rank
   const size_t lindex_row = Mat.local_row_index(lindex);
   const size_t lindex_col = Mat.local_col_index(lindex);
-  const size_t *map_row = &(l2g_map_row[lindex_row * rank0]);
-  const size_t *map_col = &(l2g_map_col[lindex_col * rank1]);
+  // Guard against empty upper/lower ranges (see make_l2g_map): a null base
+  // pointer is safe because the matching loop below is then empty.
+  const size_t *map_row = rank0 > 0 ? &(l2g_map_row[lindex_row * rank0]) : nullptr;
+  const size_t *map_col = rank1 > 0 ? &(l2g_map_col[lindex_col * rank1]) : nullptr;
   // const size_t* axes_map0 = &(axes_map[0]);
   // const size_t* axes_map1 = &(axes_map[rank0]);
   for (size_t i = 0; i < rank0; ++i) {
