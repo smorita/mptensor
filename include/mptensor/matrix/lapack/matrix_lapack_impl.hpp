@@ -103,12 +103,12 @@ inline C& Matrix<C>::operator[](size_t i) {
 
 template <typename C>
 inline const C* Matrix<C>::head() const {
-  return &(V[0]);
+  return V.data();
 }
 
 template <typename C>
 inline C* Matrix<C>::head() {
-  return &(V[0]);
+  return V.data();
 }
 
 template <typename C>
@@ -344,7 +344,7 @@ void replace_matrix_data(const std::vector<C>& V, const std::vector<int>& dest_r
   assert(dest_rank.size() == V.size());
   assert(local_position.size() == V.size());
 
-  const C* mat = &(V[0]);
+  const C* mat = V.data();
   C* mat_new = M_new.head();
 
   for (size_t i = 0; i < V.size(); i++) {

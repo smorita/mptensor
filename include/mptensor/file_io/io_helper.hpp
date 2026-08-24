@@ -118,7 +118,7 @@ void load_local_files(const std::string& prefix, int comm_rank,
   }
 
   data.resize(local_size);
-  load_binary(prefix, comm_rank, &(data[0]), local_size);
+  load_binary(prefix, comm_rank, data.data(), local_size);
 }
 
 template <template <typename> class Matrix, typename C>

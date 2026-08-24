@@ -109,9 +109,9 @@ void Tensor<MatrixType>::load(const std::string &filename) {
       for (size_t i = 0; i < loaded_ndim; ++i) fin >> buffer[k++];
       fin.close();
     }
-    Mat.bcast(&(buffer[0]), count, 0);
+    Mat.bcast(buffer.data(), count, 0);
 
-    loaded_shape.assign(loaded_ndim, &(buffer[0]));
+    loaded_shape.assign(loaded_ndim, buffer.data());
     loaded_map.assign(loaded_ndim, &(buffer[loaded_ndim]));
   }
 
@@ -184,7 +184,7 @@ void Tensor<MatrixType>::load_ver_0_2(const char* filename) {
       for (size_t i = 0; i < count; ++i) fin >> buffer[i];
       fin.close();
     }
-    Mat.bcast(&(buffer[0]), count, 0);
+    Mat.bcast(buffer.data(), count, 0);
 
     urank = buffer[0];
     shape.assign(n, &(buffer[1]));

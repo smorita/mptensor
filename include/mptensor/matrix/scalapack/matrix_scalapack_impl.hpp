@@ -101,12 +101,12 @@ inline C& Matrix<C>::operator[](size_t i) {
 
 template <typename C>
 inline const C* Matrix<C>::head() const {
-  return &(V[0]);
+  return V.data();
 }
 
 template <typename C>
 inline C* Matrix<C>::head() {
-  return &(V[0]);
+  return V.data();
 }
 
 template <typename C>
@@ -134,7 +134,7 @@ inline int Matrix<C>::get_comm_rank() const {
 
 template <typename C>
 inline const int* Matrix<C>::descriptor() const {
-  return &(desc[0]);
+  return desc.data();
 }
 
 // template <typename C> inline
@@ -328,7 +328,7 @@ void Matrix<C>::init(size_t n_row, size_t n_col) {
   int locc = numroc_(&xN, &xNB, &(grid.mypcol), &icsrc, &(grid.npcol));
   int lld = (locr < 1) ? 1 : locr;
   int info;
-  descinit_(&(desc[0]), &xM, &xN, &xMB, &xNB, &irsrc, &icsrc, &(grid.ictxt),
+  descinit_(desc.data(), &xM, &xN, &xMB, &xNB, &irsrc, &icsrc, &(grid.ictxt),
             &lld, &info);
   V.resize(locr * locc);
   local_row_size_ = static_cast<size_t>(locr);
@@ -494,7 +494,7 @@ void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
     send_counts[dest_rank[i]] += 1;
   }
 
-  mpi::alltoall(&(send_counts[0]), 1, &(recv_counts[0]), 1, comm);
+  mpi::alltoall(send_counts.data(), 1, recv_counts.data(), 1, comm);
 
   for (int rank = 0; rank < mpisize; ++rank) {
     send_displs[rank + 1] = send_counts[rank] + send_displs[rank];
@@ -521,10 +521,12 @@ void replace_matrix_data(const Matrix<C>& M, const std::vector<int>& dest_rank,
   }
 
   /* Send and Recieve */
-  mpi::alltoallv(&(send_pos[0]), &(send_counts[0]), &(send_displs[0]), &(recv_pos[0]),
-                         &(recv_counts[0]), &(recv_displs[0]), comm);
-  mpi::alltoallv(&(send_value[0]), &(send_counts[0]), &(send_displs[0]), &(recv_value[0]),
-                         &(recv_counts[0]), &(recv_displs[0]), comm);
+  mpi::alltoallv(send_pos.data(), send_counts.data(), send_displs.data(),
+                 recv_pos.data(), recv_counts.data(), recv_displs.data(),
+                 comm);
+  mpi::alltoallv(send_value.data(), send_counts.data(), send_displs.data(),
+                 recv_value.data(), recv_counts.data(), recv_displs.data(),
+                 comm);
 
   /* Unpack */
   for (int i = 0; i < recv_size; ++i) {
@@ -541,7 +543,7 @@ void replace_matrix_data(const std::vector<C>& V, const std::vector<int>& dest_r
   // const int mpirank = M.get_comm_rank();
   const size_t local_size = V.size();
 
-  const C* mat = &(V[0]);
+  const C* mat = V.data();
   C* mat_new = M_new.head();
 
   // assert(send_size_list.size() == mpisize);
@@ -558,7 +560,7 @@ void replace_matrix_data(const std::vector<C>& V, const std::vector<int>& dest_r
     send_counts[dest_rank[i]] += 1;
   }
 
-  mpi::alltoall(&(send_counts[0]), 1, &(recv_counts[0]), 1, comm);
+  mpi::alltoall(send_counts.data(), 1, recv_counts.data(), 1, comm);
 
   for (int rank = 0; rank < mpisize; ++rank) {
     send_displs[rank + 1] = send_counts[rank] + send_displs[rank];
@@ -585,10 +587,12 @@ void replace_matrix_data(const std::vector<C>& V, const std::vector<int>& dest_r
   }
 
   /* Send and Recieve */
-  mpi::alltoallv(&(send_pos[0]), &(send_counts[0]), &(send_displs[0]), &(recv_pos[0]),
-                         &(recv_counts[0]), &(recv_displs[0]), comm);
-  mpi::alltoallv(&(send_value[0]), &(send_counts[0]), &(send_displs[0]), &(recv_value[0]),
-                         &(recv_counts[0]), &(recv_displs[0]), comm);
+  mpi::alltoallv(send_pos.data(), send_counts.data(), send_displs.data(),
+                 recv_pos.data(), recv_counts.data(), recv_displs.data(),
+                 comm);
+  mpi::alltoallv(send_value.data(), send_counts.data(), send_displs.data(),
+                 recv_value.data(), recv_counts.data(), recv_displs.data(),
+                 comm);
 
   /* Unpack */
   for (int i = 0; i < recv_size; ++i) {
