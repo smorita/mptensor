@@ -102,7 +102,7 @@ void BlacsGrid::init_grid(const MPI_Comm &newComm, int nr, int nc) {
 
   // pnum2mpirank.resize(mpisize);
   // mpirank2pnum.resize(mpisize);
-  // MPI_Allgather(&mypnum,1,MPI_INT,&(mpirank2pnum[0]),1,MPI_INT,comm);
+  // MPI_Allgather(&mypnum,1,MPI_INT,mpirank2pnum.data(),1,MPI_INT,comm);
   // for(int i=0;i<mpisize;++i) {
   //   pnum2mpirank[ mpirank2pnum[i] ] = i;
   // }

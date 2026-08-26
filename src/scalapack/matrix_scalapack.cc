@@ -178,7 +178,7 @@ int matrix_svd(Matrix<double> &A, Matrix<double> &U, std::vector<double> &S,
 
   /* Get the size of workspace */
   pdgesvd_(&jobu, &jobvt, &M, &N, A.head(), &ia, &ja,
-           const_cast<int *>(A.descriptor()), &(S[0]), U.head(), &iu, &ju,
+           const_cast<int *>(A.descriptor()), S.data(), U.head(), &iu, &ju,
            const_cast<int *>(U.descriptor()), VT.head(), &ivt, &jvt,
            const_cast<int *>(VT.descriptor()), &work_size, &lwork, &info);
   lwork = static_cast<int>(work_size);
@@ -186,9 +186,9 @@ int matrix_svd(Matrix<double> &A, Matrix<double> &U, std::vector<double> &S,
 
   /* SVD: A(m,n) = U(m,i) * S(i) * VT(i,n) */
   pdgesvd_(&jobu, &jobvt, &M, &N, A.head(), &ia, &ja,
-           const_cast<int *>(A.descriptor()), &(S[0]), U.head(), &iu, &ju,
+           const_cast<int *>(A.descriptor()), S.data(), U.head(), &iu, &ju,
            const_cast<int *>(U.descriptor()), VT.head(), &ivt, &jvt,
-           const_cast<int *>(VT.descriptor()), &(work[0]), &lwork, &info);
+           const_cast<int *>(VT.descriptor()), work.data(), &lwork, &info);
 
   /* for debug */
   // std::cerr << "matrix_svd: M= " << M << " N= " << N
@@ -226,18 +226,19 @@ int matrix_svd(Matrix<complex> &A, Matrix<complex> &U, std::vector<double> &S,
 
   /* Get the size of workspace */
   pzgesvd_(&jobu, &jobvt, &M, &N, A.head(), &ia, &ja,
-           const_cast<int *>(A.descriptor()), &(S[0]), U.head(), &iu, &ju,
+           const_cast<int *>(A.descriptor()), S.data(), U.head(), &iu, &ju,
            const_cast<int *>(U.descriptor()), VT.head(), &ivt, &jvt,
-           const_cast<int *>(VT.descriptor()), &work_size, &lwork, &(rwork[0]),
+           const_cast<int *>(VT.descriptor()), &work_size, &lwork, rwork.data(),
            &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
 
   /* SVD: A(m,n) = U(m,i) * S(i) * VT(i,n) */
   pzgesvd_(&jobu, &jobvt, &M, &N, A.head(), &ia, &ja,
-           const_cast<int *>(A.descriptor()), &(S[0]), U.head(), &iu, &ju,
+           const_cast<int *>(A.descriptor()), S.data(), U.head(), &iu, &ju,
            const_cast<int *>(U.descriptor()), VT.head(), &ivt, &jvt,
-           const_cast<int *>(VT.descriptor()), &(work[0]), &lwork, &(rwork[0]),
+           const_cast<int *>(VT.descriptor()), work.data(), &lwork,
+           rwork.data(),
            &info);
 
   /* for debug */
@@ -270,7 +271,7 @@ int matrix_svd(Matrix<double> &A, std::vector<double> &S) {
 
   /* Get the size of workspace */
   pdgesvd_(&jobu, &jobvt, &M, &N, A.head(), &ia, &ja,
-           const_cast<int *>(A.descriptor()), &(S[0]), &(d_dummy), &iu, &ju,
+           const_cast<int *>(A.descriptor()), S.data(), &(d_dummy), &iu, &ju,
            &(i_dummy), &(d_dummy), &ivt, &jvt, &(i_dummy), &work_size, &lwork,
            &info);
   lwork = static_cast<int>(work_size);
@@ -278,8 +279,8 @@ int matrix_svd(Matrix<double> &A, std::vector<double> &S) {
 
   /* SVD: A(m,n) = U(m,i) * S(i) * VT(i,n) */
   pdgesvd_(&jobu, &jobvt, &M, &N, A.head(), &ia, &ja,
-           const_cast<int *>(A.descriptor()), &(S[0]), &(d_dummy), &iu, &ju,
-           &(i_dummy), &(d_dummy), &ivt, &jvt, &(i_dummy), &(work[0]), &lwork,
+           const_cast<int *>(A.descriptor()), S.data(), &(d_dummy), &iu, &ju,
+           &(i_dummy), &(d_dummy), &ivt, &jvt, &(i_dummy), work.data(), &lwork,
            &info);
 
   /* for debug */
@@ -313,17 +314,17 @@ int matrix_svd(Matrix<complex> &A, std::vector<double> &S) {
 
   /* Get the size of workspace */
   pzgesvd_(&jobu, &jobvt, &M, &N, A.head(), &ia, &ja,
-           const_cast<int *>(A.descriptor()), &(S[0]), &(c_dummy), &iu, &ju,
+           const_cast<int *>(A.descriptor()), S.data(), &(c_dummy), &iu, &ju,
            &(i_dummy), &(c_dummy), &ivt, &jvt, &(i_dummy), &work_size, &lwork,
-           &(rwork[0]), &info);
+           rwork.data(), &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
 
   /* SVD: A(m,n) = U(m,i) * S(i) * VT(i,n) */
   pzgesvd_(&jobu, &jobvt, &M, &N, A.head(), &ia, &ja,
-           const_cast<int *>(A.descriptor()), &(S[0]), &(c_dummy), &iu, &ju,
-           &(i_dummy), &(c_dummy), &ivt, &jvt, &(i_dummy), &(work[0]), &lwork,
-           &(rwork[0]), &info);
+           const_cast<int *>(A.descriptor()), S.data(), &(c_dummy), &iu, &ju,
+           &(i_dummy), &(c_dummy), &ivt, &jvt, &(i_dummy), work.data(), &lwork,
+           rwork.data(), &info);
 
   /* for debug */
   // std::cerr << "matrix_svd<complex>: M= " << M << " N= " << N
@@ -352,16 +353,16 @@ int matrix_qr(Matrix<double> &A, Matrix<double> &R) {
 
   /* Get the size of workspace */
   pdgeqrf_(&M, &N, A.head(), &ia, &ja, const_cast<int *>(A.descriptor()),
-           &(tau[0]), &work_size_1, &lwork, &info);
+           tau.data(), &work_size_1, &lwork, &info);
   pdorgqr_(&M, &K, &K, A.head(), &ia, &ja, const_cast<int *>(A.descriptor()),
-           &(tau[0]), &work_size_2, &lwork, &info);
+           tau.data(), &work_size_2, &lwork, &info);
   work_size = (work_size_1 > work_size_2) ? work_size_1 : work_size_2;
   lwork = static_cast<int>(work_size);
   work.resize(lwork);
 
   /* QR decomposition */
   pdgeqrf_(&M, &N, A.head(), &ia, &ja, const_cast<int *>(A.descriptor()),
-           &(tau[0]), &(work[0]), &lwork, &info);
+           tau.data(), work.data(), &lwork, &info);
 
   assert(info == 0);
 
@@ -374,7 +375,7 @@ int matrix_qr(Matrix<double> &A, Matrix<double> &R) {
 
   // create orthogonal matrix
   pdorgqr_(&M, &K, &K, A.head(), &ia, &ja, const_cast<int *>(A.descriptor()),
-           &(tau[0]), &(work[0]), &lwork, &info);
+           tau.data(), work.data(), &lwork, &info);
 
   return info;
 }
@@ -398,9 +399,9 @@ int matrix_qr(Matrix<complex> &A, Matrix<complex> &R) {
 
   /* Get the size of workspace */
   pzgeqrf_(&M, &N, A.head(), &ia, &ja, const_cast<int *>(A.descriptor()),
-           &(tau[0]), &work_size_1, &lwork, &info);
+           tau.data(), &work_size_1, &lwork, &info);
   pzungqr_(&M, &K, &K, A.head(), &ia, &ja, const_cast<int *>(A.descriptor()),
-           &(tau[0]), &work_size_2, &lwork, &info);
+           tau.data(), &work_size_2, &lwork, &info);
   int n1 = static_cast<int>(work_size_1.real());
   int n2 = static_cast<int>(work_size_2.real());
   lwork = (n1 > n2) ? n1 : n2;
@@ -408,7 +409,7 @@ int matrix_qr(Matrix<complex> &A, Matrix<complex> &R) {
 
   /* QR decomposition */
   pzgeqrf_(&M, &N, A.head(), &ia, &ja, const_cast<int *>(A.descriptor()),
-           &(tau[0]), &(work[0]), &lwork, &info);
+           tau.data(), work.data(), &lwork, &info);
 
   assert(info == 0);
 
@@ -421,7 +422,7 @@ int matrix_qr(Matrix<complex> &A, Matrix<complex> &R) {
 
   // create orthogonal matrix
   pzungqr_(&M, &K, &K, A.head(), &ia, &ja, const_cast<int *>(A.descriptor()),
-           &(tau[0]), &(work[0]), &lwork, &info);
+           tau.data(), work.data(), &lwork, &info);
 
   return info;
 }
@@ -444,15 +445,15 @@ int matrix_eigh(Matrix<double> &A, std::vector<double> &W, Matrix<double> &Z) {
 
   /* Get the size of workspace */
   pdsyev_(&jobz, &uplo, &n, A.head(), &ia, &ja,
-          const_cast<int *>(A.descriptor()), &(W[0]), Z.head(), &iz, &jz,
+          const_cast<int *>(A.descriptor()), W.data(), Z.head(), &iz, &jz,
           const_cast<int *>(Z.descriptor()), &work_size, &lwork, &info);
   lwork = static_cast<int>(work_size);
   work.resize(lwork);
 
   /* Get eigenvalues and eigenvectors */
   pdsyev_(&jobz, &uplo, &n, A.head(), &ia, &ja,
-          const_cast<int *>(A.descriptor()), &(W[0]), Z.head(), &iz, &jz,
-          const_cast<int *>(Z.descriptor()), &(work[0]), &lwork, &info);
+          const_cast<int *>(A.descriptor()), W.data(), Z.head(), &iz, &jz,
+          const_cast<int *>(Z.descriptor()), work.data(), &lwork, &info);
 
   return info;
 };
@@ -478,7 +479,7 @@ int matrix_eigh(Matrix<complex> &A, std::vector<double> &W,
 
   /* Get the size of workspace */
   pzheev_(&jobz, &uplo, &n, A.head(), &ia, &ja,
-          const_cast<int *>(A.descriptor()), &(W[0]), Z.head(), &iz, &jz,
+          const_cast<int *>(A.descriptor()), W.data(), Z.head(), &iz, &jz,
           const_cast<int *>(Z.descriptor()), &work_size, &lwork, &rwork_size,
           &lrwork, &info);
   lwork = static_cast<int>(work_size.real());
@@ -488,8 +489,8 @@ int matrix_eigh(Matrix<complex> &A, std::vector<double> &W,
 
   /* Get eigenvalues and eigenvectors */
   pzheev_(&jobz, &uplo, &n, A.head(), &ia, &ja,
-          const_cast<int *>(A.descriptor()), &(W[0]), Z.head(), &iz, &jz,
-          const_cast<int *>(Z.descriptor()), &(work[0]), &lwork, &(rwork[0]),
+          const_cast<int *>(A.descriptor()), W.data(), Z.head(), &iz, &jz,
+          const_cast<int *>(Z.descriptor()), work.data(), &lwork, rwork.data(),
           &lrwork, &info);
 
   return info;
@@ -513,15 +514,15 @@ int matrix_eigh(Matrix<double> &A, std::vector<double> &W) {
 
   /* Get the size of workspace */
   pdsyev_(&jobz, &uplo, &n, A.head(), &ia, &ja,
-          const_cast<int *>(A.descriptor()), &(W[0]), &(d_dummy), &iz, &jz,
+          const_cast<int *>(A.descriptor()), W.data(), &(d_dummy), &iz, &jz,
           &(i_dummy), &work_size, &lwork, &info);
   lwork = static_cast<int>(work_size);
   work.resize(lwork);
 
   /* Get eigenvalues and eigenvectors */
   pdsyev_(&jobz, &uplo, &n, A.head(), &ia, &ja,
-          const_cast<int *>(A.descriptor()), &(W[0]), &(d_dummy), &iz, &jz,
-          &(i_dummy), &(work[0]), &lwork, &info);
+          const_cast<int *>(A.descriptor()), W.data(), &(d_dummy), &iz, &jz,
+          &(i_dummy), work.data(), &lwork, &info);
 
   return info;
 };
@@ -546,7 +547,7 @@ int matrix_eigh(Matrix<complex> &A, std::vector<double> &W) {
 
   /* Get the size of workspace */
   pzheev_(&jobz, &uplo, &n, A.head(), &ia, &ja,
-          const_cast<int *>(A.descriptor()), &(W[0]), &(c_dummy), &iz, &jz,
+          const_cast<int *>(A.descriptor()), W.data(), &(c_dummy), &iz, &jz,
           &(i_dummy), &work_size, &lwork, &rwork_size, &lrwork, &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
@@ -555,8 +556,8 @@ int matrix_eigh(Matrix<complex> &A, std::vector<double> &W) {
 
   /* Get eigenvalues and eigenvectors */
   pzheev_(&jobz, &uplo, &n, A.head(), &ia, &ja,
-          const_cast<int *>(A.descriptor()), &(W[0]), &(c_dummy), &iz, &jz,
-          &(i_dummy), &(work[0]), &lwork, &(rwork[0]), &lrwork, &info);
+          const_cast<int *>(A.descriptor()), W.data(), &(c_dummy), &iz, &jz,
+          &(i_dummy), work.data(), &lwork, rwork.data(), &lrwork, &info);
 
   return info;
 };
@@ -598,9 +599,9 @@ int matrix_eigh(Matrix<double> &A, Matrix<double> &B, std::vector<double> &W,
   pdsygvx_(&ibtype, &jobz, &range, &uplo, &n, A.head(), &ia, &ja,
            const_cast<int *>(A.descriptor()), B.head(), &ib, &jb,
            const_cast<int *>(B.descriptor()), &vl, &vu, &il, &iu, &abstol, &m,
-           &nz, &(W[0]), &orfac, Z.head(), &iz, &jz,
+           &nz, W.data(), &orfac, Z.head(), &iz, &jz,
            const_cast<int *>(Z.descriptor()), &work_size, &lwork, &iwork_size,
-           &liwork, &(ifail[0]), &(iclustr[0]), &(gap[0]), &info);
+           &liwork, ifail.data(), iclustr.data(), gap.data(), &info);
 
   lwork = static_cast<int>(work_size);
   work.resize(lwork);
@@ -611,9 +612,9 @@ int matrix_eigh(Matrix<double> &A, Matrix<double> &B, std::vector<double> &W,
   pdsygvx_(&ibtype, &jobz, &range, &uplo, &n, A.head(), &ia, &ja,
            const_cast<int *>(A.descriptor()), B.head(), &ib, &jb,
            const_cast<int *>(B.descriptor()), &vl, &vu, &il, &iu, &abstol, &m,
-           &nz, &(W[0]), &orfac, Z.head(), &iz, &jz,
-           const_cast<int *>(Z.descriptor()), &(work[0]), &lwork, &(iwork[0]),
-           &liwork, &(ifail[0]), &(iclustr[0]), &(gap[0]), &info);
+           &nz, W.data(), &orfac, Z.head(), &iz, &jz,
+           const_cast<int *>(Z.descriptor()), work.data(), &lwork, iwork.data(),
+           &liwork, ifail.data(), iclustr.data(), gap.data(), &info);
 
   if (info > n) {
     std::cerr << "The tensor B is not positive definite." << std::endl;
@@ -661,9 +662,10 @@ int matrix_eigh(Matrix<complex> &A, Matrix<complex> &B, std::vector<double> &W,
   pzhegvx_(&ibtype, &jobz, &range, &uplo, &n, A.head(), &ia, &ja,
            const_cast<int *>(A.descriptor()), B.head(), &ib, &jb,
            const_cast<int *>(B.descriptor()), &vl, &vu, &il, &iu, &abstol, &m,
-           &nz, &(W[0]), &orfac, Z.head(), &iz, &jz,
+           &nz, W.data(), &orfac, Z.head(), &iz, &jz,
            const_cast<int *>(Z.descriptor()), &work_size, &lwork, &rwork_size,
-           &lrwork, &iwork_size, &liwork, &(ifail[0]), &(iclustr[0]), &(gap[0]), &info);
+           &lrwork, &iwork_size, &liwork, ifail.data(), iclustr.data(),
+           gap.data(), &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
   lrwork = static_cast<int>(rwork_size);
@@ -675,9 +677,10 @@ int matrix_eigh(Matrix<complex> &A, Matrix<complex> &B, std::vector<double> &W,
   pzhegvx_(&ibtype, &jobz, &range, &uplo, &n, A.head(), &ia, &ja,
            const_cast<int *>(A.descriptor()), B.head(), &ib, &jb,
            const_cast<int *>(B.descriptor()), &vl, &vu, &il, &iu, &abstol, &m,
-           &nz, &(W[0]), &orfac, Z.head(), &iz, &jz,
-           const_cast<int *>(Z.descriptor()), &(work[0]), &lwork, &(rwork[0]),
-           &lrwork, &(iwork[0]), &liwork, &(ifail[0]), &(iclustr[0]), &(gap[0]), &info);
+           &nz, W.data(), &orfac, Z.head(), &iz, &jz,
+           const_cast<int *>(Z.descriptor()), work.data(), &lwork, rwork.data(),
+           &lrwork, iwork.data(), &liwork, ifail.data(), iclustr.data(),
+           gap.data(), &info);
 
   if (info > n) {
     std::cerr << "The tensor B is not positive definite." << std::endl;
@@ -699,7 +702,7 @@ int matrix_solve(Matrix<double> &A, Matrix<double> &B) {
 
   /* Solve linear equation */
   pdgesv_(&n, &nrhs, A.head(), &ia, &ja, const_cast<int *>(A.descriptor()),
-          &(ipiv[0]), B.head(), &ib, &jb, const_cast<int *>(B.descriptor()),
+          ipiv.data(), B.head(), &ib, &jb, const_cast<int *>(B.descriptor()),
           &info);
 
   return info;
@@ -718,7 +721,7 @@ int matrix_solve(Matrix<complex> &A, Matrix<complex> &B) {
 
   /* Solve linear equation */
   pzgesv_(&n, &nrhs, A.head(), &ia, &ja, const_cast<int *>(A.descriptor()),
-          &(ipiv[0]), B.head(), &ib, &jb, const_cast<int *>(B.descriptor()),
+          ipiv.data(), B.head(), &ib, &jb, const_cast<int *>(B.descriptor()),
           &info);
 
   return info;

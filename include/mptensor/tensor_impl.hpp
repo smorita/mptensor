@@ -1124,7 +1124,7 @@ Tensor<MatrixType> transpose(const Tensor<MatrixType> &T, const Axes &axes,
 
 #pragma omp for
     for (size_t i = 0; i < local_size; ++i) {
-      T.global_index_l2g_map_transpose(i, &(axes_trans[0]), &(index_new[0]));
+      T.global_index_l2g_map_transpose(i, axes_trans.data(), index_new.data());
 
       size_t g_row(0),
           g_col(0);  // indices of global matrix for transposed tensor
@@ -1692,7 +1692,7 @@ Tensor<MatrixType> tensordot(const Tensor<MatrixType> &a,
     std::sort(v.begin(), v.end());
     for (size_t i = 0; i < rank_col; ++i) v[rank_row + i] = axes_a[i];
 
-    trans_axes_a.assign(rank, &(v[0]));
+    trans_axes_a.assign(rank, v.data());
     urank_a = rank_row;
 
     for (size_t i = 0; i < rank_row; ++i) shape_c[i] = shape_a[v[i]];
@@ -1708,7 +1708,7 @@ Tensor<MatrixType> tensordot(const Tensor<MatrixType> &a,
     std::sort(v.begin(), v.end());
     for (size_t i = 0; i < rank_row; ++i) v[i] = axes_b[i];
 
-    trans_axes_b.assign(rank, &(v[0]));
+    trans_axes_b.assign(rank, v.data());
     urank_b = rank_row;
 
     for (size_t i = 0; i < rank_col; ++i)

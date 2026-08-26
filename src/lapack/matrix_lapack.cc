@@ -155,14 +155,14 @@ int matrix_svd(Matrix<double> &A, Matrix<double> &U, std::vector<double> &S,
   lwork = -1;
 
   /* Get the size of workspace */
-  dgesvd_(&jobu, &jobvt, &m, &n, A.head(), &lda, &(S[0]), U.head(), &ldu,
+  dgesvd_(&jobu, &jobvt, &m, &n, A.head(), &lda, S.data(), U.head(), &ldu,
           VT.head(), &ldvt, &work_size, &lwork, &info);
   lwork = static_cast<int>(work_size);
   work.resize(lwork);
 
   /* SVD: A(m,n) = U(m,i) * S(i) * VT(i,n) */
-  dgesvd_(&jobu, &jobvt, &m, &n, A.head(), &lda, &(S[0]), U.head(), &ldu,
-          VT.head(), &ldvt, &(work[0]), &lwork, &info);
+  dgesvd_(&jobu, &jobvt, &m, &n, A.head(), &lda, S.data(), U.head(), &ldu,
+          VT.head(), &ldvt, work.data(), &lwork, &info);
 
   return info;
 }
@@ -192,14 +192,14 @@ int matrix_svd(Matrix<complex> &A, Matrix<complex> &U, std::vector<double> &S,
   lwork = -1;
 
   /* Get the size of workspace */
-  zgesvd_(&jobu, &jobvt, &m, &n, A.head(), &lda, &(S[0]), U.head(), &ldu,
-          VT.head(), &ldvt, &work_size, &lwork, &(rwork[0]), &info);
+  zgesvd_(&jobu, &jobvt, &m, &n, A.head(), &lda, S.data(), U.head(), &ldu,
+          VT.head(), &ldvt, &work_size, &lwork, rwork.data(), &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
 
   /* SVD: A(m,n) = U(m,i) * S(i) * VT(i,n) */
-  zgesvd_(&jobu, &jobvt, &m, &n, A.head(), &lda, &(S[0]), U.head(), &ldu,
-          VT.head(), &ldvt, &(work[0]), &lwork, &(rwork[0]), &info);
+  zgesvd_(&jobu, &jobvt, &m, &n, A.head(), &lda, S.data(), U.head(), &ldu,
+          VT.head(), &ldvt, work.data(), &lwork, rwork.data(), &info);
 
   return info;
 }
@@ -225,14 +225,14 @@ int matrix_svd(Matrix<double> &A, std::vector<double> &S) {
   int i_dummy = 1;
 
   /* Get the size of workspace */
-  dgesvd_(&jobu, &jobvt, &m, &n, A.head(), &lda, &(S[0]), &(d_dummy),
+  dgesvd_(&jobu, &jobvt, &m, &n, A.head(), &lda, S.data(), &(d_dummy),
           &(i_dummy), &(d_dummy), &(i_dummy), &work_size, &lwork, &info);
   lwork = static_cast<int>(work_size);
   work.resize(lwork);
 
   /* SVD: A(m,n) = U(m,i) * S(i) * VT(i,n) */
-  dgesvd_(&jobu, &jobvt, &m, &n, A.head(), &lda, &(S[0]), &(d_dummy),
-          &(i_dummy), &(d_dummy), &(i_dummy), &(work[0]), &lwork, &info);
+  dgesvd_(&jobu, &jobvt, &m, &n, A.head(), &lda, S.data(), &(d_dummy),
+          &(i_dummy), &(d_dummy), &(i_dummy), work.data(), &lwork, &info);
 
   return info;
 }
@@ -257,15 +257,15 @@ int matrix_svd(Matrix<complex> &A, std::vector<double> &S) {
   int i_dummy = 1;
 
   /* Get the size of workspace */
-  zgesvd_(&jobu, &jobvt, &M, &N, A.head(), &lda, &(S[0]), &(c_dummy),
-          &(i_dummy), &(c_dummy), &(i_dummy), &work_size, &lwork, &(rwork[0]),
+  zgesvd_(&jobu, &jobvt, &M, &N, A.head(), &lda, S.data(), &(c_dummy),
+          &(i_dummy), &(c_dummy), &(i_dummy), &work_size, &lwork, rwork.data(),
           &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
 
   /* SVD: A(m,n) = U(m,i) * S(i) * VT(i,n) */
-  zgesvd_(&jobu, &jobvt, &M, &N, A.head(), &lda, &(S[0]), &(c_dummy),
-          &(i_dummy), &(c_dummy), &(i_dummy), &(work[0]), &lwork, &(rwork[0]),
+  zgesvd_(&jobu, &jobvt, &M, &N, A.head(), &lda, S.data(), &(c_dummy),
+          &(i_dummy), &(c_dummy), &(i_dummy), work.data(), &lwork, rwork.data(),
           &info);
 
   return info;
@@ -288,14 +288,14 @@ int matrix_qr(Matrix<double> &A, Matrix<double> &R) {
   lwork = -1;
 
   /* Get the size of workspace */
-  dgeqrf_(&m, &n, A.head(), &lda, &(tau[0]), &work_size_1, &lwork, &info);
-  dorgqr_(&m, &k, &k, A.head(), &lda, &(tau[0]), &work_size_2, &lwork, &info);
+  dgeqrf_(&m, &n, A.head(), &lda, tau.data(), &work_size_1, &lwork, &info);
+  dorgqr_(&m, &k, &k, A.head(), &lda, tau.data(), &work_size_2, &lwork, &info);
   work_size = (work_size_1 > work_size_2) ? work_size_1 : work_size_2;
   lwork = static_cast<int>(work_size);
   work.resize(lwork);
 
   /* QR decomposition */
-  dgeqrf_(&m, &n, A.head(), &lda, &(tau[0]), &(work[0]), &lwork, &info);
+  dgeqrf_(&m, &n, A.head(), &lda, tau.data(), work.data(), &lwork, &info);
 
   assert(info == 0);
 
@@ -307,7 +307,7 @@ int matrix_qr(Matrix<double> &A, Matrix<double> &R) {
   }
 
   // create orthogonal matrix
-  dorgqr_(&m, &k, &k, A.head(), &lda, &(tau[0]), &(work[0]), &lwork, &info);
+  dorgqr_(&m, &k, &k, A.head(), &lda, tau.data(), work.data(), &lwork, &info);
 
   return info;
 }
@@ -330,15 +330,15 @@ int matrix_qr(Matrix<complex> &A, Matrix<complex> &R) {
   lwork = -1;
 
   /* Get the size of workspace */
-  zgeqrf_(&m, &n, A.head(), &lda, &(tau[0]), &work_size_1, &lwork, &info);
-  zungqr_(&m, &k, &k, A.head(), &lda, &(tau[0]), &work_size_2, &lwork, &info);
+  zgeqrf_(&m, &n, A.head(), &lda, tau.data(), &work_size_1, &lwork, &info);
+  zungqr_(&m, &k, &k, A.head(), &lda, tau.data(), &work_size_2, &lwork, &info);
   int n1 = static_cast<int>(work_size_1.real());
   int n2 = static_cast<int>(work_size_2.real());
   lwork = (n1 > n2) ? n1 : n2;
   work.resize(lwork);
 
   /* QR decomposition */
-  zgeqrf_(&m, &n, A.head(), &lda, &(tau[0]), &(work[0]), &lwork, &info);
+  zgeqrf_(&m, &n, A.head(), &lda, tau.data(), work.data(), &lwork, &info);
 
   assert(info == 0);
 
@@ -350,7 +350,7 @@ int matrix_qr(Matrix<complex> &A, Matrix<complex> &R) {
   }
 
   // create orthogonal matrix
-  zungqr_(&m, &k, &k, A.head(), &lda, &(tau[0]), &(work[0]), &lwork, &info);
+  zungqr_(&m, &k, &k, A.head(), &lda, tau.data(), work.data(), &lwork, &info);
 
   return info;
 }
@@ -375,7 +375,7 @@ int matrix_eigh(Matrix<double> &A, std::vector<double> &W, Matrix<double> &Z) {
   liwork = -1;
 
   /* Get the size of workspace */
-  dsyevd_(&jobz, &uplo, &n, A.head(), &lda, &(W[0]), &work_size, &lwork,
+  dsyevd_(&jobz, &uplo, &n, A.head(), &lda, W.data(), &work_size, &lwork,
           &iwork_size, &liwork, &info);
   lwork = static_cast<int>(work_size);
   work.resize(lwork);
@@ -383,8 +383,8 @@ int matrix_eigh(Matrix<double> &A, std::vector<double> &W, Matrix<double> &Z) {
   iwork.resize(liwork);
 
   /* Get eigenvalues and eigenvectors */
-  dsyevd_(&jobz, &uplo, &n, A.head(), &lda, &(W[0]), &(work[0]), &lwork,
-          &(iwork[0]), &liwork, &info);
+  dsyevd_(&jobz, &uplo, &n, A.head(), &lda, W.data(), work.data(), &lwork,
+          iwork.data(), &liwork, &info);
 
   Z = A;
 
@@ -413,7 +413,7 @@ int matrix_eigh(Matrix<complex> &A, std::vector<double> &W,
   lwork = lrwork = liwork = -1;
 
   /* Get the size of workspace */
-  zheevd_(&jobz, &uplo, &n, A.head(), &lda, &(W[0]), &work_size, &lwork,
+  zheevd_(&jobz, &uplo, &n, A.head(), &lda, W.data(), &work_size, &lwork,
           &rwork_size, &lrwork, &iwork_size, &liwork, &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
@@ -423,8 +423,8 @@ int matrix_eigh(Matrix<complex> &A, std::vector<double> &W,
   iwork.resize(liwork);
 
   /* Get eigenvalues and eigenvectors */
-  zheevd_(&jobz, &uplo, &n, A.head(), &lda, &(W[0]), &(work[0]), &lwork,
-          &(rwork[0]), &lrwork, &(iwork[0]), &liwork, &info);
+  zheevd_(&jobz, &uplo, &n, A.head(), &lda, W.data(), work.data(), &lwork,
+          rwork.data(), &lrwork, iwork.data(), &liwork, &info);
   Z = A;
 
   return info;
@@ -448,7 +448,7 @@ int matrix_eigh(Matrix<double> &A, std::vector<double> &W) {
   liwork = -1;
 
   /* Get the size of workspace */
-  dsyevd_(&jobz, &uplo, &n, A.head(), &lda, &(W[0]), &work_size, &lwork,
+  dsyevd_(&jobz, &uplo, &n, A.head(), &lda, W.data(), &work_size, &lwork,
           &iwork_size, &liwork, &info);
   lwork = static_cast<int>(work_size);
   work.resize(lwork);
@@ -456,8 +456,8 @@ int matrix_eigh(Matrix<double> &A, std::vector<double> &W) {
   iwork.resize(liwork);
 
   /* Get eigenvalues */
-  dsyevd_(&jobz, &uplo, &n, A.head(), &lda, &(W[0]), &(work[0]), &lwork,
-          &(iwork[0]), &liwork, &info);
+  dsyevd_(&jobz, &uplo, &n, A.head(), &lda, W.data(), work.data(), &lwork,
+          iwork.data(), &liwork, &info);
 
   return info;
 };
@@ -481,7 +481,7 @@ int matrix_eigh(Matrix<complex> &A, std::vector<double> &W) {
   lwork = lrwork = liwork = -1;
 
   /* Get the size of workspace */
-  zheevd_(&jobz, &uplo, &n, A.head(), &lda, &(W[0]), &work_size, &lwork,
+  zheevd_(&jobz, &uplo, &n, A.head(), &lda, W.data(), &work_size, &lwork,
           &rwork_size, &lrwork, &iwork_size, &liwork, &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
@@ -491,8 +491,8 @@ int matrix_eigh(Matrix<complex> &A, std::vector<double> &W) {
   iwork.resize(liwork);
 
   /* Get eigenvalues */
-  zheevd_(&jobz, &uplo, &n, A.head(), &lda, &(W[0]), &(work[0]), &lwork,
-          &(rwork[0]), &lrwork, &(iwork[0]), &liwork, &info);
+  zheevd_(&jobz, &uplo, &n, A.head(), &lda, W.data(), work.data(), &lwork,
+          rwork.data(), &lrwork, iwork.data(), &liwork, &info);
 
   return info;
 };
@@ -521,7 +521,7 @@ int matrix_eigh(Matrix<double> &A, Matrix<double> &B, std::vector<double> &W,
   lwork = -1;
 
   /* Get the size of workspace */
-  dsygvd_(&itype, &jobz, &uplo, &n, A.head(), &lda, B.head(), &ldb, &(W[0]),
+  dsygvd_(&itype, &jobz, &uplo, &n, A.head(), &lda, B.head(), &ldb, W.data(),
           &work_size, &lwork, &iwork_size, &liwork, &info);
   lwork = static_cast<int>(work_size);
   work.resize(lwork);
@@ -529,8 +529,8 @@ int matrix_eigh(Matrix<double> &A, Matrix<double> &B, std::vector<double> &W,
   iwork.resize(liwork);
 
   /* Get eigenvalues and eigenvectors */
-  dsygvd_(&itype, &jobz, &uplo, &n, A.head(), &lda, B.head(), &ldb, &(W[0]),
-          &(work[0]), &lwork, &(iwork[0]), &liwork, &info);
+  dsygvd_(&itype, &jobz, &uplo, &n, A.head(), &lda, B.head(), &ldb, W.data(),
+          work.data(), &lwork, iwork.data(), &liwork, &info);
   Z = A;
 
   if (info > n) {
@@ -566,7 +566,7 @@ int matrix_eigh(Matrix<complex> &A, Matrix<complex> &B, std::vector<double> &W,
   lwork = lrwork = liwork = -1;
 
   /* Get the size of workspace */
-  zhegvd_(&itype, &jobz, &uplo, &n, A.head(), &lda, B.head(), &ldb, &(W[0]),
+  zhegvd_(&itype, &jobz, &uplo, &n, A.head(), &lda, B.head(), &ldb, W.data(),
           &work_size, &lwork, &rwork_size, &lrwork, &iwork_size, &liwork,
           &info);
   lwork = static_cast<int>(work_size.real());
@@ -577,8 +577,8 @@ int matrix_eigh(Matrix<complex> &A, Matrix<complex> &B, std::vector<double> &W,
   iwork.resize(liwork);
 
   /* Get eigenvalues and eigenvectors */
-  zhegvd_(&itype, &jobz, &uplo, &n, A.head(), &lda, B.head(), &ldb, &(W[0]),
-          &(work[0]), &lwork, &(rwork[0]), &lrwork, &(iwork[0]), &liwork,
+  zhegvd_(&itype, &jobz, &uplo, &n, A.head(), &lda, B.head(), &ldb, W.data(),
+          work.data(), &lwork, rwork.data(), &lrwork, iwork.data(), &liwork,
           &info);
   Z = A;
 
@@ -613,15 +613,15 @@ int matrix_eig(Matrix<double> &A, std::vector<complex> &W, Matrix<complex> &Z) {
 
   /* Get the size of workspace */
   dgeev_(&jobvl, &jobvr, &n, A.head(), &lda,
-         &(wr[0]), &(wi[0]), &vl, &ldvl, &(vr[0]), &ldvr,
+         wr.data(), wi.data(), &vl, &ldvl, vr.data(), &ldvr,
          &work_size, &lwork, &info);
   lwork = static_cast<int>(work_size);
   work.resize(lwork);
 
   /* Get eigenvalues and eigenvectors */
   dgeev_(&jobvl, &jobvr, &n, A.head(), &lda,
-         &(wr[0]), &(wi[0]), &vl, &ldvl, &(vr[0]), &ldvr,
-         &(work[0]), &lwork, &info);
+         wr.data(), wi.data(), &vl, &ldvl, vr.data(), &ldvr,
+         work.data(), &lwork, &info);
 
   int j = 0;
   while (j < n) {
@@ -672,15 +672,15 @@ int matrix_eig(Matrix<complex> &A, std::vector<complex> &W, Matrix<complex> &Z) 
 
   /* Get the size of workspace */
   zgeev_(&jobvl, &jobvr, &n, A.head(), &lda,
-         &(W[0]), &vl, &ldvl, Z.head(), &ldvr,
-         &work_size, &lwork, &(rwork[0]), &info);
+         W.data(), &vl, &ldvl, Z.head(), &ldvr,
+         &work_size, &lwork, rwork.data(), &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
 
   /* Get eigenvalues and eigenvectors */
   zgeev_(&jobvl, &jobvr, &n, A.head(), &lda,
-         &(W[0]), &vl, &ldvl, Z.head(), &ldvr,
-         &(work[0]), &lwork, &(rwork[0]), &info);
+         W.data(), &vl, &ldvl, Z.head(), &ldvr,
+         work.data(), &lwork, rwork.data(), &info);
 
   return info;
 };
@@ -708,15 +708,15 @@ int matrix_eig(Matrix<double> &A, std::vector<complex> &W) {
 
   /* Get the size of workspace */
   dgeev_(&jobvl, &jobvr, &n, A.head(), &lda,
-         &(wr[0]), &(wi[0]), &vl, &ldvl, &vr, &ldvr,
+         wr.data(), wi.data(), &vl, &ldvl, &vr, &ldvr,
          &work_size, &lwork, &info);
   lwork = static_cast<int>(work_size);
   work.resize(lwork);
 
   /* Get eigenvalues and eigenvectors */
   dgeev_(&jobvl, &jobvr, &n, A.head(), &lda,
-         &(wr[0]), &(wi[0]), &vl, &ldvl, &vr, &ldvr,
-         &(work[0]), &lwork, &info);
+         wr.data(), wi.data(), &vl, &ldvl, &vr, &ldvr,
+         work.data(), &lwork, &info);
 
   int j = 0;
   while (j < n) {
@@ -756,15 +756,15 @@ int matrix_eig(Matrix<complex> &A, std::vector<complex> &W) {
 
   /* Get the size of workspace */
   zgeev_(&jobvl, &jobvr, &n, A.head(), &lda,
-         &(W[0]), &vl, &ldvl, &vr, &ldvr,
-         &work_size, &lwork, &(rwork[0]), &info);
+         W.data(), &vl, &ldvl, &vr, &ldvr,
+         &work_size, &lwork, rwork.data(), &info);
   lwork = static_cast<int>(work_size.real());
   work.resize(lwork);
 
   /* Get eigenvalues and eigenvectors */
   zgeev_(&jobvl, &jobvr, &n, A.head(), &lda,
-         &(W[0]), &vl, &ldvl, &vr, &ldvr,
-         &(work[0]), &lwork, &(rwork[0]), &info);
+         W.data(), &vl, &ldvl, &vr, &ldvr,
+         work.data(), &lwork, rwork.data(), &info);
 
   return info;
 };
@@ -782,7 +782,7 @@ int matrix_solve(Matrix<double> &A, Matrix<double> &B) {
   int info;
 
   /* Solve linear equation */
-  dgesv_(&n, &nrhs, A.head(), &lda, &(ipiv[0]), B.head(), &ldb, &info);
+  dgesv_(&n, &nrhs, A.head(), &lda, ipiv.data(), B.head(), &ldb, &info);
 
   return info;
 };
@@ -800,7 +800,7 @@ int matrix_solve(Matrix<complex> &A, Matrix<complex> &B) {
   int info;
 
   /* Solve linear equation */
-  zgesv_(&n, &nrhs, A.head(), &lda, &(ipiv[0]), B.head(), &ldb, &info);
+  zgesv_(&n, &nrhs, A.head(), &lda, ipiv.data(), B.head(), &ldb, &info);
 
   return info;
 };

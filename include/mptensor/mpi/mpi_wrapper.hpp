@@ -90,7 +90,7 @@ inline std::vector<C> allreduce_vec(const std::vector<C>& vec,
                                     const MPI_Comm& comm) {
   size_t n = vec.size();
   std::vector<C> recv(n);
-  MPI_Allreduce(const_cast<C*>(&(vec[0])), &(recv[0]), static_cast<int>(n),
+  MPI_Allreduce(const_cast<C*>(vec.data()), recv.data(), static_cast<int>(n),
                 mpi_datatype<C>, MPI_SUM, comm);
   return recv;
 };
@@ -145,9 +145,9 @@ template <typename C>
 inline void sendrecv(const std::vector<C>& send_vec, int dest, int sendtag,
                      std::vector<C>& recv_vec, int source, int recvtag,
                      const MPI_Comm& comm) {
-  MPI_Sendrecv(const_cast<C*>(&(send_vec[0])),
+  MPI_Sendrecv(const_cast<C*>(send_vec.data()),
                static_cast<int>(send_vec.size()), mpi_datatype<C>, dest,
-               sendtag, &(recv_vec[0]), static_cast<int>(recv_vec.size()),
+               sendtag, recv_vec.data(), static_cast<int>(recv_vec.size()),
                mpi_datatype<C>, source, recvtag, comm, MPI_STATUS_IGNORE);
 };
 
