@@ -56,6 +56,7 @@ function(mptensor_add_test name target)
 endfunction()
 
 add_subdirectory(tensor)
+add_subdirectory(file_io)
 
 if(BUILD_LEGACY_TESTS)
   add_subdirectory(legacy)
