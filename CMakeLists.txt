@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6...3.17)
+cmake_minimum_required(VERSION 3.16...3.31)
 
 message(STATUS "Start configuration of mptesnor")
 message(STATUS "CMake version: ${CMAKE_VERSION}")
@@ -18,6 +18,7 @@ option(ENABLE_MPI "Use MPI and ScaLAPACK" ON)
 option(BUILD_SHARED_LIBS "Build as shared library" OFF)
 option(BUILD_DOCS "Build documents" OFF)
 option(BUILD_TESTS "Build tests" OFF)
+option(BUILD_LEGACY_TESTS "Build legacy tests" OFF)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   set(IS_SUB_PROJECT OFF)
