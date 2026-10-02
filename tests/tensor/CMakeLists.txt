@@ -2,6 +2,7 @@ add_executable(test_tensor transpose.cc)
 target_sources(test_tensor PRIVATE reshape.cc slice.cc set_slice.cc)
 target_sources(test_tensor PRIVATE tensordot.cc contract.cc trace.cc kron.cc)
 target_sources(test_tensor PRIVATE arithmetic.cc)
+target_sources(test_tensor PRIVATE svd.cc qr.cc)
 target_link_libraries(test_tensor PRIVATE mptensor_gtest_main)
 
 mptensor_add_test(tensor/test_tensor test_tensor)
