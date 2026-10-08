@@ -32,7 +32,7 @@
 
 namespace mptensor {
 
-bool is_no_transpose(const detail::UIndex& axes, const detail::UIndex& axes_map, size_t rank) {
+bool is_no_transpose(const detail::UAxes& axes, const detail::UAxes& axes_map, size_t rank) {
   for (size_t i = 0; i < rank; ++i) {
     if (axes[i] != i) return false;
     if (axes_map[i] != i) return false;
@@ -46,7 +46,7 @@ bool is_no_transpose(const detail::UIndex& axes, const detail::UIndex& axes_map,
  */
 namespace debug {
 
-bool check_total_size(const detail::UIndex& s1, const detail::UIndex& s2) {
+bool check_total_size(const detail::UShape& s1, const detail::UShape& s2) {
   size_t n1 = 1;
   for (size_t i = 0; i < s1.size(); ++i) n1 *= s1[i];
   size_t n2 = 1;
@@ -54,7 +54,7 @@ bool check_total_size(const detail::UIndex& s1, const detail::UIndex& s2) {
   return n1 == n2;
 }
 
-bool check_extend(const detail::UIndex& s_old, const detail::UIndex& s_new) {
+bool check_extend(const detail::UShape& s_old, const detail::UShape& s_new) {
   const size_t n = s_old.size();
   bool check = true;
   for (size_t i = 0; i < n; ++i) {
@@ -63,9 +63,9 @@ bool check_extend(const detail::UIndex& s_old, const detail::UIndex& s_new) {
   return check;
 }
 
-bool check_transpose_axes(const detail::UIndex& axes, size_t rank) {
+bool check_transpose_axes(const detail::UAxes& axes, size_t rank) {
   if (axes.size() != rank) return false;
-  detail::UIndex v = axes;
+  detail::UAxes v = axes;
   v.sort();
   for (size_t i = 0; i < rank; ++i) {
     if (v[i] != i) return false;
@@ -73,9 +73,9 @@ bool check_transpose_axes(const detail::UIndex& axes, size_t rank) {
   return true;
 }
 
-bool check_svd_axes(const detail::UIndex& a_row, const detail::UIndex& a_col, size_t rank) {
+bool check_svd_axes(const detail::UAxes& a_row, const detail::UAxes& a_col, size_t rank) {
   if (a_row.size() + a_col.size() != rank) return false;
-  detail::UIndex v = a_row + a_col;
+  detail::UAxes v = a_row + a_col;
   v.sort();
   for (size_t i = 0; i < rank; ++i) {
     if (v[i] != i) return false;
@@ -83,8 +83,8 @@ bool check_svd_axes(const detail::UIndex& a_row, const detail::UIndex& a_col, si
   return true;
 }
 
-bool check_trace_axes(const detail::UIndex& axes_1, const detail::UIndex& axes_2, size_t rank) {
-  detail::UIndex v = axes_1 + axes_2;
+bool check_trace_axes(const detail::UAxes& axes_1, const detail::UAxes& axes_2, size_t rank) {
+  detail::UAxes v = axes_1 + axes_2;
   v.sort();
   for (size_t i = 0; i < rank; ++i) {
     if (v[i] != i) return false;
@@ -92,12 +92,12 @@ bool check_trace_axes(const detail::UIndex& axes_1, const detail::UIndex& axes_2
   return true;
 }
 
-bool check_trace_axes(const detail::UIndex& axes_a, const detail::UIndex& axes_b,
-                      const detail::UIndex& shape_a, const detail::UIndex& shape_b) {
+bool check_trace_axes(const detail::UAxes& axes_a, const detail::UAxes& axes_b,
+                      const detail::UShape& shape_a, const detail::UShape& shape_b) {
   for (size_t i = 0; i < axes_a.size(); ++i) {
     if (shape_a[axes_a[i]] != shape_b[axes_b[i]]) return false;
   }
-  detail::UIndex axes;
+  detail::UAxes axes;
   axes = axes_a;
   axes.sort();
   for (size_t i = 0; i < axes.size(); ++i) {
@@ -111,8 +111,8 @@ bool check_trace_axes(const detail::UIndex& axes_a, const detail::UIndex& axes_b
   return true;
 }
 
-bool check_contract_axes(const detail::UIndex& axes_1, const detail::UIndex& axes_2, size_t rank) {
-  detail::UIndex v = axes_1 + axes_2;
+bool check_contract_axes(const detail::UAxes& axes_1, const detail::UAxes& axes_2, size_t rank) {
+  detail::UAxes v = axes_1 + axes_2;
   v.sort();
   const size_t n = v.size();
   for (size_t i = 0; i < n - 1; ++i) {
@@ -122,7 +122,7 @@ bool check_contract_axes(const detail::UIndex& axes_1, const detail::UIndex& axe
   return true;
 }
 
-bool check_square(const detail::UIndex& shape, size_t urank) {
+bool check_square(const detail::UShape& shape, size_t urank) {
   size_t rank = shape.size();
   size_t d_row(1), d_col(1);
   for (size_t i = 0; i < urank; ++i) d_row *= shape[i];

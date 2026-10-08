@@ -46,7 +46,7 @@ using Axes  = Index;
 using Shape = Index;
 
 namespace detail {
-//! Tag for the internal constructor that takes a detail::UIndex shape.
+//! Tag for the internal constructor that takes a detail::UShape shape.
 struct internal_t {
   explicit internal_t() = default;
 };
@@ -82,7 +82,7 @@ class Tensor {
   Tensor(const comm_type &, const Shape &);
   Tensor(const comm_type &, const Shape &, size_t upper_rank);
   //! \cond
-  Tensor(const comm_type &, const detail::UIndex &shape, size_t upper_rank,
+  Tensor(const comm_type &, const detail::UShape &shape, size_t upper_rank,
          detail::internal_t);  // internal use: shape is already normalized
   //! \endcond
   Tensor(const comm_type &, const Tensor<lapack::Matrix<value_type>> &);
@@ -90,12 +90,12 @@ class Tensor {
   //! \}
 
   Shape shape() const;
-  const detail::UIndex &internal_shape() const;  //!< Shape as the internal type.
+  const detail::UShape &internal_shape() const;  //!< Shape as the internal type.
   size_t rank() const;
   size_t ndim() const;
   size_t local_size() const;
   size_t get_upper_rank() const;
-  const detail::UIndex &get_axes_map() const;
+  const detail::UAxes &get_axes_map() const;
 
   const MatrixType &get_matrix() const;
   MatrixType &get_matrix();
@@ -170,7 +170,7 @@ class Tensor {
 
  private:
   MatrixType Mat;  //!< local storage.
-  detail::UIndex Dim;  //!< Shape of tensor.
+  detail::UShape Dim;  //!< Shape of tensor.
 
   size_t upper_rank;  //!< Upper rank for matrix representation.
 
@@ -180,14 +180,14 @@ class Tensor {
     axes_map[axes[i]]=i. The i-th index of the orignal tensor is moved to the
     (axes_map[i])-th index of the transposed tensor.
   */
-  detail::UIndex axes_map;
+  detail::UAxes axes_map;
 
-  void init(const detail::UIndex &, size_t upper_rank);
-  void init(const detail::UIndex &, size_t upper_rank, const detail::UIndex &map);
+  void init(const detail::UShape &, size_t upper_rank);
+  void init(const detail::UShape &, size_t upper_rank, const detail::UAxes &map);
   void change_configuration(const size_t new_upper_rank,
-                            const detail::UIndex &new_axes_map);
+                            const detail::UAxes &new_axes_map);
   bool local_index(const detail::UIndex &, size_t &i) const;
-  Tensor<MatrixType> &transpose_internal(const detail::UIndex &axes);  // axes already normalized
+  Tensor<MatrixType> &transpose_internal(const detail::UAxes &axes);  // axes already normalized
 
   mutable std::vector<size_t> l2g_map_row;
   mutable std::vector<size_t> l2g_map_col;
@@ -217,10 +217,10 @@ Tensor<MatrixType> extend(const Tensor<MatrixType> &a, const Shape &shape_new);
 
 namespace detail {
 template <typename MatrixType>
-Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &a, const UIndex &axes,
+Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &a, const UAxes &axes,
                                   size_t urank_new);
 template <typename MatrixType>
-Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &a, const UIndex &shape_new);
+Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &a, const UShape &shape_new);
 }  // namespace detail
 //! \}
 

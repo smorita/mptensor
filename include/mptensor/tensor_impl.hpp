@@ -47,17 +47,17 @@
 namespace mptensor {
 
 /* Utilities */
-bool is_no_transpose(const detail::UIndex& axes, const detail::UIndex& axes_map, size_t rank);
+bool is_no_transpose(const detail::UAxes& axes, const detail::UAxes& axes_map, size_t rank);
 namespace debug {
-bool check_total_size(const detail::UIndex& s1, const detail::UIndex& s2);
-bool check_extend(const detail::UIndex& s_old, const detail::UIndex& s_new);
-bool check_transpose_axes(const detail::UIndex& axes, size_t rank);
-bool check_svd_axes(const detail::UIndex& axes_row, const detail::UIndex& axes_col, size_t rank);
-bool check_trace_axes(const detail::UIndex& axes_1, const detail::UIndex& axes_2, size_t rank);
-bool check_trace_axes(const detail::UIndex& axes_a, const detail::UIndex& axes_b,
-                      const detail::UIndex& shape_a, const detail::UIndex& shape_b);
-bool check_contract_axes(const detail::UIndex& axes_1, const detail::UIndex& axes_2, size_t rank);
-bool check_square(const detail::UIndex& shape, size_t urank);
+bool check_total_size(const detail::UShape& s1, const detail::UShape& s2);
+bool check_extend(const detail::UShape& s_old, const detail::UShape& s_new);
+bool check_transpose_axes(const detail::UAxes& axes, size_t rank);
+bool check_svd_axes(const detail::UAxes& axes_row, const detail::UAxes& axes_col, size_t rank);
+bool check_trace_axes(const detail::UAxes& axes_1, const detail::UAxes& axes_2, size_t rank);
+bool check_trace_axes(const detail::UAxes& axes_a, const detail::UAxes& axes_b,
+                      const detail::UShape& shape_a, const detail::UShape& shape_b);
+bool check_contract_axes(const detail::UAxes& axes_1, const detail::UAxes& axes_2, size_t rank);
+bool check_square(const detail::UShape& shape, size_t urank);
 }  // namespace debug
 
 /* ---------- constructors ---------- */
@@ -116,7 +116,7 @@ Tensor<MatrixType>::Tensor(const comm_type &comm, const Shape &shape,
 
 //! \cond
 template <typename MatrixType>
-Tensor<MatrixType>::Tensor(const comm_type &comm, const detail::UIndex &shape,
+Tensor<MatrixType>::Tensor(const comm_type &comm, const detail::UShape &shape,
                           const size_t upper_rank, detail::internal_t)
     : Mat(comm) {
   init(shape, upper_rank);
@@ -155,7 +155,7 @@ Tensor<MatrixType>::Tensor(const comm_type &comm,
 template <typename MatrixType>
 Tensor<MatrixType>::Tensor(const comm_type &comm, const std::vector<value_type> &v)
     : Mat(comm) {
-  init(detail::UIndex(v.size()), 0);
+  init(detail::UShape(v.size()), 0);
   const size_t n = Mat.local_size();
   detail::UIndex idx;
   idx.resize(1);
@@ -175,7 +175,7 @@ inline Shape Tensor<MatrixType>::shape() const {
 
 //! Shape of tensor as the internal type.
 template <typename MatrixType>
-inline const detail::UIndex &Tensor<MatrixType>::internal_shape() const {
+inline const detail::UShape &Tensor<MatrixType>::internal_shape() const {
   return Dim;
 };
 
@@ -214,7 +214,7 @@ inline size_t Tensor<MatrixType>::get_upper_rank() const {
   When we transpose `V` as `T = V.transpose(Axes(1, 2, 0));`, `T` has `shape=[20, 30, 10]` and `axes_map=[2, 0, 1]`. Thus, `axes_map` satisfies `axes_map[iV] = iT`.
 */
 template <typename MatrixType>
-inline const detail::UIndex &Tensor<MatrixType>::get_axes_map() const {
+inline const detail::UAxes &Tensor<MatrixType>::get_axes_map() const {
   return axes_map;
 };
 
@@ -420,7 +420,7 @@ inline void Tensor<MatrixType>::local_position_fast(size_t g_row, size_t g_col,
   \param urank Upper rank for matrix representation.
 */
 template <typename MatrixType>
-inline void Tensor<MatrixType>::init(const detail::UIndex &shape, size_t urank) {
+inline void Tensor<MatrixType>::init(const detail::UShape &shape, size_t urank) {
   init(shape, urank, detail::identity_axes(shape.size()));
 }
 
@@ -431,8 +431,8 @@ inline void Tensor<MatrixType>::init(const detail::UIndex &shape, size_t urank) 
   \param map Axes mapping.
 */
 template <typename MatrixType>
-void Tensor<MatrixType>::init(const detail::UIndex &shape, size_t urank,
-                             const detail::UIndex &map) {
+void Tensor<MatrixType>::init(const detail::UShape &shape, size_t urank,
+                             const detail::UAxes &map) {
   Dim = shape;
   axes_map = map;
   const size_t rank = Dim.size();
@@ -627,14 +627,14 @@ void Tensor<MatrixType>::local_position(const detail::UIndex &index, int &comm_r
 */
 template <typename MatrixType>
 void Tensor<MatrixType>::change_configuration(const size_t new_upper_rank,
-                                             const detail::UIndex &new_axes_map) {
+                                             const detail::UAxes &new_axes_map) {
   if ((upper_rank == new_upper_rank) && (axes_map == new_axes_map)) return;
 
   Tensor<MatrixType> T_old(*this);
 
   const size_t rank = this->rank();
-  detail::UIndex dim;
-  detail::UIndex axes;
+  detail::UShape dim;
+  detail::UAxes axes;
   dim.resize(rank);
   axes.resize(rank);
   for (size_t i = 0; i < rank; ++i) {
@@ -689,13 +689,13 @@ Tensor<MatrixType> &Tensor<MatrixType>::transpose(const Axes &axes) {
 //! \cond
 template <typename MatrixType>
 Tensor<MatrixType> &Tensor<MatrixType>::transpose_internal(
-    const detail::UIndex &axes) {
+    const detail::UAxes &axes) {
   const size_t rank = Dim.size();
   assert(debug::check_transpose_axes(axes, rank));
 
-  detail::UIndex dim_now = Dim;
-  detail::UIndex map_now = axes_map;
-  detail::UIndex axes_inv;
+  detail::UShape dim_now = Dim;
+  detail::UAxes map_now = axes_map;
+  detail::UAxes axes_inv;
   axes_inv.resize(rank);
   for (size_t i = 0; i < rank; ++i) {
     axes_inv[axes[i]] = i;
@@ -1095,7 +1095,7 @@ Tensor<MatrixType> transpose(const Tensor<MatrixType> &T, const Axes &axes,
 namespace detail {
 //! \cond
 template <typename MatrixType>
-Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &T, const UIndex &axes,
+Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &T, const UAxes &axes,
                                   size_t urank_new) {
   const size_t rank = T.rank();
   assert(debug::check_transpose_axes(axes, rank));
@@ -1106,8 +1106,8 @@ Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &T, const UIndex &axe
   }
 
   /* new index dimension */
-  UIndex dim_old = T.internal_shape();
-  UIndex dim_new;
+  UShape dim_old = T.internal_shape();
+  UShape dim_new;
   dim_new.resize(rank);
   for (size_t r = 0; r < rank; ++r) {
     dim_new[r] = dim_old[axes[r]];
@@ -1138,7 +1138,7 @@ Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &T, const UIndex &axe
       d_col *= dim_new[r];
     }
 
-    UIndex axes_map = T.get_axes_map();
+    UAxes axes_map = T.get_axes_map();
     std::vector<size_t> axes_inv(rank);
     std::vector<size_t> axes_trans(rank);
     for (size_t r = 0; r < rank; ++r) {
@@ -1197,10 +1197,10 @@ Tensor<MatrixType> reshape(const Tensor<MatrixType> &T, const Shape &shape_new) 
 namespace detail {
 //! \cond
 template <typename MatrixType>
-Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &T, const UIndex &shape_new) {
+Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &T, const UShape &shape_new) {
   assert(debug::check_total_size(shape_new, T.internal_shape()));
 
-  const UIndex &shape = T.internal_shape();
+  const UShape &shape = T.internal_shape();
   const size_t rank = shape.size();
   const size_t rank_new = shape_new.size();
 
@@ -1269,14 +1269,14 @@ template <typename MatrixType>
 Tensor<MatrixType> slice(const Tensor<MatrixType> &T, std::ptrdiff_t n_axes,
                         std::ptrdiff_t i_begin, std::ptrdiff_t i_end) {
   const int mpisize = T.get_comm_size();
-  const detail::UIndex &shape = T.internal_shape();
+  const detail::UShape &shape = T.internal_shape();
   const size_t ax = normalize_axis(n_axes, T.rank());
   const std::pair<size_t, size_t> be =
       detail::normalize_slice_range(i_begin, i_end, shape[ax], ax);
   const size_t begin = be.first;
   const size_t end = be.second;
 
-  detail::UIndex shape_new = shape;
+  detail::UShape shape_new = shape;
   shape_new[ax] = end - begin;
 
   /* initialize new tensor */
@@ -1340,12 +1340,12 @@ template <typename MatrixType>
 Tensor<MatrixType> slice(const Tensor<MatrixType> &T, const Index &index_begin,
                         const Index &index_end) {
   const int mpisize = T.get_comm_size();
-  const detail::UIndex &shape = T.internal_shape();
+  const detail::UShape &shape = T.internal_shape();
   const size_t rank = T.rank();
   detail::UIndex begin, end;
   detail::normalize_slice_ranges(index_begin, index_end, shape, begin, end);
 
-  detail::UIndex shape_new;
+  detail::UShape shape_new;
   shape_new.resize(rank);
   for (size_t r = 0; r < rank; ++r) shape_new[r] = end[r] - begin[r];
 
@@ -1413,7 +1413,7 @@ Tensor<MatrixType> slice(const Tensor<MatrixType> &T, const Index &index_begin,
 */
 template <typename MatrixType>
 Tensor<MatrixType> extend(const Tensor<MatrixType> &T, const Shape &shape_new) {
-  const detail::UIndex ushape = to_internal_shape(shape_new);
+  const detail::UShape ushape = to_internal_shape(shape_new);
   assert(T.rank() == ushape.size());
   assert(debug::check_extend(T.internal_shape(), ushape));
 
@@ -1481,8 +1481,8 @@ typename MatrixType::value_type trace(const Tensor<MatrixType> &M) {
 */
 template <typename MatrixType>
 typename MatrixType::value_type trace(const Tensor<MatrixType> &T, const Axes &axes_1, const Axes &axes_2) {
-  const detail::UIndex ax1 = normalize_axes(axes_1, T.rank());
-  const detail::UIndex ax2 = normalize_axes(axes_2, T.rank());
+  const detail::UAxes ax1 = normalize_axes(axes_1, T.rank());
+  const detail::UAxes ax2 = normalize_axes(axes_2, T.rank());
   assert(ax1.size() == ax2.size());
   assert(ax1.size() + ax2.size() == T.rank());
   assert(debug::check_trace_axes(ax1, ax2, T.rank()));
@@ -1530,17 +1530,17 @@ typename MatrixType::value_type trace(const Tensor<MatrixType> &T, const Axes &a
 template <typename MatrixType>
 typename MatrixType::value_type trace(const Tensor<MatrixType> &A, const Tensor<MatrixType> &B,
         const Axes &axes_a, const Axes &axes_b) {
-  const detail::UIndex ax_a = normalize_axes(axes_a, A.rank());
-  const detail::UIndex ax_b = normalize_axes(axes_b, B.rank());
+  const detail::UAxes ax_a = normalize_axes(axes_a, A.rank());
+  const detail::UAxes ax_b = normalize_axes(axes_b, B.rank());
   assert(A.rank() == B.rank());
   assert(A.rank() == ax_a.size());
   assert(B.rank() == ax_b.size());
   assert(debug::check_trace_axes(ax_a, ax_b, A.internal_shape(), B.internal_shape()));
 
   const size_t rank = A.rank();
-  detail::UIndex axes;
-  detail::UIndex axes_a_inv;
-  detail::UIndex axes_map = A.get_axes_map();
+  detail::UAxes axes;
+  detail::UAxes axes_a_inv;
+  detail::UAxes axes_map = A.get_axes_map();
   axes.resize(rank);
   axes_a_inv.resize(rank);
 
@@ -1577,18 +1577,18 @@ template <typename MatrixType>
 Tensor<MatrixType> contract(const Tensor<MatrixType> &T, const Axes &axes_1,
                            const Axes &axes_2) {
   const int mpisize = T.get_comm_size();
-  const detail::UIndex ax1 = normalize_axes(axes_1, T.rank());
-  const detail::UIndex ax2 = normalize_axes(axes_2, T.rank());
+  const detail::UAxes ax1 = normalize_axes(axes_1, T.rank());
+  const detail::UAxes ax2 = normalize_axes(axes_2, T.rank());
   assert(ax1.size() == ax2.size());
   assert(ax1.size() + ax2.size() < T.rank());
   if (ax1.size() == 0) return T;
   assert(debug::check_contract_axes(ax1, ax2, T.rank()));
 
-  detail::UIndex shape = T.internal_shape();
-  detail::UIndex shape_new;
-  detail::UIndex axes_new;
+  detail::UShape shape = T.internal_shape();
+  detail::UShape shape_new;
+  detail::UAxes axes_new;
   {
-    detail::UIndex v = ax1 + ax2;
+    detail::UAxes v = ax1 + ax2;
     v.sort();
     size_t k = 0;
     size_t n = v.size();
@@ -1674,11 +1674,11 @@ Tensor<MatrixType> kron(const Tensor<MatrixType> &a, const Tensor<MatrixType> &b
   assert(a.rank() == b.rank());
   assert(a.get_comm() == b.get_comm());
 
-  const detail::UIndex shape_a = a.internal_shape();
-  const detail::UIndex shape_b = b.internal_shape();
-  detail::UIndex shape_c = shape_a;
+  const detail::UShape shape_a = a.internal_shape();
+  const detail::UShape shape_b = b.internal_shape();
+  detail::UShape shape_c = shape_a;
   const size_t n = shape_a.size();
-  detail::UIndex axes_trans;
+  detail::UAxes axes_trans;
   axes_trans.resize(2 * n);
   for (size_t i = 0; i < shape_b.size(); ++i) {
     shape_c[i] *= shape_b[i];
@@ -1687,8 +1687,8 @@ Tensor<MatrixType> kron(const Tensor<MatrixType> &a, const Tensor<MatrixType> &b
   }
 
   Tensor<MatrixType> ab =
-      tensordot(detail::reshape_impl(a, shape_a + detail::UIndex(1)),
-                detail::reshape_impl(b, detail::UIndex(1) + shape_b), Axes(n),
+      tensordot(detail::reshape_impl(a, shape_a + detail::UShape(1)),
+                detail::reshape_impl(b, detail::UShape(1) + shape_b), Axes(n),
                 Axes(0));
   ab.transpose(to_public(axes_trans));
   return detail::reshape_impl(ab, shape_c);
@@ -1710,25 +1710,25 @@ template <typename MatrixType>
 Tensor<MatrixType> tensordot(const Tensor<MatrixType> &a,
                             const Tensor<MatrixType> &b, const Axes &axes_a,
                             const Axes &axes_b) {
-  const detail::UIndex ax_a = normalize_axes(axes_a, a.rank());
-  const detail::UIndex ax_b = normalize_axes(axes_b, b.rank());
+  const detail::UAxes ax_a = normalize_axes(axes_a, a.rank());
+  const detail::UAxes ax_b = normalize_axes(axes_b, b.rank());
   assert(ax_a.size() == ax_b.size());
   assert(a.get_comm() == b.get_comm());
-  const detail::UIndex shape_a = a.internal_shape();
-  const detail::UIndex shape_b = b.internal_shape();
+  const detail::UShape shape_a = a.internal_shape();
+  const detail::UShape shape_b = b.internal_shape();
   for (size_t i = 0; i < ax_a.size(); ++i) {
     assert(shape_a[ax_a[i]] == shape_b[ax_b[i]]);
   }
 
   const typename Tensor<MatrixType>::comm_type &comm = a.get_comm();
 
-  detail::UIndex shape_c;
+  detail::UShape shape_c;
   const size_t rank_row_c = a.rank() - ax_a.size();
   const size_t rank_col_c = b.rank() - ax_b.size();
   shape_c.resize(rank_row_c + rank_col_c);
 
-  detail::UIndex trans_axes_a;
-  detail::UIndex trans_axes_b;
+  detail::UAxes trans_axes_a;
+  detail::UAxes trans_axes_b;
   size_t urank_a;
   size_t urank_b;
 
@@ -1826,9 +1826,9 @@ int svd(const Tensor<MatrixType> &a, Tensor<MatrixType> &u,
 template <typename MatrixType>
 int svd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
         std::vector<double> &s) {
-  const detail::UIndex row = normalize_axes(axes_row, a.rank());
-  const detail::UIndex col = normalize_axes(axes_col, a.rank());
-  const detail::UIndex axes = row + col;
+  const detail::UAxes row = normalize_axes(axes_row, a.rank());
+  const detail::UAxes col = normalize_axes(axes_col, a.rank());
+  const detail::UAxes axes = row + col;
   assert(row.size() > 0);
   assert(col.size() > 0);
   assert(debug::check_svd_axes(row, col, a.rank()));
@@ -1838,7 +1838,7 @@ int svd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
 
 
   Tensor<MatrixType> a_t = detail::transpose_impl(a, axes, urank);
-  const detail::UIndex &shape = a_t.internal_shape();
+  const detail::UShape &shape = a_t.internal_shape();
 
   size_t d_row(1), d_col(1);
   for (size_t i = 0; i < urank; ++i) d_row *= shape[i];
@@ -1876,9 +1876,9 @@ int svd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
 template <typename MatrixType>
 int svd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
         Tensor<MatrixType> &u, std::vector<double> &s, Tensor<MatrixType> &vt) {
-  const detail::UIndex row = normalize_axes(axes_row, a.rank());
-  const detail::UIndex col = normalize_axes(axes_col, a.rank());
-  const detail::UIndex axes = row + col;
+  const detail::UAxes row = normalize_axes(axes_row, a.rank());
+  const detail::UAxes col = normalize_axes(axes_col, a.rank());
+  const detail::UAxes axes = row + col;
   assert(row.size() > 0);
   assert(col.size() > 0);
   assert(debug::check_svd_axes(row, col, a.rank()));
@@ -1888,19 +1888,19 @@ int svd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
 
 
   Tensor<MatrixType> a_t = detail::transpose_impl(a, axes, urank);
-  const detail::UIndex &shape = a_t.internal_shape();
+  const detail::UShape &shape = a_t.internal_shape();
 
   size_t d_row(1), d_col(1);
   for (size_t i = 0; i < urank; ++i) d_row *= shape[i];
   for (size_t i = urank; i < rank; ++i) d_col *= shape[i];
   size_t size = (d_row < d_col) ? d_row : d_col;
 
-  detail::UIndex shape_u;
+  detail::UShape shape_u;
   shape_u.resize(urank + 1);
   for (size_t i = 0; i < urank; ++i) shape_u[i] = shape[i];
   shape_u[urank] = size;
 
-  detail::UIndex shape_vt;
+  detail::UShape shape_vt;
   shape_vt.resize(rank - urank + 1);
   shape_vt[0] = size;
   for (size_t i = urank; i < rank; ++i) shape_vt[i - urank + 1] = shape[i];
@@ -2073,18 +2073,18 @@ int qr(const Tensor<MatrixType> &a, Tensor<MatrixType> &q, Tensor<MatrixType> &r
 template <typename MatrixType>
 int qr(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
        Tensor<MatrixType> &q, Tensor<MatrixType> &r) {
-  const detail::UIndex row = normalize_axes(axes_row, a.rank());
-  const detail::UIndex col = normalize_axes(axes_col, a.rank());
-  const detail::UIndex axes = row + col;
+  const detail::UAxes row = normalize_axes(axes_row, a.rank());
+  const detail::UAxes col = normalize_axes(axes_col, a.rank());
+  const detail::UAxes axes = row + col;
   assert(row.size() > 0);
   assert(col.size() > 0);
   assert(debug::check_svd_axes(row, col, a.rank()));
 
   const size_t rank = a.rank();
   const size_t urank = row.size();
-  const detail::UIndex shape_a = a.internal_shape();
+  const detail::UShape shape_a = a.internal_shape();
 
-  detail::UIndex shape;
+  detail::UShape shape;
   shape.resize(rank);
   for (size_t i = 0; i < rank; ++i) shape[i] = shape_a[axes[i]];
 
@@ -2095,7 +2095,7 @@ int qr(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
 
   // rank-2 tensors (matrices)
   Tensor<MatrixType> mat_q =
-      detail::reshape_impl(detail::transpose_impl(a, axes, urank), detail::UIndex(d_row, d_col));
+      detail::reshape_impl(detail::transpose_impl(a, axes, urank), detail::UShape(d_row, d_col));
   Tensor<MatrixType> mat_r(mat_q.get_comm(), mat_q.internal_shape(), 1, detail::internal);
 
   // QR decomposition. Elements of mat_q change from a to q.
@@ -2103,12 +2103,12 @@ int qr(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
   info = matrix_qr(mat_q.get_matrix(), mat_r.get_matrix());
 
   // Get shape of q and r.
-  detail::UIndex shape_q;
+  detail::UShape shape_q;
   shape_q.resize(urank + 1);
   for (size_t i = 0; i < urank; ++i) shape_q[i] = shape[i];
   shape_q[urank] = size;
 
-  detail::UIndex shape_r;
+  detail::UShape shape_r;
   shape_r.resize(rank - urank + 1);
   shape_r[0] = size;
   for (size_t i = urank; i < rank; ++i) shape_r[i - urank + 1] = shape[i];
@@ -2141,14 +2141,14 @@ template <typename MatrixType>
 int eigh(const Tensor<MatrixType> &a, std::vector<double> &w,
          Tensor<MatrixType> &z) {
   assert(a.rank() == 2);
-  const detail::UIndex shape = a.internal_shape();
+  const detail::UShape shape = a.internal_shape();
   assert(shape[0] == shape[1]);
 
-  Tensor<MatrixType> a_t = detail::transpose_impl(a, detail::UIndex(0, 1), 1);
+  Tensor<MatrixType> a_t = detail::transpose_impl(a, detail::UAxes(0, 1), 1);
 
   size_t n = shape[0];
   w.resize(n);
-  z = Tensor<MatrixType>(a.get_comm(), detail::UIndex(n, n), 1, detail::internal);
+  z = Tensor<MatrixType>(a.get_comm(), detail::UShape(n, n), 1, detail::internal);
 
   int info;
   info = matrix_eigh(a_t.get_matrix(), w, z.get_matrix());
@@ -2166,10 +2166,10 @@ int eigh(const Tensor<MatrixType> &a, std::vector<double> &w,
 template <typename MatrixType>
 int eigh(const Tensor<MatrixType> &a, std::vector<double> &w) {
   assert(a.rank() == 2);
-  const detail::UIndex shape = a.internal_shape();
+  const detail::UShape shape = a.internal_shape();
   assert(shape[0] == shape[1]);
 
-  Tensor<MatrixType> a_t = detail::transpose_impl(a, detail::UIndex(0, 1), 1);
+  Tensor<MatrixType> a_t = detail::transpose_impl(a, detail::UAxes(0, 1), 1);
 
   size_t n = shape[0];
   w.resize(n);
@@ -2204,9 +2204,9 @@ int eigh(const Tensor<MatrixType> &a, std::vector<double> &w) {
 template <typename MatrixType>
 int eigh(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
          std::vector<double> &w, Tensor<MatrixType> &z) {
-  const detail::UIndex row = normalize_axes(axes_row, a.rank());
-  const detail::UIndex col = normalize_axes(axes_col, a.rank());
-  const detail::UIndex axes = row + col;
+  const detail::UAxes row = normalize_axes(axes_row, a.rank());
+  const detail::UAxes col = normalize_axes(axes_col, a.rank());
+  const detail::UAxes axes = row + col;
   assert(row.size() > 0);
   assert(col.size() > 0);
 
@@ -2215,7 +2215,7 @@ int eigh(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col
 
 
   Tensor<MatrixType> a_t = detail::transpose_impl(a, axes, urank);
-  const detail::UIndex &shape = a_t.internal_shape();
+  const detail::UShape &shape = a_t.internal_shape();
 
   size_t d_row(1), d_col(1);
   for (size_t i = 0; i < urank; ++i) d_row *= shape[i];
@@ -2224,7 +2224,7 @@ int eigh(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col
 
   assert(d_row == d_col);
 
-  detail::UIndex shape_z;
+  detail::UShape shape_z;
   shape_z.resize(urank + 1);
   for (size_t i = 0; i < urank; ++i) shape_z[i] = shape[i];
   shape_z[urank] = size;
@@ -2251,9 +2251,9 @@ int eigh(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col
 template <typename MatrixType>
 int eigh(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
          std::vector<double> &w) {
-  const detail::UIndex row = normalize_axes(axes_row, a.rank());
-  const detail::UIndex col = normalize_axes(axes_col, a.rank());
-  const detail::UIndex axes = row + col;
+  const detail::UAxes row = normalize_axes(axes_row, a.rank());
+  const detail::UAxes col = normalize_axes(axes_col, a.rank());
+  const detail::UAxes axes = row + col;
   assert(row.size() > 0);
   assert(col.size() > 0);
 
@@ -2262,7 +2262,7 @@ int eigh(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col
 
 
   Tensor<MatrixType> a_t = detail::transpose_impl(a, axes, urank);
-  const detail::UIndex &shape = a_t.internal_shape();
+  const detail::UShape &shape = a_t.internal_shape();
 
   size_t d_row(1), d_col(1);
   for (size_t i = 0; i < urank; ++i) d_row *= shape[i];
@@ -2315,12 +2315,12 @@ int eigh(const Tensor<MatrixType> &a, const Axes &axes_row_a,
          const Axes &axes_col_a, const Tensor<MatrixType> &b,
          const Axes &axes_row_b, const Axes &axes_col_b, std::vector<double> &w,
          Tensor<MatrixType> &z) {
-  const detail::UIndex row_a = normalize_axes(axes_row_a, a.rank());
-  const detail::UIndex col_a = normalize_axes(axes_col_a, a.rank());
-  const detail::UIndex axes_a = row_a + col_a;
-  const detail::UIndex row_b = normalize_axes(axes_row_b, b.rank());
-  const detail::UIndex col_b = normalize_axes(axes_col_b, b.rank());
-  const detail::UIndex axes_b = row_b + col_b;
+  const detail::UAxes row_a = normalize_axes(axes_row_a, a.rank());
+  const detail::UAxes col_a = normalize_axes(axes_col_a, a.rank());
+  const detail::UAxes axes_a = row_a + col_a;
+  const detail::UAxes row_b = normalize_axes(axes_row_b, b.rank());
+  const detail::UAxes col_b = normalize_axes(axes_col_b, b.rank());
+  const detail::UAxes axes_b = row_b + col_b;
   assert(row_a.size() > 0);
   assert(col_a.size() > 0);
   assert(row_b.size() > 0);
@@ -2332,8 +2332,8 @@ int eigh(const Tensor<MatrixType> &a, const Axes &axes_row_a,
   const size_t urank_b = row_b.size();
   Tensor<MatrixType> a_t = detail::transpose_impl(a, axes_a, urank_a);
   Tensor<MatrixType> b_t = detail::transpose_impl(b, axes_b, urank_b);
-  const detail::UIndex &shape_a = a_t.internal_shape();
-  const detail::UIndex &shape_b = b_t.internal_shape();
+  const detail::UShape &shape_a = a_t.internal_shape();
+  const detail::UShape &shape_b = b_t.internal_shape();
   size_t d_row_a(1), d_col_a(1);
   size_t d_row_b(1), d_col_b(1);
   for (size_t i = 0; i < urank_a; ++i) d_row_a *= shape_a[i];
@@ -2346,7 +2346,7 @@ int eigh(const Tensor<MatrixType> &a, const Axes &axes_row_a,
   assert(d_row_a == d_row_b);
   size_t size = d_row_a;
 
-  detail::UIndex shape_z;
+  detail::UShape shape_z;
   shape_z.resize(rank_a - urank_a + 1);
   for (size_t i = urank_a; i < rank_a; ++i) shape_z[i - urank_a] = shape_a[i];
   shape_z[rank_a - urank_a] = size;
@@ -2373,15 +2373,15 @@ template <typename MatrixType>
 int eig(const Tensor<MatrixType> &a, std::vector<complex> &w,
         typename Tensor<MatrixType>::template rebind<complex> &z) {
   assert(a.rank() == 2);
-  const detail::UIndex shape = a.internal_shape();
+  const detail::UShape shape = a.internal_shape();
   assert(shape[0] == shape[1]);
 
-  Tensor<lapack::Matrix<typename MatrixType::value_type>> a_t = detail::transpose_impl(a, detail::UIndex(0, 1), 1).gather();
+  Tensor<lapack::Matrix<typename MatrixType::value_type>> a_t = detail::transpose_impl(a, detail::UAxes(0, 1), 1).gather();
 
   size_t n = shape[0];
   w.resize(n);
 
-  Tensor<lapack::Matrix<complex>> z_t(a.get_comm(), detail::UIndex(n, n), 1, detail::internal);
+  Tensor<lapack::Matrix<complex>> z_t(a.get_comm(), detail::UShape(n, n), 1, detail::internal);
 
   int info;
   info = matrix_eig(a_t.get_matrix(), w, z_t.get_matrix());
@@ -2402,10 +2402,10 @@ int eig(const Tensor<MatrixType> &a, std::vector<complex> &w,
 template <typename MatrixType>
 int eig(const Tensor<MatrixType> &a, std::vector<complex> &w) {
   assert(a.rank() == 2);
-  const detail::UIndex shape = a.internal_shape();
+  const detail::UShape shape = a.internal_shape();
   assert(shape[0] == shape[1]);
 
-  Tensor<lapack::Matrix<typename MatrixType::value_type>> a_t = detail::transpose_impl(a, detail::UIndex(0, 1), 1).gather();
+  Tensor<lapack::Matrix<typename MatrixType::value_type>> a_t = detail::transpose_impl(a, detail::UAxes(0, 1), 1).gather();
 
   size_t n = shape[0];
   w.resize(n);
@@ -2439,9 +2439,9 @@ int eig(const Tensor<MatrixType> &a, std::vector<complex> &w) {
 template <typename MatrixType>
 int eig(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
         std::vector<complex> &w, typename Tensor<MatrixType>::template rebind<complex> &z) {
-  const detail::UIndex row = normalize_axes(axes_row, a.rank());
-  const detail::UIndex col = normalize_axes(axes_col, a.rank());
-  const detail::UIndex axes = row + col;
+  const detail::UAxes row = normalize_axes(axes_row, a.rank());
+  const detail::UAxes col = normalize_axes(axes_col, a.rank());
+  const detail::UAxes axes = row + col;
   assert(row.size() > 0);
   assert(col.size() > 0);
 
@@ -2450,7 +2450,7 @@ int eig(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
 
 
   Tensor<lapack::Matrix<typename MatrixType::value_type>> a_t = detail::transpose_impl(a, axes, urank).gather();
-  const detail::UIndex &shape = a_t.internal_shape();
+  const detail::UShape &shape = a_t.internal_shape();
 
   size_t d_row(1), d_col(1);
   for (size_t i = 0; i < urank; ++i) d_row *= shape[i];
@@ -2459,7 +2459,7 @@ int eig(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
 
   assert(d_row == d_col);
 
-  detail::UIndex shape_z;
+  detail::UShape shape_z;
   shape_z.resize(urank + 1);
   for (size_t i = 0; i < urank; ++i) shape_z[i] = shape[i];
   shape_z[urank] = size;
@@ -2490,9 +2490,9 @@ int eig(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
 template <typename MatrixType>
 int eig(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
         std::vector<complex> &w) {
-  const detail::UIndex row = normalize_axes(axes_row, a.rank());
-  const detail::UIndex col = normalize_axes(axes_col, a.rank());
-  const detail::UIndex axes = row + col;
+  const detail::UAxes row = normalize_axes(axes_row, a.rank());
+  const detail::UAxes col = normalize_axes(axes_col, a.rank());
+  const detail::UAxes axes = row + col;
   assert(row.size() > 0);
   assert(col.size() > 0);
 
@@ -2501,7 +2501,7 @@ int eig(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
 
 
   Tensor<lapack::Matrix<typename MatrixType::value_type>> a_t = detail::transpose_impl(a, axes, urank).gather();
-  const detail::UIndex &shape = a_t.internal_shape();
+  const detail::UShape &shape = a_t.internal_shape();
 
   size_t d_row(1), d_col(1);
   for (size_t i = 0; i < urank; ++i) d_row *= shape[i];
@@ -2599,12 +2599,12 @@ template <typename MatrixType>
 int solve(const Tensor<MatrixType> &a, const Tensor<MatrixType> &b,
           Tensor<MatrixType> &x, const Axes &axes_row_a, const Axes &axes_col_a,
           const Axes &axes_row_b, const Axes &axes_col_b) {
-  const detail::UIndex row_a = normalize_axes(axes_row_a, a.rank());
-  const detail::UIndex col_a = normalize_axes(axes_col_a, a.rank());
-  const detail::UIndex axes_a = row_a + col_a;
-  const detail::UIndex row_b = normalize_axes(axes_row_b, b.rank());
-  const detail::UIndex col_b = normalize_axes(axes_col_b, b.rank());
-  const detail::UIndex axes_b = row_b + col_b;
+  const detail::UAxes row_a = normalize_axes(axes_row_a, a.rank());
+  const detail::UAxes col_a = normalize_axes(axes_col_a, a.rank());
+  const detail::UAxes axes_a = row_a + col_a;
+  const detail::UAxes row_b = normalize_axes(axes_row_b, b.rank());
+  const detail::UAxes col_b = normalize_axes(axes_col_b, b.rank());
+  const detail::UAxes axes_b = row_b + col_b;
   assert(a.rank() == row_a.size() + col_a.size());
   assert(b.rank() == row_b.size() + col_b.size());
   assert(row_a.size() > 0);
@@ -2621,12 +2621,12 @@ int solve(const Tensor<MatrixType> &a, const Tensor<MatrixType> &b,
 
   Tensor<MatrixType> a_t = detail::transpose_impl(a, axes_a, rank_row_a);
   Tensor<MatrixType> b_t = detail::transpose_impl(b, axes_b, rank_row_b);
-  const detail::UIndex &shape_a = a_t.internal_shape();
-  const detail::UIndex &shape_b = b_t.internal_shape();
+  const detail::UShape &shape_a = a_t.internal_shape();
+  const detail::UShape &shape_b = b_t.internal_shape();
 
   assert(debug::check_square(shape_a, rank_row_a));
 
-  detail::UIndex shape_x;
+  detail::UShape shape_x;
   shape_x.resize(rank_col_a + rank_col_b);
   for (size_t i = 0; i < rank_col_a; ++i) shape_x[i] = shape_a[i + rank_row_a];
   for (size_t i = 0; i < rank_col_b; ++i)
@@ -2728,7 +2728,7 @@ std::ostream &operator<<(std::ostream &out, const Tensor<MatrixType> &t) {
   std::size_t dim = t.ndim();
   if (t.get_comm_size() == 1) {
     std::size_t size = t.local_size();
-    const detail::UIndex &shape = t.internal_shape();
+    const detail::UShape &shape = t.internal_shape();
     std::vector<std::size_t> accum(dim + 1, 1);
     for (size_t d = dim; d != 0; --d) accum[d - 1] = accum[d] * shape[d - 1];
 

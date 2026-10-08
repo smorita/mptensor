@@ -82,8 +82,8 @@ template <typename MatrixType>
 int rsvd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
          Tensor<MatrixType> &u, std::vector<double> &s, Tensor<MatrixType> &vt,
          const size_t target_rank, const size_t oversamp) {
-  const detail::UIndex row = normalize_axes(axes_row, a.rank());
-  const detail::UIndex col = normalize_axes(axes_col, a.rank());
+  const detail::UAxes row = normalize_axes(axes_row, a.rank());
+  const detail::UAxes col = normalize_axes(axes_col, a.rank());
   assert(row.size() > 0);
   assert(col.size() > 0);
   assert(debug::check_svd_axes(row, col, a.rank()));
@@ -93,13 +93,13 @@ int rsvd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col
   const size_t rank_col = col.size();
   int info;
 
-  const detail::UIndex axes = row + col;
+  const detail::UAxes axes = row + col;
   Tensor<MatrixType> a_t = detail::transpose_impl(a, axes, rank_row);
-  const detail::UIndex &shape = a_t.internal_shape();
+  const detail::UShape &shape = a_t.internal_shape();
 
   Tensor<MatrixType> q;
   {
-    detail::UIndex shape_omega;
+    detail::UShape shape_omega;
     shape_omega.resize(rank_col + 1);
     for (size_t i = 0; i < rank_col; ++i) shape_omega[i] = shape[i + rank_row];
     shape_omega[rank_col] = target_rank + oversamp;
@@ -162,7 +162,7 @@ int rsvd(Func1 &multiply_row, Func2 &multiply_col, const Shape &shape_row,
   int info;
   Tensor<MatrixType> q;
   {
-    detail::UIndex shape_omega = to_internal_shape(shape_col);
+    detail::UShape shape_omega = to_internal_shape(shape_col);
     shape_omega.resize(rank_col + 1);
     shape_omega[rank_col] = target_rank + oversamp;
 
