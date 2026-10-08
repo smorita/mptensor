@@ -80,7 +80,8 @@ namespace detail {
 using UIndex = BasicIndex<size_t>;  // internal use only
 }
 
-Index range(std::ptrdiff_t start, std::ptrdiff_t stop);
+Index range(std::ptrdiff_t start, std::ptrdiff_t stop, std::ptrdiff_t step);
+Index range(std::ptrdiff_t start, std::ptrdiff_t stop);  // step = 1
 Index range(std::ptrdiff_t stop);  // range(0, stop)
 
 }  // namespace mptensor
@@ -113,7 +114,7 @@ These are public functions placed in `index.hpp`. Exception messages include the
 | `detail::UIndex to_internal_shape(const Shape& s)` | each element `>= 0` | unchanged | `std::invalid_argument` |
 | `Index to_public(const detail::UIndex& u)` | each element `<= PTRDIFF_MAX` | unchanged | `std::out_of_range` |
 
-`range(start, stop)` lists the values as they are (`range(-2, 0)` is `[-2, -1]`). `start > stop` throws `std::invalid_argument`.
+`range(start, stop, step)` behaves like `range()` in python: `range(-2, 0)` is `[-2, -1]`, `range(-1, -5, -1)` is `[-1, -2, -3, -4]`, and the result is empty when `stop` is not reached in the direction of `step` (e.g. `range(3, 2)`). `step == 0` throws `std::invalid_argument`.
 
 ## 5. Public API changes
 
@@ -226,7 +227,7 @@ No tensor and no communication is involved, but the executable links `mptensor_g
 - `normalize_slice_end`: accepts `n`; throws for `n+1` and `-n-1`.
 - `to_internal_shape`: `std::invalid_argument` for negative values.
 - `to_public`: values are preserved through a round trip.
-- `range`: negative ranges, empty when `start == stop`, exception when `start > stop`.
+- `range`: negative ranges, positive and negative `step`, empty when `stop` is not reached in the direction of `step` (including `start > stop` with the default step), exception when `step == 0`.
 - `sort`, `inverse`, `operator==`, `operator+`, `operator<<` work for both `Index` and `UIndex`.
 
 ### 7.4 `tests/tensor/negative_index.cc`

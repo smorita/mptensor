@@ -120,7 +120,30 @@ TEST(BasicIndex, Range) {
   EXPECT_EQ(mptensor::range(2, 4), mptensor::Index(2, 3));
   EXPECT_EQ(mptensor::range(2, 2).size(), 0u);
   EXPECT_EQ(mptensor::range(-2, 1), mptensor::Index(-2, -1, 0));
-  EXPECT_THROW(mptensor::range(3, 2), std::invalid_argument);
+  EXPECT_EQ(mptensor::range(3, 2).size(), 0u);  // empty, as in python
+  EXPECT_EQ(mptensor::range(-1).size(), 0u);
+}
+
+TEST(BasicIndex, RangeWithPositiveStep) {
+  EXPECT_EQ(mptensor::range(0, 10, 3), mptensor::Index(0, 3, 6, 9));
+  EXPECT_EQ(mptensor::range(1, 2, 5), mptensor::Index(1));
+  EXPECT_EQ(mptensor::range(-4, 0, 2), mptensor::Index(-4, -2));
+}
+
+TEST(BasicIndex, RangeWithNegativeStep) {
+  EXPECT_EQ(mptensor::range(3, -1, -1), mptensor::Index(3, 2, 1, 0));
+  EXPECT_EQ(mptensor::range(-1, -5, -1), mptensor::Index(-1, -2, -3, -4));
+  EXPECT_EQ(mptensor::range(5, 0, -2), mptensor::Index(5, 3, 1));
+}
+
+TEST(BasicIndex, RangeEmpty) {
+  EXPECT_EQ(mptensor::range(0, 5, -1).size(), 0u);
+  EXPECT_EQ(mptensor::range(5, 0, 1).size(), 0u);
+  EXPECT_EQ(mptensor::range(2, 2, 3).size(), 0u);
+}
+
+TEST(BasicIndex, RangeZeroStepThrows) {
+  EXPECT_THROW(mptensor::range(0, 3, 0), std::invalid_argument);
 }
 
 }  // namespace

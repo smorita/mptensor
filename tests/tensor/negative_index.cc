@@ -41,6 +41,9 @@ TYPED_TEST(NegativeIndex, TransposeFreeAndMember) {
   B.transpose(Axes(2, -4, 3, -3));
   EXPECT_EQ(max_diff(B, expected), 0.0);
   EXPECT_EQ(max_diff(transpose(A, range(-4, 0)), A), 0.0);
+  EXPECT_EQ(max_diff(transpose(A, range(-1, -5, -1)),
+                     transpose(A, Axes(3, 2, 1, 0))),
+            0.0);
 }
 
 TYPED_TEST(NegativeIndex, Tensordot) {

@@ -310,22 +310,47 @@ inline Index to_public(const detail::UIndex& u) {
   return result;
 }
 
-//! Create an increasing sequence [start, stop). It is similar to range() in python.
-/*! \throw std::invalid_argument if <tt>start > stop</tt>. */
-inline Index range(const std::ptrdiff_t start, const std::ptrdiff_t stop) {
-  if (start > stop) {
-    std::ostringstream ss;
-    ss << "mptensor: range(" << start << ", " << stop << ") has start > stop";
-    throw std::invalid_argument(ss.str());
+//! Arithmetic sequence start, start+step, ... up to (not including) stop.
+/*!
+  Same as range() in python: the result is empty if \c stop is not reached in
+  the direction of \c step, e.g. <tt>range(3, 2)</tt> or <tt>range(0, 5, -1)</tt>.
+  Negative values are allowed, e.g. <tt>range(-1, -5, -1)</tt> is
+  <tt>[-1, -2, -3, -4]</tt>, which reverses the axes of a rank-4 tensor.
+
+  \throw std::invalid_argument if <tt>step == 0</tt>.
+*/
+inline Index range(const std::ptrdiff_t start, const std::ptrdiff_t stop,
+                   const std::ptrdiff_t step) {
+  if (step == 0) {
+    throw std::invalid_argument("mptensor: range() step must not be zero");
+  }
+  // Number of elements, computed in unsigned arithmetic to avoid overflow.
+  size_t n = 0;
+  if (step > 0 && start < stop) {
+    const size_t diff = static_cast<size_t>(stop) - static_cast<size_t>(start);
+    n = (diff - 1) / static_cast<size_t>(step) + 1;
+  } else if (step < 0 && start > stop) {
+    const size_t diff = static_cast<size_t>(start) - static_cast<size_t>(stop);
+    const size_t ustep = size_t(0) - static_cast<size_t>(step);
+    n = (diff - 1) / ustep + 1;
   }
   Index index;
-  index.resize(static_cast<size_t>(stop - start));
-  for (std::ptrdiff_t i = start; i < stop; ++i) {
-    index[static_cast<size_t>(i - start)] = i;
+  index.resize(n);
+  std::ptrdiff_t v = start;
+  for (size_t i = 0; i < n; ++i) {
+    index[i] = v;
+    if (i + 1 < n) v += step;
   }
   return index;
 }
-inline Index range(const std::ptrdiff_t stop) { return range(0, stop); }
+
+//! Same as <tt>range(start, stop, 1)</tt>.
+inline Index range(const std::ptrdiff_t start, const std::ptrdiff_t stop) {
+  return range(start, stop, 1);
+}
+
+//! Same as <tt>range(0, stop, 1)</tt>.
+inline Index range(const std::ptrdiff_t stop) { return range(0, stop, 1); }
 
 //! \}
 }  // namespace mptensor
