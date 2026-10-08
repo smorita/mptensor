@@ -1092,6 +1092,23 @@ Tensor<MatrixType> transpose(const Tensor<MatrixType> &T, const Axes &axes,
   return detail::transpose_impl(T, normalize_axes(axes, T.rank()), urank_new);
 }
 
+//! Change the shape of tensor.
+/*!
+
+  \param[in] T Tensor to be reshaped.
+  \param[in] shape_new New shape.
+
+  \return Reshaped tensor.
+
+  \note The new shape should be compatible with the original shape.
+  The total size of tensor does not change.
+  \warning mptensor uses the column major, unlike NumPy.
+*/
+template <typename MatrixType>
+Tensor<MatrixType> reshape(const Tensor<MatrixType> &T, const Shape &shape_new) {
+  return detail::reshape_impl(T, to_internal_shape(shape_new));
+}
+
 namespace detail {
 //! \cond
 template <typename MatrixType>
@@ -1174,28 +1191,7 @@ Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &T, const UAxes &axes
 
   return T_new;
 };
-//! \endcond
-}  // namespace detail
 
-//! Change the shape of tensor.
-/*!
-
-  \param[in] T Tensor to be reshaped.
-  \param[in] shape_new New shape.
-
-  \return Reshaped tensor.
-
-  \note The new shape should be compatible with the original shape.
-  The total size of tensor does not change.
-  \warning mptensor uses the column major, unlike NumPy.
-*/
-template <typename MatrixType>
-Tensor<MatrixType> reshape(const Tensor<MatrixType> &T, const Shape &shape_new) {
-  return detail::reshape_impl(T, to_internal_shape(shape_new));
-}
-
-namespace detail {
-//! \cond
 template <typename MatrixType>
 Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &T, const UShape &shape_new) {
   assert(debug::check_total_size(shape_new, T.internal_shape()));

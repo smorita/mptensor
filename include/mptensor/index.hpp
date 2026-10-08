@@ -166,9 +166,7 @@ namespace detail {
 using UIndex = BasicIndex<std::size_t>;  //!< Internal element index.
 using UAxes = UIndex;                    //!< Internal axes.
 using UShape = UIndex;                   //!< Internal shape.
-}  // namespace detail
 
-namespace detail {
 //! Normalize one value into [0, n) (or [0, n] if \c end_inclusive).
 /*!
   \param position Element number shown in the error message; negative for a
@@ -195,6 +193,50 @@ inline UAxes identity_axes(size_t n) {
   axes.resize(n);
   for (size_t i = 0; i < n; ++i) axes[i] = i;
   return axes;
+}
+
+//! Normalize a scalar slice [begin, end) on an axis of size \c n.
+/*! \throw std::out_of_range if a bound is out of range or the slice is empty. */
+inline std::pair<size_t, size_t> normalize_slice_range(std::ptrdiff_t begin,
+                                                       std::ptrdiff_t end,
+                                                       size_t n, size_t axis) {
+  const std::ptrdiff_t pos = static_cast<std::ptrdiff_t>(axis);
+  const size_t b = normalize_value(begin, n, false, "slice begin", pos);
+  const size_t e = normalize_value(end, n, true, "slice end", pos);
+  if (b >= e) {
+    std::ostringstream ss;
+    ss << "mptensor: slice [" << begin << ", " << end << ") on axis " << axis
+       << " is empty (normalized to [" << b << ", " << e << "))";
+    throw std::out_of_range(ss.str());
+  }
+  return {b, e};
+}
+
+//! Normalize Index-style slice bounds; raw begin[r] == end[r] means the full axis.
+inline void normalize_slice_ranges(const BasicIndex<std::ptrdiff_t>& begin,
+                                   const BasicIndex<std::ptrdiff_t>& end,
+                                   const UShape& shape, UIndex& ubegin,
+                                   UIndex& uend) {
+  const size_t rank = shape.size();
+  if (begin.size() != rank || end.size() != rank) {
+    std::ostringstream ss;
+    ss << "mptensor: slice bounds " << begin << " and " << end
+       << " do not match the tensor rank " << rank;
+    throw std::invalid_argument(ss.str());
+  }
+  ubegin.resize(rank);
+  uend.resize(rank);
+  for (size_t r = 0; r < rank; ++r) {
+    if (begin[r] == end[r]) {
+      ubegin[r] = 0;
+      uend[r] = shape[r];
+    } else {
+      const std::pair<size_t, size_t> be =
+          normalize_slice_range(begin[r], end[r], shape[r], r);
+      ubegin[r] = be.first;
+      uend[r] = be.second;
+    }
+  }
 }
 }  // namespace detail
 
@@ -267,52 +309,6 @@ inline BasicIndex<std::ptrdiff_t> to_public(const detail::UIndex& u) {
   }
   return result;
 }
-
-namespace detail {
-//! Normalize a scalar slice [begin, end) on an axis of size \c n.
-/*! \throw std::out_of_range if a bound is out of range or the slice is empty. */
-inline std::pair<size_t, size_t> normalize_slice_range(std::ptrdiff_t begin,
-                                                       std::ptrdiff_t end,
-                                                       size_t n, size_t axis) {
-  const std::ptrdiff_t pos = static_cast<std::ptrdiff_t>(axis);
-  const size_t b = normalize_value(begin, n, false, "slice begin", pos);
-  const size_t e = normalize_value(end, n, true, "slice end", pos);
-  if (b >= e) {
-    std::ostringstream ss;
-    ss << "mptensor: slice [" << begin << ", " << end << ") on axis " << axis
-       << " is empty (normalized to [" << b << ", " << e << "))";
-    throw std::out_of_range(ss.str());
-  }
-  return {b, e};
-}
-
-//! Normalize Index-style slice bounds; raw begin[r] == end[r] means the full axis.
-inline void normalize_slice_ranges(const BasicIndex<std::ptrdiff_t>& begin,
-                                   const BasicIndex<std::ptrdiff_t>& end,
-                                   const UShape& shape, UIndex& ubegin,
-                                   UIndex& uend) {
-  const size_t rank = shape.size();
-  if (begin.size() != rank || end.size() != rank) {
-    std::ostringstream ss;
-    ss << "mptensor: slice bounds " << begin << " and " << end
-       << " do not match the tensor rank " << rank;
-    throw std::invalid_argument(ss.str());
-  }
-  ubegin.resize(rank);
-  uend.resize(rank);
-  for (size_t r = 0; r < rank; ++r) {
-    if (begin[r] == end[r]) {
-      ubegin[r] = 0;
-      uend[r] = shape[r];
-    } else {
-      const std::pair<size_t, size_t> be =
-          normalize_slice_range(begin[r], end[r], shape[r], r);
-      ubegin[r] = be.first;
-      uend[r] = be.second;
-    }
-  }
-}
-}  // namespace detail
 
 //! Create an increasing sequence [start, stop). It is similar to range() in python.
 /*! \throw std::invalid_argument if <tt>start > stop</tt>. */
