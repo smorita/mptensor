@@ -6,12 +6,18 @@ on:
   pull_request:
     branches: [ "master", "develop" ]
 
-env:
-  BUILD_TYPE: Debug
-
 jobs:
   build:
+    name: ${{ matrix.build_type }}, MPI ${{ matrix.mpi }}, gtest ${{ matrix.gtest }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { build_type: Debug,   mpi: "ON",  gtest: fetch,  legacy: "ON" }
+          - { build_type: Release, mpi: "ON",  gtest: system, legacy: "OFF" }
+          - { build_type: Debug,   mpi: "OFF", gtest: fetch,  legacy: "OFF" }
+          - { build_type: Release, mpi: "OFF", gtest: fetch,  legacy: "OFF" }
 
     steps:
     - uses: actions/checkout@v6
@@ -19,14 +25,36 @@ jobs:
     - name: apt
       run: |
         sudo apt update
-        sudo apt install -y cmake libopenmpi-dev libblas-dev liblapack-dev libscalapack-openmpi-dev
+        PACKAGES="cmake libblas-dev liblapack-dev"
+        if [ "${{ matrix.mpi }}" = "ON" ]; then
+          PACKAGES="$PACKAGES libopenmpi-dev libscalapack-openmpi-dev"
+        fi
+        if [ "${{ matrix.gtest }}" = "system" ]; then
+          PACKAGES="$PACKAGES libgtest-dev"
+        fi
+        sudo apt install -y $PACKAGES
 
     - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_TESTS=ON -DCMAKE_VERBOSE_MAKEFILE=ON -DMPIEXEC_PREFLAGS="--oversubscribe"
+      # "shell: bash" enables pipefail, so a failing cmake is not hidden by tee.
+      shell: bash
+      run: >
+        cmake -B ${{github.workspace}}/build
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DENABLE_MPI=${{ matrix.mpi }}
+        -DBUILD_TESTS=ON
+        -DBUILD_LEGACY_TESTS=${{ matrix.legacy }}
+        -DCMAKE_VERBOSE_MAKEFILE=ON
+        -DMPIEXEC_PREFLAGS="--oversubscribe"
+        | tee configure.log
+
+    - name: Check GoogleTest source
+      if: matrix.gtest == 'system'
+      run: |
+        grep "GoogleTest: found" configure.log
 
     - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j4
+      run: cmake --build ${{github.workspace}}/build --config ${{ matrix.build_type }} -j4
 
     - name: Test
       working-directory: ${{github.workspace}}/build
-      run: ctest -C ${{env.BUILD_TYPE}} -V
+      run: ctest -C ${{ matrix.build_type }} --output-on-failure

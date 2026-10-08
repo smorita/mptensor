@@ -12,7 +12,7 @@ It provides similar interfaces as Numpy and Scipy in Python.
 ## Prerequisites
 
 - C++11 compiler
-- CMake (>= 3.6)
+- CMake (>= 3.16)
 - [LAPACK](https://www.netlib.org/lapack/)
 
 ### For parallel computing
@@ -51,6 +51,19 @@ The default install directory is `/usr/local`. It can be changed by `-DCMAKE_INS
     cmake -DCMAKE_INSTALL_PREFIX=your_install_path ../
 
 See also the [CMake documentation](https://cmake.org/cmake/help/latest/manual/cmake.1.html).
+
+## Tests
+
+Tests use [GoogleTest](https://github.com/google/googletest).
+An installed GoogleTest (>= 1.14) is used if found; otherwise it is downloaded at configure time.
+
+    cmake -B build -DBUILD_TESTS=ON
+    cmake --build build
+    ctest --test-dir build --output-on-failure
+
+With MPI, each test runs with 1, 2, 3, and 4 processes.
+For offline builds, pass a local GoogleTest source tree with `-DFETCHCONTENT_SOURCE_DIR_GOOGLETEST=/path/to/googletest`.
+The old test programs in `tests/legacy` are built only with `-DBUILD_LEGACY_TESTS=ON`.
 
 ## Documents
 
