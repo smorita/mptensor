@@ -151,6 +151,152 @@ inline Index range(const size_t start, const size_t stop) {
 }
 inline Index range(const size_t stop) { return range(0, stop); }
 
+namespace detail {
+//! Normalize one value into [0, n) (or [0, n] if \c end_inclusive).
+/*!
+  \param position Element number shown in the error message; negative for a
+  scalar argument.
+*/
+inline size_t normalize_value(std::ptrdiff_t v, size_t n, bool end_inclusive,
+                              const char* kind, std::ptrdiff_t position) {
+  const std::ptrdiff_t sn = static_cast<std::ptrdiff_t>(n);
+  const bool ok = end_inclusive ? (v >= -sn && v <= sn) : (v >= -sn && v < sn);
+  if (!ok) {
+    std::ostringstream ss;
+    ss << "mptensor: " << kind << " " << v;
+    if (position >= 0) ss << " (position " << position << ")";
+    ss << " is out of range [" << -sn << ", " << sn
+       << (end_inclusive ? "]" : ")");
+    throw std::out_of_range(ss.str());
+  }
+  return static_cast<size_t>(v < 0 ? v + sn : v);
+}
+
+//! [0, 1, ..., n-1]
+inline UIndex identity_axes(size_t n) {
+  UIndex axes;
+  axes.resize(n);
+  for (size_t i = 0; i < n; ++i) axes[i] = i;
+  return axes;
+}
+}  // namespace detail
+
+//! Normalize an axis: [-rank, rank) -> [0, rank).
+inline size_t normalize_axis(std::ptrdiff_t a, size_t rank) {
+  return detail::normalize_value(a, rank, false, "axis", -1);
+}
+
+//! Normalize each axis: [-rank, rank) -> [0, rank).
+inline detail::UIndex normalize_axes(const BasicIndex<std::ptrdiff_t>& axes,
+                                     size_t rank) {
+  detail::UIndex result;
+  result.resize(axes.size());
+  for (size_t i = 0; i < axes.size(); ++i) {
+    result[i] = detail::normalize_value(axes[i], rank, false, "axis",
+                                        static_cast<std::ptrdiff_t>(i));
+  }
+  return result;
+}
+
+//! Normalize an element index: [-n, n) -> [0, n).
+inline size_t normalize_index(std::ptrdiff_t i, size_t n) {
+  return detail::normalize_value(i, n, false, "index", -1);
+}
+
+//! Normalize a global element index against \c shape.
+inline detail::UIndex normalize_index(const BasicIndex<std::ptrdiff_t>& idx,
+                                      const detail::UIndex& shape) {
+  if (idx.size() != shape.size()) {
+    std::ostringstream ss;
+    ss << "mptensor: index " << idx << " has " << idx.size()
+       << " elements, but the tensor has rank " << shape.size();
+    throw std::invalid_argument(ss.str());
+  }
+  detail::UIndex result;
+  result.resize(idx.size());
+  for (size_t k = 0; k < idx.size(); ++k) {
+    result[k] = detail::normalize_value(idx[k], shape[k], false, "index",
+                                        static_cast<std::ptrdiff_t>(k));
+  }
+  return result;
+}
+
+//! Normalize an exclusive slice end: [-n, n] -> [0, n].
+inline size_t normalize_slice_end(std::ptrdiff_t e, size_t n) {
+  return detail::normalize_value(e, n, true, "slice end", -1);
+}
+
+//! Convert a public shape to the internal type. Negative sizes are invalid.
+inline detail::UIndex to_internal_shape(const BasicIndex<std::ptrdiff_t>& s) {
+  detail::UIndex result;
+  result.resize(s.size());
+  for (size_t k = 0; k < s.size(); ++k) {
+    if (s[k] < 0) {
+      std::ostringstream ss;
+      ss << "mptensor: shape " << s << " has a negative size at position " << k;
+      throw std::invalid_argument(ss.str());
+    }
+    result[k] = static_cast<size_t>(s[k]);
+  }
+  return result;
+}
+
+//! Convert an internal index to the public type.
+inline BasicIndex<std::ptrdiff_t> to_public(const detail::UIndex& u) {
+  BasicIndex<std::ptrdiff_t> result;
+  result.resize(u.size());
+  for (size_t k = 0; k < u.size(); ++k) {
+    result[k] = detail::checked_index_cast<std::ptrdiff_t>(u[k]);
+  }
+  return result;
+}
+
+namespace detail {
+//! Normalize a scalar slice [begin, end) on an axis of size \c n.
+/*! \throw std::out_of_range if a bound is out of range or the slice is empty. */
+inline std::pair<size_t, size_t> normalize_slice_range(std::ptrdiff_t begin,
+                                                       std::ptrdiff_t end,
+                                                       size_t n, size_t axis) {
+  const std::ptrdiff_t pos = static_cast<std::ptrdiff_t>(axis);
+  const size_t b = normalize_value(begin, n, false, "slice begin", pos);
+  const size_t e = normalize_value(end, n, true, "slice end", pos);
+  if (b >= e) {
+    std::ostringstream ss;
+    ss << "mptensor: slice [" << begin << ", " << end << ") on axis " << axis
+       << " is empty (normalized to [" << b << ", " << e << "))";
+    throw std::out_of_range(ss.str());
+  }
+  return {b, e};
+}
+
+//! Normalize Index-style slice bounds; raw begin[r] == end[r] means the full axis.
+inline void normalize_slice_ranges(const BasicIndex<std::ptrdiff_t>& begin,
+                                   const BasicIndex<std::ptrdiff_t>& end,
+                                   const UIndex& shape, UIndex& ubegin,
+                                   UIndex& uend) {
+  const size_t rank = shape.size();
+  if (begin.size() != rank || end.size() != rank) {
+    std::ostringstream ss;
+    ss << "mptensor: slice bounds " << begin << " and " << end
+       << " do not match the tensor rank " << rank;
+    throw std::invalid_argument(ss.str());
+  }
+  ubegin.resize(rank);
+  uend.resize(rank);
+  for (size_t r = 0; r < rank; ++r) {
+    if (begin[r] == end[r]) {
+      ubegin[r] = 0;
+      uend[r] = shape[r];
+    } else {
+      const std::pair<size_t, size_t> be =
+          normalize_slice_range(begin[r], end[r], shape[r], r);
+      ubegin[r] = be.first;
+      uend[r] = be.second;
+    }
+  }
+}
+}  // namespace detail
+
 //! \}
 }  // namespace mptensor
 
