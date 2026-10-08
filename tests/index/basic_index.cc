@@ -101,6 +101,8 @@ TEST(BasicIndex, Range) {
   EXPECT_EQ(mptensor::range(3), mptensor::Index(0, 1, 2));
   EXPECT_EQ(mptensor::range(2, 4), mptensor::Index(2, 3));
   EXPECT_EQ(mptensor::range(2, 2).size(), 0u);
+  EXPECT_EQ(mptensor::range(-2, 1), mptensor::Index(-2, -1, 0));
+  EXPECT_THROW(mptensor::range(3, 2), std::invalid_argument);
 }
 
 }  // namespace

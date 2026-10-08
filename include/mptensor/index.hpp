@@ -135,21 +135,11 @@ BasicIndex<T> operator+(const BasicIndex<T>& lhs, const BasicIndex<T>& rhs) {
   return (BasicIndex<T>(lhs) += rhs);
 }
 
-using Index = BasicIndex<std::size_t>;
+using Index = BasicIndex<std::ptrdiff_t>;  //!< Public index type (also Axes and Shape).
 
 namespace detail {
 using UIndex = BasicIndex<std::size_t>;
 }  // namespace detail
-
-//! Create an increasing sequence. It is similar to range() in python.
-inline Index range(const size_t start, const size_t stop) {
-  assert(start <= stop);
-  Index index;
-  index.resize(stop - start);
-  for (size_t i = start; i < stop; ++i) index[i - start] = i;
-  return index;
-}
-inline Index range(const size_t stop) { return range(0, stop); }
 
 namespace detail {
 //! Normalize one value into [0, n) (or [0, n] if \c end_inclusive).
@@ -296,6 +286,23 @@ inline void normalize_slice_ranges(const BasicIndex<std::ptrdiff_t>& begin,
   }
 }
 }  // namespace detail
+
+//! Create an increasing sequence [start, stop). It is similar to range() in python.
+/*! \throw std::invalid_argument if <tt>start > stop</tt>. */
+inline Index range(const std::ptrdiff_t start, const std::ptrdiff_t stop) {
+  if (start > stop) {
+    std::ostringstream ss;
+    ss << "mptensor: range(" << start << ", " << stop << ") has start > stop";
+    throw std::invalid_argument(ss.str());
+  }
+  Index index;
+  index.resize(static_cast<size_t>(stop - start));
+  for (std::ptrdiff_t i = start; i < stop; ++i) {
+    index[static_cast<size_t>(i - start)] = i;
+  }
+  return index;
+}
+inline Index range(const std::ptrdiff_t stop) { return range(0, stop); }
 
 //! \}
 }  // namespace mptensor

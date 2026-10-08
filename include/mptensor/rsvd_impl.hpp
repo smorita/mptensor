@@ -82,28 +82,30 @@ template <typename MatrixType>
 int rsvd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
          Tensor<MatrixType> &u, std::vector<double> &s, Tensor<MatrixType> &vt,
          const size_t target_rank, const size_t oversamp) {
-  assert(axes_row.size() > 0);
-  assert(axes_col.size() > 0);
-  assert(debug::check_svd_axes(axes_row, axes_col, a.rank()));
+  const detail::UIndex row = normalize_axes(axes_row, a.rank());
+  const detail::UIndex col = normalize_axes(axes_col, a.rank());
+  assert(row.size() > 0);
+  assert(col.size() > 0);
+  assert(debug::check_svd_axes(row, col, a.rank()));
 
   const size_t rank = a.rank();
-  const size_t rank_row = axes_row.size();
-  const size_t rank_col = axes_col.size();
+  const size_t rank_row = row.size();
+  const size_t rank_col = col.size();
   int info;
 
-  Axes axes = axes_row + axes_col;
-  Tensor<MatrixType> a_t = transpose(a, axes, rank_row);
-  const Shape &shape = a_t.shape();
+  const detail::UIndex axes = row + col;
+  Tensor<MatrixType> a_t = detail::transpose_impl(a, axes, rank_row);
+  const detail::UIndex &shape = a_t.internal_shape();
 
   Tensor<MatrixType> q;
   {
-    Shape shape_omega;
+    detail::UIndex shape_omega;
     shape_omega.resize(rank_col + 1);
     for (size_t i = 0; i < rank_col; ++i) shape_omega[i] = shape[i + rank_row];
     shape_omega[rank_col] = target_rank + oversamp;
 
     // Tensor<Matrix,C> omega = random_tensor<C>(a.get_comm(), shape_omega);
-    Tensor<MatrixType> omega(a.get_comm(), shape_omega, rank_col);
+    Tensor<MatrixType> omega(a.get_comm(), shape_omega, rank_col, detail::internal);
     random_tensor::fill(omega);
 
     Tensor<MatrixType> r;
@@ -153,17 +155,18 @@ int rsvd(Func1 &multiply_row, Func2 &multiply_col, const Shape &shape_row,
          const Shape &shape_col, Tensor<MatrixType> &u, std::vector<double> &s,
          Tensor<MatrixType> &vt, const size_t target_rank,
          const size_t oversamp) {
+  (void)to_internal_shape(shape_row);  // validate
   const size_t rank_row = shape_row.size();
   const size_t rank_col = shape_col.size();
 
   int info;
   Tensor<MatrixType> q;
   {
-    Shape shape_omega = shape_col;
+    detail::UIndex shape_omega = to_internal_shape(shape_col);
     shape_omega.resize(rank_col + 1);
     shape_omega[rank_col] = target_rank + oversamp;
 
-    Tensor<MatrixType> omega(u.get_comm(), shape_omega, rank_col);
+    Tensor<MatrixType> omega(u.get_comm(), shape_omega, rank_col, detail::internal);
     random_tensor::fill(omega);
 
     Tensor<MatrixType> r;
