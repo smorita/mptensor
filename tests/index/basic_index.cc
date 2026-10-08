@@ -68,6 +68,24 @@ TEST(BasicIndex, FromVector) {
   EXPECT_EQ(idx[1], -6);
 }
 
+enum UnscopedAxis { kAxis0, kAxis1, kAxis2 };
+
+TEST(BasicIndex, AcceptsUnscopedEnums) {
+  const SIndex idx(kAxis2, kAxis0);
+  EXPECT_EQ(idx, SIndex(2, 0));
+  const SIndex single = kAxis1;
+  EXPECT_EQ(single, SIndex(1));
+}
+
+TEST(BasicIndex, FromVectorOfAnotherIntegerType) {
+  const std::vector<std::size_t> v{1, 2};
+  const SIndex idx(v);
+  EXPECT_EQ(idx, SIndex(1, 2));
+  const SIndex implicit = v;
+  EXPECT_EQ(implicit, SIndex(1, 2));
+  EXPECT_THROW(UIndex(std::vector<int>{0, -1}), std::out_of_range);
+}
+
 TEST(BasicIndex, PushResizeAssign) {
   UIndex idx;
   idx.push(4);

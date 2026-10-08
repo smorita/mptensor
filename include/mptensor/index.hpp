@@ -47,24 +47,40 @@ namespace mptensor {
 //! \{
 
 namespace detail {
+//! True for unscoped enumerations (implicitly convertible to their underlying type).
+template <typename I, bool = std::is_enum_v<I>>
+struct is_unscoped_enum : std::false_type {};
+template <typename I>
+struct is_unscoped_enum<I, true>
+    : std::bool_constant<std::is_convertible_v<I, std::underlying_type_t<I>>> {};
+
+//! True for integer types and unscoped enumerations (accepted as index values).
+template <typename I>
+inline constexpr bool is_index_value_v =
+    std::is_integral_v<I> || is_unscoped_enum<I>::value;
+
 //! Convert an integer to \c T, or throw std::out_of_range if it does not fit.
 template <typename T, typename I>
 T checked_index_cast(I value) {
-  static_assert(std::is_integral_v<I>, "index values must be integers");
-  bool fits = true;
-  if constexpr (std::is_signed_v<I> && std::is_unsigned_v<T>) {
-    fits = (value >= 0);
-  } else if constexpr (std::is_unsigned_v<I> && std::is_signed_v<T>) {
-    fits = (value <= static_cast<std::make_unsigned_t<T>>(
-                         std::numeric_limits<T>::max()));
+  static_assert(is_index_value_v<I>, "index values must be integers");
+  if constexpr (std::is_enum_v<I>) {
+    return checked_index_cast<T>(static_cast<std::underlying_type_t<I>>(value));
+  } else {
+    bool fits = true;
+    if constexpr (std::is_signed_v<I> && std::is_unsigned_v<T>) {
+      fits = (value >= 0);
+    } else if constexpr (std::is_unsigned_v<I> && std::is_signed_v<T>) {
+      fits = (value <= static_cast<std::make_unsigned_t<T>>(
+                           std::numeric_limits<T>::max()));
+    }
+    if (!fits) {
+      std::ostringstream ss;
+      ss << "mptensor: index value " << +value << " is out of range for "
+         << (std::is_signed_v<T> ? "a signed" : "an unsigned") << " index";
+      throw std::out_of_range(ss.str());
+    }
+    return static_cast<T>(value);
   }
-  if (!fits) {
-    std::ostringstream ss;
-    ss << "mptensor: index value " << +value << " is out of range for "
-       << (std::is_signed_v<T> ? "a signed" : "an unsigned") << " index";
-    throw std::out_of_range(ss.str());
-  }
-  return static_cast<T>(value);
 }
 }  // namespace detail
 
@@ -81,13 +97,21 @@ class BasicIndex {
 
   BasicIndex() = default;
   BasicIndex(const index_t& index) : idx(index) {}
+  //! Converting constructor from a vector of another integer type.
+  template <typename U,
+            typename = std::enable_if_t<detail::is_index_value_v<U> &&
+                                        !std::is_same_v<U, T>>>
+  BasicIndex(const std::vector<U>& index) {
+    idx.reserve(index.size());
+    for (const U& v : index) idx.push_back(detail::checked_index_cast<T>(v));
+  }
   BasicIndex(std::initializer_list<T> list) : idx(list) {}
 
   //! Python-like list literal, e.g. <tt>Index(0, 1, -1)</tt>.
   /*! Not explicit: <tt>Axes a = 2;</tt> creates <tt>[2]</tt>. */
   template <typename... Ints,
             typename = std::enable_if_t<(sizeof...(Ints) > 0) &&
-                                        (std::is_integral_v<Ints> && ...)>>
+                                        (detail::is_index_value_v<Ints> && ...)>>
   BasicIndex(Ints... js) : idx{detail::checked_index_cast<T>(js)...} {}
 
   const T& operator[](size_t i) const { return idx[i]; }

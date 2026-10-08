@@ -885,9 +885,8 @@ Tensor<MatrixType> &Tensor<MatrixType>::set_slice(const Tensor<MatrixType> &a,
   const std::pair<size_t, size_t> be =
       detail::normalize_slice_range(i_begin, i_end, Dim[ax], ax);
   const size_t begin = be.first;
-  const size_t end = be.second;
   assert(rank() == a.rank());
-  assert(end - begin == a.internal_shape()[ax]);
+  assert(be.second - begin == a.internal_shape()[ax]);
 
   /* create lists of local position and destination rank */
   const size_t local_size = a.local_size();
