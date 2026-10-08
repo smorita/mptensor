@@ -41,10 +41,6 @@
 
 namespace mptensor {
 
-/* Alias */
-using Axes  = Index;
-using Shape = Index;
-
 namespace detail {
 //! Tag for the internal constructor that takes a detail::UShape shape.
 struct internal_t {

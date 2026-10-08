@@ -160,7 +160,9 @@ BasicIndex<T> operator+(const BasicIndex<T>& lhs, const BasicIndex<T>& rhs) {
   return (BasicIndex<T>(lhs) += rhs);
 }
 
-using Index = BasicIndex<std::ptrdiff_t>;  //!< Public index type (also Axes and Shape).
+using Index = BasicIndex<std::ptrdiff_t>;  //!< Public element index.
+using Axes = Index;                        //!< Public axes.
+using Shape = Index;                       //!< Public shape.
 
 namespace detail {
 using UIndex = BasicIndex<std::size_t>;  //!< Internal element index.
@@ -213,8 +215,7 @@ inline std::pair<size_t, size_t> normalize_slice_range(std::ptrdiff_t begin,
 }
 
 //! Normalize Index-style slice bounds; raw begin[r] == end[r] means the full axis.
-inline void normalize_slice_ranges(const BasicIndex<std::ptrdiff_t>& begin,
-                                   const BasicIndex<std::ptrdiff_t>& end,
+inline void normalize_slice_ranges(const Index& begin, const Index& end,
                                    const UShape& shape, UIndex& ubegin,
                                    UIndex& uend) {
   const size_t rank = shape.size();
@@ -246,8 +247,7 @@ inline size_t normalize_axis(std::ptrdiff_t a, size_t rank) {
 }
 
 //! Normalize each axis: [-rank, rank) -> [0, rank).
-inline detail::UAxes normalize_axes(const BasicIndex<std::ptrdiff_t>& axes,
-                                    size_t rank) {
+inline detail::UAxes normalize_axes(const Axes& axes, size_t rank) {
   detail::UAxes result;
   result.resize(axes.size());
   for (size_t i = 0; i < axes.size(); ++i) {
@@ -263,7 +263,7 @@ inline size_t normalize_index(std::ptrdiff_t i, size_t n) {
 }
 
 //! Normalize a global element index against \c shape.
-inline detail::UIndex normalize_index(const BasicIndex<std::ptrdiff_t>& idx,
+inline detail::UIndex normalize_index(const Index& idx,
                                       const detail::UShape& shape) {
   if (idx.size() != shape.size()) {
     std::ostringstream ss;
@@ -286,7 +286,7 @@ inline size_t normalize_slice_end(std::ptrdiff_t e, size_t n) {
 }
 
 //! Convert a public shape to the internal type. Negative sizes are invalid.
-inline detail::UShape to_internal_shape(const BasicIndex<std::ptrdiff_t>& s) {
+inline detail::UShape to_internal_shape(const Shape& s) {
   detail::UShape result;
   result.resize(s.size());
   for (size_t k = 0; k < s.size(); ++k) {
@@ -301,8 +301,8 @@ inline detail::UShape to_internal_shape(const BasicIndex<std::ptrdiff_t>& s) {
 }
 
 //! Convert an internal index to the public type.
-inline BasicIndex<std::ptrdiff_t> to_public(const detail::UIndex& u) {
-  BasicIndex<std::ptrdiff_t> result;
+inline Index to_public(const detail::UIndex& u) {
+  Index result;
   result.resize(u.size());
   for (size_t k = 0; k < u.size(); ++k) {
     result[k] = detail::checked_index_cast<std::ptrdiff_t>(u[k]);
