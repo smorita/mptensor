@@ -4,7 +4,7 @@
 
 **Goal:** Make the public `Index`/`Axes`/`Shape` signed (`std::ptrdiff_t`) so that axes and element indices accept numpy-style negative values, while all internal computation keeps using `size_t`.
 
-**Architecture:** `index.hpp` becomes a header-only class template `BasicIndex<T>` with `Index = BasicIndex<std::ptrdiff_t>` (public) and `detail::UIndex = BasicIndex<size_t>` (internal). Public functions normalize their arguments once at the entry point with `normalize_*` / `to_internal_shape`, which throw `std::out_of_range` / `std::invalid_argument`; everything after that works on `detail::UIndex`. Internal code calls `detail::transpose_impl` / `detail::reshape_impl` and a tagged constructor `Tensor(comm, UIndex, urank, detail::internal)` to avoid round trips through the public type.
+**Architecture:** `index.hpp` becomes a header-only class template `BasicIndex<T>` with `Index = BasicIndex<std::ptrdiff_t>` (public) and `internal::UIndex = BasicIndex<size_t>` (internal). Public functions normalize their arguments once at the entry point with `normalize_*` / `to_internal_shape`, which throw `std::out_of_range` / `std::invalid_argument`; everything after that works on `internal::UIndex`. Internal code calls `internal::transpose_impl` / `internal::reshape_impl` and a tagged constructor `Tensor(comm, UIndex, urank, internal::normalized)` to avoid round trips through the public type.
 
 **Tech Stack:** C++17, CMake ≥ 3.16, GoogleTest (via the infrastructure from PR #10), MPI + ScaLAPACK / LAPACK.
 
@@ -45,9 +45,9 @@
 | `include/mptensor/index.hpp` | Rewrite: `BasicIndex<T>`, aliases, `range`, conversion functions, `detail` helpers |
 | `include/mptensor/index_constructor.hpp`, `index_constructor.py`, `src/index.cc` | Delete |
 | `src/CMakeLists.txt`, `src/Makefile.depend`, `doc/doxygen/Doxyfile`, `doc/doxygen/Doxyfile.in` | Remove references to the deleted files |
-| `include/mptensor/tensor.hpp` | Declarations: internal types, tagged constructor, `internal_shape()`, `ptrdiff_t` scalar arguments, `detail::transpose_impl/reshape_impl` |
-| `include/mptensor/tensor_impl.hpp` | Normalize at entry points; internal code on `detail::UIndex` |
-| `include/mptensor/rsvd_impl.hpp`, `include/mptensor/file_io/load.hpp`, `src/tensor.cc` | Internal code on `detail::UIndex` |
+| `include/mptensor/tensor.hpp` | Declarations: internal types, tagged constructor, `internal_shape()`, `ptrdiff_t` scalar arguments, `internal::transpose_impl/reshape_impl` |
+| `include/mptensor/tensor_impl.hpp` | Normalize at entry points; internal code on `internal::UIndex` |
+| `include/mptensor/rsvd_impl.hpp`, `include/mptensor/file_io/load.hpp`, `src/tensor.cc` | Internal code on `internal::UIndex` |
 | `tests/index/CMakeLists.txt`, `tests/index/basic_index.cc`, `tests/index/conversions.cc` | New unit tests |
 | `tests/tensor/negative_index.cc` | New tensor-level tests |
 | `tests/CMakeLists.txt`, `tests/tensor/CMakeLists.txt` | Register the new tests |
@@ -67,8 +67,8 @@
 **Interfaces:**
 - Produces:
   - `template <typename T> class mptensor::BasicIndex` with `value_type`, `index_t`, constructors `()`, `(const index_t&)`, `(std::initializer_list<T>)`, variadic `(Ints...)`; members `operator[]`, `size`, `push(T)`, `resize`, `assign(size_t, const T[])`, `sort`, `inverse() const`, `operator==`, `operator+=`; free `operator<<`, `operator+`.
-  - `template <typename T, typename I> T mptensor::detail::checked_index_cast(I)` (throws `std::out_of_range`).
-  - `using Index = BasicIndex<std::size_t>;` (temporary, flipped in Task 3), `namespace detail { using UIndex = BasicIndex<std::size_t>; }`.
+  - `template <typename T, typename I> T mptensor::internal::checked_index_cast(I)` (throws `std::out_of_range`).
+  - `using Index = BasicIndex<std::size_t>;` (temporary, flipped in Task 3), `namespace internal { using UIndex = BasicIndex<std::size_t>; }`.
   - `Index range(size_t start, size_t stop)`, `Index range(size_t stop)` (unchanged semantics).
 
 - [ ] **Step 1: Write the failing test `tests/index/basic_index.cc`**
@@ -224,7 +224,7 @@ namespace mptensor {
 //! \ingroup Index
 //! \{
 
-namespace detail {
+namespace internal {
 //! Convert an integer to \c T, or throw std::out_of_range if it does not fit.
 template <typename T, typename I>
 T checked_index_cast(I value) {
@@ -244,11 +244,11 @@ T checked_index_cast(I value) {
   }
   return static_cast<T>(value);
 }
-}  // namespace detail
+}  // namespace internal
 
 //! List of non-negative or signed integers used as an index, axes, or shape.
 /*!
-  \c Index (= \c Axes = \c Shape) is the public type. \c detail::UIndex is
+  \c Index (= \c Axes = \c Shape) is the public type. \c internal::UIndex is
   used inside the library.
 */
 template <typename T>
@@ -266,7 +266,7 @@ class BasicIndex {
   template <typename... Ints,
             typename = std::enable_if_t<(sizeof...(Ints) > 0) &&
                                         (std::is_integral_v<Ints> && ...)>>
-  BasicIndex(Ints... js) : idx{detail::checked_index_cast<T>(js)...} {}
+  BasicIndex(Ints... js) : idx{internal::checked_index_cast<T>(js)...} {}
 
   const T& operator[](size_t i) const { return idx[i]; }
   T& operator[](size_t i) { return idx[i]; }
@@ -315,9 +315,9 @@ BasicIndex<T> operator+(const BasicIndex<T>& lhs, const BasicIndex<T>& rhs) {
 
 using Index = BasicIndex<std::size_t>;
 
-namespace detail {
+namespace internal {
 using UIndex = BasicIndex<std::size_t>;
-}  // namespace detail
+}  // namespace internal
 
 //! Create an increasing sequence. It is similar to range() in python.
 inline Index range(const size_t start, const size_t stop) {
@@ -374,18 +374,18 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Modify: `tests/index/CMakeLists.txt`
 
 **Interfaces:**
-- Consumes: `BasicIndex<T>`, `detail::UIndex` (Task 1).
+- Consumes: `BasicIndex<T>`, `internal::UIndex` (Task 1).
 - Produces (namespace `mptensor`):
   - `size_t normalize_axis(std::ptrdiff_t a, size_t rank)`
-  - `detail::UIndex normalize_axes(const BasicIndex<std::ptrdiff_t>& axes, size_t rank)`
+  - `internal::UIndex normalize_axes(const BasicIndex<std::ptrdiff_t>& axes, size_t rank)`
   - `size_t normalize_index(std::ptrdiff_t i, size_t n)`
-  - `detail::UIndex normalize_index(const BasicIndex<std::ptrdiff_t>& idx, const detail::UIndex& shape)`
+  - `internal::UIndex normalize_index(const BasicIndex<std::ptrdiff_t>& idx, const internal::UIndex& shape)`
   - `size_t normalize_slice_end(std::ptrdiff_t e, size_t n)`
-  - `detail::UIndex to_internal_shape(const BasicIndex<std::ptrdiff_t>& s)`
-  - `BasicIndex<std::ptrdiff_t> to_public(const detail::UIndex& u)`
-  - `detail::UIndex detail::identity_axes(size_t n)` — `[0, 1, ..., n-1]`
-  - `std::pair<size_t, size_t> detail::normalize_slice_range(std::ptrdiff_t begin, std::ptrdiff_t end, size_t n, size_t axis)` — scalar slice; throws if empty
-  - `void detail::normalize_slice_ranges(const BasicIndex<std::ptrdiff_t>& begin, const BasicIndex<std::ptrdiff_t>& end, const detail::UIndex& shape, detail::UIndex& ubegin, detail::UIndex& uend)` — `Index` slice; raw `begin[r] == end[r]` gives `[0, shape[r])`
+  - `internal::UIndex to_internal_shape(const BasicIndex<std::ptrdiff_t>& s)`
+  - `BasicIndex<std::ptrdiff_t> to_public(const internal::UIndex& u)`
+  - `internal::UIndex internal::identity_axes(size_t n)` — `[0, 1, ..., n-1]`
+  - `std::pair<size_t, size_t> internal::normalize_slice_range(std::ptrdiff_t begin, std::ptrdiff_t end, size_t n, size_t axis)` — scalar slice; throws if empty
+  - `void internal::normalize_slice_ranges(const BasicIndex<std::ptrdiff_t>& begin, const BasicIndex<std::ptrdiff_t>& end, const internal::UIndex& shape, internal::UIndex& ubegin, internal::UIndex& uend)` — `Index` slice; raw `begin[r] == end[r]` gives `[0, shape[r])`
 
 (After Task 3, `BasicIndex<std::ptrdiff_t>` is `Index`/`Axes`/`Shape`.)
 
@@ -403,7 +403,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 namespace {
 
 using SIndex = mptensor::BasicIndex<std::ptrdiff_t>;
-using mptensor::detail::UIndex;
+using mptensor::internal::UIndex;
 
 TEST(NormalizeAxis, Boundaries) {
   EXPECT_EQ(mptensor::normalize_axis(-3, 3), 0u);
@@ -477,12 +477,12 @@ TEST(ToPublic, RoundTrip) {
 }
 
 TEST(IdentityAxes, Sequence) {
-  EXPECT_EQ(mptensor::detail::identity_axes(3), UIndex(0, 1, 2));
-  EXPECT_EQ(mptensor::detail::identity_axes(0).size(), 0u);
+  EXPECT_EQ(mptensor::internal::identity_axes(3), UIndex(0, 1, 2));
+  EXPECT_EQ(mptensor::internal::identity_axes(0).size(), 0u);
 }
 
 TEST(NormalizeSliceRange, ScalarSlice) {
-  using mptensor::detail::normalize_slice_range;
+  using mptensor::internal::normalize_slice_range;
   EXPECT_EQ(normalize_slice_range(1, -1, 5, 0), std::make_pair<std::size_t, std::size_t>(1, 4));
   EXPECT_EQ(normalize_slice_range(-2, 5, 5, 0), std::make_pair<std::size_t, std::size_t>(3, 5));
   EXPECT_THROW(normalize_slice_range(2, -3, 5, 0), std::out_of_range);  // empty
@@ -492,14 +492,14 @@ TEST(NormalizeSliceRange, ScalarSlice) {
 
 TEST(NormalizeSliceRanges, IndexSlice) {
   UIndex b, e;
-  mptensor::detail::normalize_slice_ranges(SIndex(0, 1, -2, 3), SIndex(0, -1, 5, 3),
+  mptensor::internal::normalize_slice_ranges(SIndex(0, 1, -2, 3), SIndex(0, -1, 5, 3),
                                            UIndex(5, 5, 5, 5), b, e);
   EXPECT_EQ(b, UIndex(0, 1, 3, 0));  // raw equal -> full axis
   EXPECT_EQ(e, UIndex(5, 4, 5, 5));
-  EXPECT_THROW(mptensor::detail::normalize_slice_ranges(
+  EXPECT_THROW(mptensor::internal::normalize_slice_ranges(
                    SIndex(2), SIndex(-3), UIndex(5), b, e),
                std::out_of_range);
-  EXPECT_THROW(mptensor::detail::normalize_slice_ranges(
+  EXPECT_THROW(mptensor::internal::normalize_slice_ranges(
                    SIndex(0, 0), SIndex(1), UIndex(5, 5), b, e),
                std::invalid_argument);
 }
@@ -518,7 +518,7 @@ Expected: errors such as `no member named 'normalize_axis' in namespace 'mptenso
 Append to `include/mptensor/index.hpp`, after the `range` overloads and before `//! \}`:
 
 ```cpp
-namespace detail {
+namespace internal {
 //! Normalize one value into [0, n) (or [0, n] if \c end_inclusive).
 /*!
   \param position Element number shown in the error message; negative for a
@@ -546,20 +546,20 @@ inline UIndex identity_axes(size_t n) {
   for (size_t i = 0; i < n; ++i) axes[i] = i;
   return axes;
 }
-}  // namespace detail
+}  // namespace internal
 
 //! Normalize an axis: [-rank, rank) -> [0, rank).
 inline size_t normalize_axis(std::ptrdiff_t a, size_t rank) {
-  return detail::normalize_value(a, rank, false, "axis", -1);
+  return internal::normalize_value(a, rank, false, "axis", -1);
 }
 
 //! Normalize each axis: [-rank, rank) -> [0, rank).
-inline detail::UIndex normalize_axes(const BasicIndex<std::ptrdiff_t>& axes,
+inline internal::UIndex normalize_axes(const BasicIndex<std::ptrdiff_t>& axes,
                                      size_t rank) {
-  detail::UIndex result;
+  internal::UIndex result;
   result.resize(axes.size());
   for (size_t i = 0; i < axes.size(); ++i) {
-    result[i] = detail::normalize_value(axes[i], rank, false, "axis",
+    result[i] = internal::normalize_value(axes[i], rank, false, "axis",
                                         static_cast<std::ptrdiff_t>(i));
   }
   return result;
@@ -567,22 +567,22 @@ inline detail::UIndex normalize_axes(const BasicIndex<std::ptrdiff_t>& axes,
 
 //! Normalize an element index: [-n, n) -> [0, n).
 inline size_t normalize_index(std::ptrdiff_t i, size_t n) {
-  return detail::normalize_value(i, n, false, "index", -1);
+  return internal::normalize_value(i, n, false, "index", -1);
 }
 
 //! Normalize a global element index against \c shape.
-inline detail::UIndex normalize_index(const BasicIndex<std::ptrdiff_t>& idx,
-                                      const detail::UIndex& shape) {
+inline internal::UIndex normalize_index(const BasicIndex<std::ptrdiff_t>& idx,
+                                      const internal::UIndex& shape) {
   if (idx.size() != shape.size()) {
     std::ostringstream ss;
     ss << "mptensor: index " << idx << " has " << idx.size()
        << " elements, but the tensor has rank " << shape.size();
     throw std::invalid_argument(ss.str());
   }
-  detail::UIndex result;
+  internal::UIndex result;
   result.resize(idx.size());
   for (size_t k = 0; k < idx.size(); ++k) {
-    result[k] = detail::normalize_value(idx[k], shape[k], false, "index",
+    result[k] = internal::normalize_value(idx[k], shape[k], false, "index",
                                         static_cast<std::ptrdiff_t>(k));
   }
   return result;
@@ -590,12 +590,12 @@ inline detail::UIndex normalize_index(const BasicIndex<std::ptrdiff_t>& idx,
 
 //! Normalize an exclusive slice end: [-n, n] -> [0, n].
 inline size_t normalize_slice_end(std::ptrdiff_t e, size_t n) {
-  return detail::normalize_value(e, n, true, "slice end", -1);
+  return internal::normalize_value(e, n, true, "slice end", -1);
 }
 
 //! Convert a public shape to the internal type. Negative sizes are invalid.
-inline detail::UIndex to_internal_shape(const BasicIndex<std::ptrdiff_t>& s) {
-  detail::UIndex result;
+inline internal::UIndex to_internal_shape(const BasicIndex<std::ptrdiff_t>& s) {
+  internal::UIndex result;
   result.resize(s.size());
   for (size_t k = 0; k < s.size(); ++k) {
     if (s[k] < 0) {
@@ -609,16 +609,16 @@ inline detail::UIndex to_internal_shape(const BasicIndex<std::ptrdiff_t>& s) {
 }
 
 //! Convert an internal index to the public type.
-inline BasicIndex<std::ptrdiff_t> to_public(const detail::UIndex& u) {
+inline BasicIndex<std::ptrdiff_t> to_public(const internal::UIndex& u) {
   BasicIndex<std::ptrdiff_t> result;
   result.resize(u.size());
   for (size_t k = 0; k < u.size(); ++k) {
-    result[k] = detail::checked_index_cast<std::ptrdiff_t>(u[k]);
+    result[k] = internal::checked_index_cast<std::ptrdiff_t>(u[k]);
   }
   return result;
 }
 
-namespace detail {
+namespace internal {
 //! Normalize a scalar slice [begin, end) on an axis of size \c n.
 /*! \throw std::out_of_range if a bound is out of range or the slice is empty. */
 inline std::pair<size_t, size_t> normalize_slice_range(std::ptrdiff_t begin,
@@ -662,7 +662,7 @@ inline void normalize_slice_ranges(const BasicIndex<std::ptrdiff_t>& begin,
     }
   }
 }
-}  // namespace detail
+}  // namespace internal
 ```
 
 - [ ] **Step 4: Run the tests and the whole suite**
@@ -689,14 +689,14 @@ This is one cohesive change: once `Index` becomes signed, the whole library must
 
 | In internal code | becomes |
 |---|---|
-| local `Index`/`Axes`/`Shape` holding internal values | `detail::UIndex` |
+| local `Index`/`Axes`/`Shape` holding internal values | `internal::UIndex` |
 | `x.shape()` used for computation | `x.internal_shape()` |
-| `transpose(t, axes, urank)` with internal `axes` | `detail::transpose_impl(t, axes, urank)` |
-| `reshape(t, shape)` with internal `shape` | `detail::reshape_impl(t, shape)` |
-| `Tensor<M>(comm, shape, urank)` / `Tensor<M> x(comm, shape, urank)` with internal `shape` | add `, detail::internal` as the last argument |
-| `Tensor<M> x(comm, shape)` with internal `shape` | `Tensor<M> x(comm, shape, shape.size() / 2, detail::internal)` |
-| literal `Shape(a, b)` / `Axes(a, b)` passed to the `_impl` functions or the tagged constructor | `detail::UIndex(a, b)` |
-| `range(n)` compared with or assigned to `axes_map` | `detail::identity_axes(n)` |
+| `transpose(t, axes, urank)` with internal `axes` | `internal::transpose_impl(t, axes, urank)` |
+| `reshape(t, shape)` with internal `shape` | `internal::reshape_impl(t, shape)` |
+| `Tensor<M>(comm, shape, urank)` / `Tensor<M> x(comm, shape, urank)` with internal `shape` | add `, internal::normalized` as the last argument |
+| `Tensor<M> x(comm, shape)` with internal `shape` | `Tensor<M> x(comm, shape, shape.size() / 2, internal::normalized)` |
+| literal `Shape(a, b)` / `Axes(a, b)` passed to the `_impl` functions or the tagged constructor | `internal::UIndex(a, b)` |
+| `range(n)` compared with or assigned to `axes_map` | `internal::identity_axes(n)` |
 
 Calls to *public* functions with literal non-negative arguments (e.g. `svd(a, Axes(0), Axes(1), s)`, `slice(u, 1, 0, target_rank)`, `tensordot(..., Axes(n), Axes(0))`, `range(0, rank_row)` in `rsvd`) stay as they are: they go through normalization once, which is a no-op for non-negative values.
 
@@ -708,11 +708,11 @@ Calls to *public* functions with literal non-negative arguments (e.g. `svd(a, Ax
 - Consumes: everything from Tasks 1–2.
 - Produces:
   - `using Index = BasicIndex<std::ptrdiff_t>;` ; `Index range(std::ptrdiff_t start, std::ptrdiff_t stop)` (throws `std::invalid_argument` if `start > stop`), `Index range(std::ptrdiff_t stop)`.
-  - `namespace detail { struct internal_t { explicit internal_t() = default; }; inline constexpr internal_t internal{}; }` (in `tensor.hpp`).
-  - `Tensor(const comm_type&, const detail::UIndex& shape, size_t upper_rank, detail::internal_t)`.
-  - `Shape Tensor::shape() const`; `const detail::UIndex& Tensor::internal_shape() const`; `const detail::UIndex& Tensor::get_axes_map() const`.
-  - `void global_index_fast(size_t, detail::UIndex&) const`; `void local_position(const detail::UIndex&, int&, size_t&) const`.
-  - `template <typename M> Tensor<M> detail::transpose_impl(const Tensor<M>&, const detail::UIndex& axes, size_t urank)`; `template <typename M> Tensor<M> detail::reshape_impl(const Tensor<M>&, const detail::UIndex& shape)`.
+  - `namespace internal { struct internal_t { explicit internal_t() = default; }; inline constexpr internal_t internal{}; }` (in `tensor.hpp`).
+  - `Tensor(const comm_type&, const internal::UIndex& shape, size_t upper_rank, internal::normalized_t)`.
+  - `Shape Tensor::shape() const`; `const internal::UIndex& Tensor::internal_shape() const`; `const internal::UIndex& Tensor::get_axes_map() const`.
+  - `void global_index_fast(size_t, internal::UIndex&) const`; `void local_position(const internal::UIndex&, int&, size_t&) const`.
+  - `template <typename M> Tensor<M> internal::transpose_impl(const Tensor<M>&, const internal::UIndex& axes, size_t urank)`; `template <typename M> Tensor<M> internal::reshape_impl(const Tensor<M>&, const internal::UIndex& shape)`.
   - Scalar arguments `n_axes`, `i_begin`, `i_end` are `std::ptrdiff_t`.
 
 - [ ] **Step 1: Write the failing test `tests/tensor/negative_index.cc`**
@@ -988,21 +988,21 @@ Move these `range` overloads *after* the conversion functions block (they now ne
 1. After `using Shape = Index;` add:
 
 ```cpp
-namespace detail {
-//! Tag for the internal constructor that takes a detail::UIndex shape.
-struct internal_t {
-  explicit internal_t() = default;
+namespace internal {
+//! Tag: the shape argument of the constructor is already normalized.
+struct normalized_t {
+  explicit normalized_t() = default;
 };
-inline constexpr internal_t internal{};
-}  // namespace detail
+inline constexpr normalized_t normalized{};
+}  // namespace internal
 ```
 
 2. In the class, constructors: after `Tensor(const comm_type &, const Shape &, size_t upper_rank);` add
 
 ```cpp
   //! \cond
-  Tensor(const comm_type &, const detail::UIndex &shape, size_t upper_rank,
-         detail::internal_t);  // internal use: shape is already normalized
+  Tensor(const comm_type &, const internal::UIndex &shape, size_t upper_rank,
+         internal::normalized_t);  // internal use: shape is already normalized
   //! \endcond
 ```
 
@@ -1010,31 +1010,31 @@ inline constexpr internal_t internal{};
 
 | Before | After |
 |---|---|
-| `const Shape &shape() const;` | `Shape shape() const;` and on the next line `const detail::UIndex &internal_shape() const;  //!< Shape as the internal type.` |
-| `const Axes &get_axes_map() const;` | `const detail::UIndex &get_axes_map() const;` |
-| `void global_index_fast(size_t i, Index &idx) const;` | `void global_index_fast(size_t i, detail::UIndex &idx) const;` |
-| `void local_position(const Index &idx, int &comm_rank, size_t &local_idx) const;` | `void local_position(const detail::UIndex &idx, int &comm_rank, size_t &local_idx) const;` |
+| `const Shape &shape() const;` | `Shape shape() const;` and on the next line `const internal::UIndex &internal_shape() const;  //!< Shape as the internal type.` |
+| `const Axes &get_axes_map() const;` | `const internal::UIndex &get_axes_map() const;` |
+| `void global_index_fast(size_t i, Index &idx) const;` | `void global_index_fast(size_t i, internal::UIndex &idx) const;` |
+| `void local_position(const Index &idx, int &comm_rank, size_t &local_idx) const;` | `void local_position(const internal::UIndex &idx, int &comm_rank, size_t &local_idx) const;` |
 | every `size_t n_axes`, `size_t n_axes0` … `size_t n_axes3` in `multiply_vector` | `std::ptrdiff_t n_axes` … |
 | `set_slice(const Tensor &a, size_t n_axes, size_t i_begin, size_t i_end);` | `set_slice(const Tensor &a, std::ptrdiff_t n_axes, std::ptrdiff_t i_begin, std::ptrdiff_t i_end);` |
-| `Shape Dim;` | `detail::UIndex Dim;` |
-| `Axes axes_map;` | `detail::UIndex axes_map;` |
-| `void init(const Shape &, size_t upper_rank);` | `void init(const detail::UIndex &, size_t upper_rank);` |
-| `void init(const Shape &, size_t upper_rank, const Axes &map);` | `void init(const detail::UIndex &, size_t upper_rank, const detail::UIndex &map);` |
-| `void change_configuration(const size_t new_upper_rank, const Axes &new_axes_map);` | `void change_configuration(const size_t new_upper_rank, const detail::UIndex &new_axes_map);` |
-| `bool local_index(const Index &, size_t &i) const;` | `bool local_index(const detail::UIndex &, size_t &i) const;` |
+| `Shape Dim;` | `internal::UIndex Dim;` |
+| `Axes axes_map;` | `internal::UIndex axes_map;` |
+| `void init(const Shape &, size_t upper_rank);` | `void init(const internal::UIndex &, size_t upper_rank);` |
+| `void init(const Shape &, size_t upper_rank, const Axes &map);` | `void init(const internal::UIndex &, size_t upper_rank, const internal::UIndex &map);` |
+| `void change_configuration(const size_t new_upper_rank, const Axes &new_axes_map);` | `void change_configuration(const size_t new_upper_rank, const internal::UIndex &new_axes_map);` |
+| `bool local_index(const Index &, size_t &i) const;` | `bool local_index(const internal::UIndex &, size_t &i) const;` |
 
-Also in the private section add `Tensor<MatrixType> &transpose_internal(const detail::UIndex &axes);  // axes already normalized`.
+Also in the private section add `Tensor<MatrixType> &transpose_internal(const internal::UIndex &axes);  // axes already normalized`.
 
 4. Free-function declarations: `slice(const Tensor<MatrixType> &a, size_t n_axes, size_t i_begin, size_t i_end)` → `std::ptrdiff_t` for all three. After the `extend` declaration add:
 
 ```cpp
-namespace detail {
+namespace internal {
 template <typename MatrixType>
 Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &a, const UIndex &axes,
                                   size_t urank_new);
 template <typename MatrixType>
 Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &a, const UIndex &shape_new);
-}  // namespace detail
+}  // namespace internal
 ```
 
 5. Add a Doxygen note to the class documentation (`/*! Tensor class ... */`):
@@ -1049,12 +1049,12 @@ Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &a, const UIndex &shape
 
 - [ ] **Step 5: Convert `src/tensor.cc` and the declarations at the top of `tensor_impl.hpp`**
 
-In `src/tensor.cc` and in the forward declarations at `tensor_impl.hpp:50-60`, change every parameter type `const Axes&` and `const Shape&` of `is_no_transpose` and of all `debug::check_*` functions to `const detail::UIndex&`, and every local `Axes v` / `Axes axes` inside them to `detail::UIndex`. No logic changes. Example:
+In `src/tensor.cc` and in the forward declarations at `tensor_impl.hpp:50-60`, change every parameter type `const Axes&` and `const Shape&` of `is_no_transpose` and of all `debug::check_*` functions to `const internal::UIndex&`, and every local `Axes v` / `Axes axes` inside them to `internal::UIndex`. No logic changes. Example:
 
 ```cpp
-bool check_transpose_axes(const detail::UIndex& axes, size_t rank) {
+bool check_transpose_axes(const internal::UIndex& axes, size_t rank) {
   if (axes.size() != rank) return false;
-  detail::UIndex v = axes;
+  internal::UIndex v = axes;
   v.sort();
   for (size_t i = 0; i < rank; ++i) {
     if (v[i] != i) return false;
@@ -1090,8 +1090,8 @@ Tensor<MatrixType>::Tensor(const comm_type &comm, const Shape &shape,
 
 //! \cond
 template <typename MatrixType>
-Tensor<MatrixType>::Tensor(const comm_type &comm, const detail::UIndex &shape,
-                          const size_t upper_rank, detail::internal_t)
+Tensor<MatrixType>::Tensor(const comm_type &comm, const internal::UIndex &shape,
+                          const size_t upper_rank, internal::normalized_t)
     : Mat(comm) {
   init(shape, upper_rank);
 };
@@ -1105,7 +1105,7 @@ Tensor<MatrixType>::Tensor(const comm_type &comm,
   const size_t n = Mat.local_size();
   size_t idx;
   int dummy;
-  detail::UIndex g;
+  internal::UIndex g;
   g.resize(Dim.size());
   for (size_t i = 0; i < n; ++i) {
     global_index_fast(i, g);
@@ -1117,9 +1117,9 @@ Tensor<MatrixType>::Tensor(const comm_type &comm,
 template <typename MatrixType>
 Tensor<MatrixType>::Tensor(const comm_type &comm, const std::vector<value_type> &v)
     : Mat(comm) {
-  init(detail::UIndex(v.size()), 0);
+  init(internal::UIndex(v.size()), 0);
   const size_t n = Mat.local_size();
-  detail::UIndex idx;
+  internal::UIndex idx;
   idx.resize(1);
   for (size_t i = 0; i < n; ++i) {
     global_index_fast(i, idx);
@@ -1137,12 +1137,12 @@ inline Shape Tensor<MatrixType>::shape() const {
 }
 
 template <typename MatrixType>
-inline const detail::UIndex &Tensor<MatrixType>::internal_shape() const {
+inline const internal::UIndex &Tensor<MatrixType>::internal_shape() const {
   return Dim;
 }
 
 template <typename MatrixType>
-inline const detail::UIndex &Tensor<MatrixType>::get_axes_map() const {
+inline const internal::UIndex &Tensor<MatrixType>::get_axes_map() const {
   return axes_map;
 }
 ```
@@ -1151,25 +1151,25 @@ inline const detail::UIndex &Tensor<MatrixType>::get_axes_map() const {
 
 ```cpp
 template <typename MatrixType>
-inline void Tensor<MatrixType>::init(const detail::UIndex &shape, size_t urank) {
-  init(shape, urank, detail::identity_axes(shape.size()));
+inline void Tensor<MatrixType>::init(const internal::UIndex &shape, size_t urank) {
+  init(shape, urank, internal::identity_axes(shape.size()));
 }
 
 template <typename MatrixType>
-void Tensor<MatrixType>::init(const detail::UIndex &shape, size_t urank,
-                             const detail::UIndex &map) {
+void Tensor<MatrixType>::init(const internal::UIndex &shape, size_t urank,
+                             const internal::UIndex &map) {
   // body unchanged
 }
 ```
 
-`local_index`, `global_index_fast`, `local_position`: change only the parameter types (`const detail::UIndex &gindex`, `detail::UIndex &gindex`, `const detail::UIndex &index`); bodies unchanged.
+`local_index`, `global_index_fast`, `local_position`: change only the parameter types (`const internal::UIndex &gindex`, `internal::UIndex &gindex`, `const internal::UIndex &index`); bodies unchanged.
 
 `global_index`:
 
 ```cpp
 template <typename MatrixType>
 Index Tensor<MatrixType>::global_index(size_t lindex) const {
-  detail::UIndex gindex;
+  internal::UIndex gindex;
   gindex.resize(Dim.size());
   global_index_fast(lindex, gindex);
   return to_public(gindex);
@@ -1199,7 +1199,7 @@ void Tensor<MatrixType>::set_value(const Index &idx, value_type val) {
 }
 ```
 
-`change_configuration`: signature `(const size_t new_upper_rank, const detail::UIndex &new_axes_map)`; locals `Shape dim; Axes axes;` → `detail::UIndex dim; detail::UIndex axes;`; `transpose(axes);` → `transpose_internal(axes);`; `Index index;` in the OpenMP block → `detail::UIndex index;`.
+`change_configuration`: signature `(const size_t new_upper_rank, const internal::UIndex &new_axes_map)`; locals `Shape dim; Axes axes;` → `internal::UIndex dim; internal::UIndex axes;`; `transpose(axes);` → `transpose_internal(axes);`; `Index index;` in the OpenMP block → `internal::UIndex index;`.
 
 Member `transpose` and the new private `transpose_internal`:
 
@@ -1212,13 +1212,13 @@ Tensor<MatrixType> &Tensor<MatrixType>::transpose(const Axes &axes) {
 //! \cond
 template <typename MatrixType>
 Tensor<MatrixType> &Tensor<MatrixType>::transpose_internal(
-    const detail::UIndex &axes) {
+    const internal::UIndex &axes) {
   const size_t rank = Dim.size();
   assert(debug::check_transpose_axes(axes, rank));
 
-  detail::UIndex dim_now = Dim;
-  detail::UIndex map_now = axes_map;
-  detail::UIndex axes_inv;
+  internal::UIndex dim_now = Dim;
+  internal::UIndex map_now = axes_map;
+  internal::UIndex axes_inv;
   axes_inv.resize(rank);
   for (size_t i = 0; i < rank; ++i) {
     axes_inv[axes[i]] = i;
@@ -1232,7 +1232,7 @@ Tensor<MatrixType> &Tensor<MatrixType>::transpose_internal(
 //! \endcond
 ```
 
-`multiply_vector` (all four overloads): change each `size_t n_axesK` parameter to `std::ptrdiff_t n_axesK`; as the **first** statement of the body add `const size_t axK = normalize_axis(n_axesK, rank());` for every K; then replace every use of `n_axesK` in the body by `axK` and `Index idx;` by `detail::UIndex idx;`. For the single-vector version this gives:
+`multiply_vector` (all four overloads): change each `size_t n_axesK` parameter to `std::ptrdiff_t n_axesK`; as the **first** statement of the body add `const size_t axK = normalize_axis(n_axesK, rank());` for every K; then replace every use of `n_axesK` in the body by `axK` and `Index idx;` by `internal::UIndex idx;`. For the single-vector version this gives:
 
 ```cpp
 template <typename MatrixType>
@@ -1245,7 +1245,7 @@ Tensor<MatrixType> &Tensor<MatrixType>::multiply_vector(const std::vector<D> &ve
   prep_local_to_global();
 #pragma omp parallel default(shared)
   {
-    detail::UIndex idx;
+    internal::UIndex idx;
     idx.resize(rank());
 #pragma omp for
     for (size_t i = 0; i < local_size; ++i) {
@@ -1269,7 +1269,7 @@ Tensor<MatrixType> &Tensor<MatrixType>::set_slice(const Tensor<MatrixType> &a,
                                                 const std::ptrdiff_t i_end) {
   const size_t ax = normalize_axis(n_axes, rank());
   const std::pair<size_t, size_t> be =
-      detail::normalize_slice_range(i_begin, i_end, Dim[ax], ax);
+      internal::normalize_slice_range(i_begin, i_end, Dim[ax], ax);
   const size_t begin = be.first;
   const size_t end = be.second;
   assert(rank() == a.rank());
@@ -1285,7 +1285,7 @@ Tensor<MatrixType> &Tensor<MatrixType>::set_slice(const Tensor<MatrixType> &a,
 
 #pragma omp parallel default(shared)
   {
-    detail::UIndex index;
+    internal::UIndex index;
     index.resize(rank());
 #pragma omp for
     for (size_t i = 0; i < local_size; ++i) {
@@ -1312,26 +1312,26 @@ Before editing, compare with the current body (`tensor_impl.hpp`, `set_slice` sc
 ```cpp
   const size_t nr = rank();
   assert(nr == a.rank());
-  detail::UIndex begin, end;
-  detail::normalize_slice_ranges(index_begin, index_end, Dim, begin, end);
+  internal::UIndex begin, end;
+  internal::normalize_slice_ranges(index_begin, index_end, Dim, begin, end);
 ```
 
-replace `Index index;` by `detail::UIndex index;`, and replace the per-axis offset line `if (index_begin[r] != index_end[r]) index[r] += index_begin[r];` by `index[r] += begin[r];` (a full axis has `begin[r] == 0`). `end` is only used by the assert `assert(end[r] - begin[r] == a.internal_shape()[r]);`, which you add inside a loop over `r` right after the normalization.
+replace `Index index;` by `internal::UIndex index;`, and replace the per-axis offset line `if (index_begin[r] != index_end[r]) index[r] += index_begin[r];` by `index[r] += begin[r];` (a full axis has `begin[r] == 0`). `end` is only used by the assert `assert(end[r] - begin[r] == a.internal_shape()[r]);`, which you add inside a loop over `r` right after the normalization.
 
-`gather` and `flatten`: replace `range(n)` (two places each) by `detail::identity_axes(n)`, and in `gather` replace `return reshape(T, Dim);` by `return detail::reshape_impl(T, Dim);`.
+`gather` and `flatten`: replace `range(n)` (two places each) by `internal::identity_axes(n)`, and in `gather` replace `return reshape(T, Dim);` by `return internal::reshape_impl(T, Dim);`.
 
 - [ ] **Step 7: Convert the shape-changing free functions**
 
-`transpose` (3 arguments) and the new `detail::transpose_impl`:
+`transpose` (3 arguments) and the new `internal::transpose_impl`:
 
 ```cpp
 template <typename MatrixType>
 Tensor<MatrixType> transpose(const Tensor<MatrixType> &T, const Axes &axes,
                             size_t urank_new) {
-  return detail::transpose_impl(T, normalize_axes(axes, T.rank()), urank_new);
+  return internal::transpose_impl(T, normalize_axes(axes, T.rank()), urank_new);
 }
 
-namespace detail {
+namespace internal {
 template <typename MatrixType>
 Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &T, const UIndex &axes,
                                   size_t urank_new) {
@@ -1342,20 +1342,20 @@ Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &T, const UIndex &axe
   //                                -> ... (T.get_comm(), dim_new, urank_new, internal);
   //   Axes axes_map = T.get_axes_map(); -> UIndex axes_map = T.get_axes_map();
 }
-}  // namespace detail
+}  // namespace internal
 ```
 
 The 2-argument `transpose(Tensor T, const Axes &axes)` stays `return T.transpose(axes);`.
 
-`reshape` and `detail::reshape_impl`:
+`reshape` and `internal::reshape_impl`:
 
 ```cpp
 template <typename MatrixType>
 Tensor<MatrixType> reshape(const Tensor<MatrixType> &T, const Shape &shape_new) {
-  return detail::reshape_impl(T, to_internal_shape(shape_new));
+  return internal::reshape_impl(T, to_internal_shape(shape_new));
 }
 
-namespace detail {
+namespace internal {
 template <typename MatrixType>
 Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &T, const UIndex &shape_new) {
   // former body of reshape, with:
@@ -1364,7 +1364,7 @@ Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &T, const UIndex &shape
   //   Tensor<MatrixType> T_new(T.get_comm(), shape_new, shape_new.size() / 2, internal);
   //   UIndex index, index_new;
 }
-}  // namespace detail
+}  // namespace internal
 ```
 
 `slice` scalar version — replace the head of the function down to `Tensor<MatrixType> T_new(...)` by:
@@ -1374,22 +1374,22 @@ template <typename MatrixType>
 Tensor<MatrixType> slice(const Tensor<MatrixType> &T, std::ptrdiff_t n_axes,
                         std::ptrdiff_t i_begin, std::ptrdiff_t i_end) {
   const int mpisize = T.get_comm_size();
-  const detail::UIndex &shape = T.internal_shape();
+  const internal::UIndex &shape = T.internal_shape();
   const size_t ax = normalize_axis(n_axes, T.rank());
   const std::pair<size_t, size_t> be =
-      detail::normalize_slice_range(i_begin, i_end, shape[ax], ax);
+      internal::normalize_slice_range(i_begin, i_end, shape[ax], ax);
   const size_t begin = be.first;
   const size_t end = be.second;
 
-  detail::UIndex shape_new = shape;
+  internal::UIndex shape_new = shape;
   shape_new[ax] = end - begin;
 
   /* initialize new tensor */
   Tensor<MatrixType> T_new(T.get_comm(), shape_new, shape_new.size() / 2,
-                           detail::internal);
+                           internal::normalized);
 ```
 
-then in the rest of the body: `Index index;` → `detail::UIndex index;`, `n_axes` → `ax`, `i_begin` → `begin`, `i_end` → `end`.
+then in the rest of the body: `Index index;` → `internal::UIndex index;`, `n_axes` → `ax`, `i_begin` → `begin`, `i_end` → `end`.
 
 `slice` `Index` version — replace the head down to `Tensor<MatrixType> T_new(...)` by:
 
@@ -1398,18 +1398,18 @@ template <typename MatrixType>
 Tensor<MatrixType> slice(const Tensor<MatrixType> &T, const Index &index_begin,
                         const Index &index_end) {
   const int mpisize = T.get_comm_size();
-  const detail::UIndex &shape = T.internal_shape();
+  const internal::UIndex &shape = T.internal_shape();
   const size_t rank = T.rank();
-  detail::UIndex begin, end;
-  detail::normalize_slice_ranges(index_begin, index_end, shape, begin, end);
+  internal::UIndex begin, end;
+  internal::normalize_slice_ranges(index_begin, index_end, shape, begin, end);
 
-  detail::UIndex shape_new;
+  internal::UIndex shape_new;
   shape_new.resize(rank);
   for (size_t r = 0; r < rank; ++r) shape_new[r] = end[r] - begin[r];
 
   /* initialize new tensor */
   Tensor<MatrixType> T_new(T.get_comm(), shape_new, shape_new.size() / 2,
-                           detail::internal);
+                           internal::normalized);
 ```
 
 and replace the per-axis test inside the OpenMP loop by:
@@ -1426,20 +1426,20 @@ and replace the per-axis test inside the OpenMP loop by:
       }
 ```
 
-with `Index index;` → `detail::UIndex index;`.
+with `Index index;` → `internal::UIndex index;`.
 
 `extend`:
 
 ```cpp
 template <typename MatrixType>
 Tensor<MatrixType> extend(const Tensor<MatrixType> &T, const Shape &shape_new_public) {
-  const detail::UIndex shape_new = to_internal_shape(shape_new_public);
+  const internal::UIndex shape_new = to_internal_shape(shape_new_public);
   assert(T.rank() == shape_new.size());
   assert(debug::check_extend(T.internal_shape(), shape_new));
 
   Tensor<MatrixType> T_new(T.get_comm(), shape_new, shape_new.size() / 2,
-                           detail::internal);
-  // rest unchanged, except `Index index;` -> `detail::UIndex index;`
+                           internal::normalized);
+  // rest unchanged, except `Index index;` -> `internal::UIndex index;`
 ```
 
 - [ ] **Step 8: Convert trace, contract, kron, tensordot**
@@ -1447,29 +1447,29 @@ Tensor<MatrixType> extend(const Tensor<MatrixType> &T, const Shape &shape_new_pu
 `trace(T, axes_1, axes_2)`: as the first statements
 
 ```cpp
-  const detail::UIndex ax1 = normalize_axes(axes_1, T.rank());
-  const detail::UIndex ax2 = normalize_axes(axes_2, T.rank());
+  const internal::UIndex ax1 = normalize_axes(axes_1, T.rank());
+  const internal::UIndex ax2 = normalize_axes(axes_2, T.rank());
 ```
 
-then use `ax1`/`ax2` everywhere instead of `axes_1`/`axes_2` (including the asserts), and `Index index;` → `detail::UIndex index;`.
+then use `ax1`/`ax2` everywhere instead of `axes_1`/`axes_2` (including the asserts), and `Index index;` → `internal::UIndex index;`.
 
 `trace(A, B, axes_a, axes_b)`: first statements
 
 ```cpp
-  const detail::UIndex ax_a = normalize_axes(axes_a, A.rank());
-  const detail::UIndex ax_b = normalize_axes(axes_b, B.rank());
+  const internal::UIndex ax_a = normalize_axes(axes_a, A.rank());
+  const internal::UIndex ax_b = normalize_axes(axes_b, B.rank());
 ```
 
-use them instead of `axes_a`/`axes_b`; the assert becomes `debug::check_trace_axes(ax_a, ax_b, A.internal_shape(), B.internal_shape())`; `Axes axes; Axes axes_a_inv; Axes axes_map = ...` → `detail::UIndex`; `transpose(B, axes, A.get_upper_rank())` → `detail::transpose_impl(B, axes, A.get_upper_rank())`.
+use them instead of `axes_a`/`axes_b`; the assert becomes `debug::check_trace_axes(ax_a, ax_b, A.internal_shape(), B.internal_shape())`; `Axes axes; Axes axes_a_inv; Axes axes_map = ...` → `internal::UIndex`; `transpose(B, axes, A.get_upper_rank())` → `internal::transpose_impl(B, axes, A.get_upper_rank())`.
 
 `contract(T, axes_1, axes_2)`: first statements after `mpisize`
 
 ```cpp
-  const detail::UIndex ax1 = normalize_axes(axes_1, T.rank());
-  const detail::UIndex ax2 = normalize_axes(axes_2, T.rank());
+  const internal::UIndex ax1 = normalize_axes(axes_1, T.rank());
+  const internal::UIndex ax2 = normalize_axes(axes_2, T.rank());
 ```
 
-use them instead of `axes_1`/`axes_2`; `Shape shape = T.shape(); Shape shape_new; Axes axes_new;` → `detail::UIndex shape = T.internal_shape(); detail::UIndex shape_new; detail::UIndex axes_new;`; `Axes v = ...` → `detail::UIndex v = ax1 + ax2;`; `Tensor<MatrixType> T_new(T.get_comm(), shape_new);` → tagged constructor with `shape_new.size() / 2`; `Index index, index_new;` → `detail::UIndex index, index_new;`.
+use them instead of `axes_1`/`axes_2`; `Shape shape = T.shape(); Shape shape_new; Axes axes_new;` → `internal::UIndex shape = T.internal_shape(); internal::UIndex shape_new; internal::UIndex axes_new;`; `Axes v = ...` → `internal::UIndex v = ax1 + ax2;`; `Tensor<MatrixType> T_new(T.get_comm(), shape_new);` → tagged constructor with `shape_new.size() / 2`; `Index index, index_new;` → `internal::UIndex index, index_new;`.
 
 `kron(a, b)`:
 
@@ -1479,11 +1479,11 @@ Tensor<MatrixType> kron(const Tensor<MatrixType> &a, const Tensor<MatrixType> &b
   assert(a.rank() == b.rank());
   assert(a.get_comm() == b.get_comm());
 
-  const detail::UIndex shape_a = a.internal_shape();
-  const detail::UIndex shape_b = b.internal_shape();
-  detail::UIndex shape_c = shape_a;
+  const internal::UIndex shape_a = a.internal_shape();
+  const internal::UIndex shape_b = b.internal_shape();
+  internal::UIndex shape_c = shape_a;
   const size_t n = shape_a.size();
-  detail::UIndex axes_trans;
+  internal::UIndex axes_trans;
   axes_trans.resize(2 * n);
   for (size_t i = 0; i < shape_b.size(); ++i) {
     shape_c[i] *= shape_b[i];
@@ -1492,11 +1492,11 @@ Tensor<MatrixType> kron(const Tensor<MatrixType> &a, const Tensor<MatrixType> &b
   }
 
   Tensor<MatrixType> ab =
-      tensordot(detail::reshape_impl(a, shape_a + detail::UIndex(1)),
-                detail::reshape_impl(b, detail::UIndex(1) + shape_b), Axes(n),
+      tensordot(internal::reshape_impl(a, shape_a + internal::UIndex(1)),
+                internal::reshape_impl(b, internal::UIndex(1) + shape_b), Axes(n),
                 Axes(0));
   ab.transpose(to_public(axes_trans));
-  return detail::reshape_impl(ab, shape_c);
+  return internal::reshape_impl(ab, shape_c);
 };
 ```
 
@@ -1505,49 +1505,49 @@ Tensor<MatrixType> kron(const Tensor<MatrixType> &a, const Tensor<MatrixType> &b
 `tensordot(a, b, axes_a, axes_b)`: first statements
 
 ```cpp
-  const detail::UIndex ax_a = normalize_axes(axes_a, a.rank());
-  const detail::UIndex ax_b = normalize_axes(axes_b, b.rank());
+  const internal::UIndex ax_a = normalize_axes(axes_a, a.rank());
+  const internal::UIndex ax_b = normalize_axes(axes_b, b.rank());
 ```
 
-use them instead of `axes_a`/`axes_b`; `Shape shape_a = a.shape(); Shape shape_b = b.shape(); Shape shape_c; Axes trans_axes_a; Axes trans_axes_b;` → `detail::UIndex` with `internal_shape()`; `Tensor<MatrixType> c(comm, shape_c, rank_row_c);` → `Tensor<MatrixType> c(comm, shape_c, rank_row_c, detail::internal);`; both `transpose(...)` calls → `detail::transpose_impl(...)`.
+use them instead of `axes_a`/`axes_b`; `Shape shape_a = a.shape(); Shape shape_b = b.shape(); Shape shape_c; Axes trans_axes_a; Axes trans_axes_b;` → `internal::UIndex` with `internal_shape()`; `Tensor<MatrixType> c(comm, shape_c, rank_row_c);` → `Tensor<MatrixType> c(comm, shape_c, rank_row_c, internal::normalized);`; both `transpose(...)` calls → `internal::transpose_impl(...)`.
 
 - [ ] **Step 9: Convert svd, psvd, qr, eigh, eig, solve**
 
 For every function below whose parameters include `const Axes &axes_row` / `axes_col` (and `axes_row_a`, `axes_col_a`, `axes_row_b`, `axes_col_b`), replace the `assert(...size() > 0)` / `assert(debug::check_svd_axes(...))` head and the `Axes axes = axes_row + axes_col;` line by:
 
 ```cpp
-  const detail::UIndex row = normalize_axes(axes_row, a.rank());
-  const detail::UIndex col = normalize_axes(axes_col, a.rank());
+  const internal::UIndex row = normalize_axes(axes_row, a.rank());
+  const internal::UIndex col = normalize_axes(axes_col, a.rank());
   assert(row.size() > 0);
   assert(col.size() > 0);
   assert(debug::check_svd_axes(row, col, a.rank()));
-  const detail::UIndex axes = row + col;
+  const internal::UIndex axes = row + col;
 ```
 
 (for the generalized `eigh` and for `solve`, do the same with suffixes `_a` using `a.rank()` and `_b` using `b.rank()`; keep each function's existing set of asserts, applied to the normalized values; `solve` keeps `assert(col_b.size() >= 0)` as is), set `urank = row.size()` (or `rank_row_a = row_a.size()` etc.) instead of `axes_row.size()`, and then apply the conversion rules to the rest of the body:
 
 | Function | Specific edits |
 |---|---|
-| `svd(a, axes_row, axes_col, s)` | `transpose(a, axes, urank)` → `detail::transpose_impl(...)`; `const Shape &shape = a_t.shape();` → `const detail::UIndex &shape = a_t.internal_shape();` |
-| `svd(a, axes_row, axes_col, u, s, vt)` | same as above; `Shape shape_u; Shape shape_vt;` → `detail::UIndex`; both `Tensor<MatrixType>(a.get_comm(), shape_X, urank_X)` → add `, detail::internal` |
+| `svd(a, axes_row, axes_col, s)` | `transpose(a, axes, urank)` → `internal::transpose_impl(...)`; `const Shape &shape = a_t.shape();` → `const internal::UIndex &shape = a_t.internal_shape();` |
+| `svd(a, axes_row, axes_col, u, s, vt)` | same as above; `Shape shape_u; Shape shape_vt;` → `internal::UIndex`; both `Tensor<MatrixType>(a.get_comm(), shape_X, urank_X)` → add `, internal::normalized` |
 | `svd(a, s)`, `svd(a, u, s, vt)`, `psvd` (all four), `qr(a, q, r)`, `solve(a, vector b, x)`, `solve(a, b, x)` | unchanged (they call public functions with literal non-negative axes) |
-| `qr(a, axes_row, axes_col, q, r)` | `const Shape shape_a = a.shape();` → `const detail::UIndex shape_a = a.internal_shape();`; `Shape shape;`, `Shape shape_q;`, `Shape shape_r;` → `detail::UIndex`; `reshape(transpose(a, axes, urank), Shape(d_row, d_col))` → `detail::reshape_impl(detail::transpose_impl(a, axes, urank), detail::UIndex(d_row, d_col))`; `Tensor<MatrixType> mat_r(mat_q.get_comm(), mat_q.shape(), 1);` → `(mat_q.get_comm(), mat_q.internal_shape(), 1, detail::internal)`; every `reshape(X, shape_q)` / `reshape(X, shape_r)` → `detail::reshape_impl(X, shape_q)` / `(X, shape_r)`; the `slice(mat_r, 0, 0, size)` / `slice(mat_q, 1, 0, size)` calls stay public |
-| `eigh(a, w, z)`, `eigh(a, w)` | `Shape shape = a.shape();` → `const detail::UIndex shape = a.internal_shape();`; `transpose(a, Axes(0, 1), 1)` → `detail::transpose_impl(a, detail::UIndex(0, 1), 1)`; `Tensor<MatrixType>(a.get_comm(), Shape(n, n), 1)` → `(a.get_comm(), detail::UIndex(n, n), 1, detail::internal)` |
-| `eigh(a, axes_row, axes_col, w, z)`, `eigh(a, axes_row, axes_col, w)` | `transpose` → `detail::transpose_impl`; `const Shape &shape = a_t.shape();` → `const detail::UIndex &shape = a_t.internal_shape();`; `Shape shape_z;` → `detail::UIndex`; `Tensor<MatrixType>(a.get_comm(), shape_z, urank)` → add `, detail::internal` |
-| `eigh(a, axes_row_a, axes_col_a, b, axes_row_b, axes_col_b, w, z)` | both `transpose` → `detail::transpose_impl`; `const Shape &shape_a/_b = X_t.shape();` → `const detail::UIndex & ... internal_shape()`; `Shape shape_z;` → `detail::UIndex`; tagged constructor for `z` |
-| `eig(a, w, z)`, `eig(a, w)` | `Shape shape = a.shape();` → `const detail::UIndex shape = a.internal_shape();`; `transpose(a, Axes(0, 1), 1).gather()` → `detail::transpose_impl(a, detail::UIndex(0, 1), 1).gather()`; `z_t(a.get_comm(), Shape(n, n), 1)` → `z_t(a.get_comm(), detail::UIndex(n, n), 1, detail::internal)` |
-| `eig(a, axes_row, axes_col, w, z)`, `eig(a, axes_row, axes_col, w)` | `transpose(a, axes, urank).gather()` → `detail::transpose_impl(a, axes, urank).gather()`; `const Shape &shape = a_t.shape();` → `const detail::UIndex &shape = a_t.internal_shape();`; `Shape shape_z;` → `detail::UIndex`; `z_t(a.get_comm(), shape_z, urank)` → add `, detail::internal` |
-| `solve(a, b, x, axes_row_a, axes_col_a, axes_row_b, axes_col_b)` | `transpose` ×2 → `detail::transpose_impl`; `const Shape &shape_a/_b = X_t.shape();` → `const detail::UIndex & ... internal_shape()`; `Shape shape_x;` → `detail::UIndex`; `x = reshape(b_t, shape_x);` → `x = detail::reshape_impl(b_t, shape_x);` |
+| `qr(a, axes_row, axes_col, q, r)` | `const Shape shape_a = a.shape();` → `const internal::UIndex shape_a = a.internal_shape();`; `Shape shape;`, `Shape shape_q;`, `Shape shape_r;` → `internal::UIndex`; `reshape(transpose(a, axes, urank), Shape(d_row, d_col))` → `internal::reshape_impl(internal::transpose_impl(a, axes, urank), internal::UIndex(d_row, d_col))`; `Tensor<MatrixType> mat_r(mat_q.get_comm(), mat_q.shape(), 1);` → `(mat_q.get_comm(), mat_q.internal_shape(), 1, internal::normalized)`; every `reshape(X, shape_q)` / `reshape(X, shape_r)` → `internal::reshape_impl(X, shape_q)` / `(X, shape_r)`; the `slice(mat_r, 0, 0, size)` / `slice(mat_q, 1, 0, size)` calls stay public |
+| `eigh(a, w, z)`, `eigh(a, w)` | `Shape shape = a.shape();` → `const internal::UIndex shape = a.internal_shape();`; `transpose(a, Axes(0, 1), 1)` → `internal::transpose_impl(a, internal::UIndex(0, 1), 1)`; `Tensor<MatrixType>(a.get_comm(), Shape(n, n), 1)` → `(a.get_comm(), internal::UIndex(n, n), 1, internal::normalized)` |
+| `eigh(a, axes_row, axes_col, w, z)`, `eigh(a, axes_row, axes_col, w)` | `transpose` → `internal::transpose_impl`; `const Shape &shape = a_t.shape();` → `const internal::UIndex &shape = a_t.internal_shape();`; `Shape shape_z;` → `internal::UIndex`; `Tensor<MatrixType>(a.get_comm(), shape_z, urank)` → add `, internal::normalized` |
+| `eigh(a, axes_row_a, axes_col_a, b, axes_row_b, axes_col_b, w, z)` | both `transpose` → `internal::transpose_impl`; `const Shape &shape_a/_b = X_t.shape();` → `const internal::UIndex & ... internal_shape()`; `Shape shape_z;` → `internal::UIndex`; tagged constructor for `z` |
+| `eig(a, w, z)`, `eig(a, w)` | `Shape shape = a.shape();` → `const internal::UIndex shape = a.internal_shape();`; `transpose(a, Axes(0, 1), 1).gather()` → `internal::transpose_impl(a, internal::UIndex(0, 1), 1).gather()`; `z_t(a.get_comm(), Shape(n, n), 1)` → `z_t(a.get_comm(), internal::UIndex(n, n), 1, internal::normalized)` |
+| `eig(a, axes_row, axes_col, w, z)`, `eig(a, axes_row, axes_col, w)` | `transpose(a, axes, urank).gather()` → `internal::transpose_impl(a, axes, urank).gather()`; `const Shape &shape = a_t.shape();` → `const internal::UIndex &shape = a_t.internal_shape();`; `Shape shape_z;` → `internal::UIndex`; `z_t(a.get_comm(), shape_z, urank)` → add `, internal::normalized` |
+| `solve(a, b, x, axes_row_a, axes_col_a, axes_row_b, axes_col_b)` | `transpose` ×2 → `internal::transpose_impl`; `const Shape &shape_a/_b = X_t.shape();` → `const internal::UIndex & ... internal_shape()`; `Shape shape_x;` → `internal::UIndex`; `x = reshape(b_t, shape_x);` → `x = internal::reshape_impl(b_t, shape_x);` |
 
-Also convert `operator<<(std::ostream&, const Tensor&)` at the end of `tensor_impl.hpp`: `Shape shape = t.shape();` → `const detail::UIndex &shape = t.internal_shape();`; `std::vector<std::size_t> idx(dim);` → `Index idx; idx.resize(dim);`; and `idx[d] = (i % accum[d]) / accum[d + 1];` → `idx[d] = static_cast<std::ptrdiff_t>((i % accum[d]) / accum[d + 1]);`; the comparisons `idx[dim - 1] == 0` and `idx[d - 1] == shape[d - 1] - 1` become `idx[dim - 1] == 0` and `static_cast<size_t>(idx[d - 1]) == shape[d - 1] - 1` (also the `idx[dim - 1] == shape[dim - 1] - 1` check).
+Also convert `operator<<(std::ostream&, const Tensor&)` at the end of `tensor_impl.hpp`: `Shape shape = t.shape();` → `const internal::UIndex &shape = t.internal_shape();`; `std::vector<std::size_t> idx(dim);` → `Index idx; idx.resize(dim);`; and `idx[d] = (i % accum[d]) / accum[d + 1];` → `idx[d] = static_cast<std::ptrdiff_t>((i % accum[d]) / accum[d + 1]);`; the comparisons `idx[dim - 1] == 0` and `idx[d - 1] == shape[d - 1] - 1` become `idx[dim - 1] == 0` and `static_cast<size_t>(idx[d - 1]) == shape[d - 1] - 1` (also the `idx[dim - 1] == shape[dim - 1] - 1` check).
 
 - [ ] **Step 10: Convert `rsvd_impl.hpp` and `file_io/load.hpp`**
 
-`rsvd(a, axes_row, axes_col, u, s, vt, target_rank, oversamp)`: apply the same head as Step 9 (`row`, `col`, `axes`), `rank_row = row.size()`, `rank_col = col.size()`; `transpose(a, axes, rank_row)` → `detail::transpose_impl(a, axes, rank_row)`; `const Shape &shape = a_t.shape();` → `const detail::UIndex &shape = a_t.internal_shape();`; `Shape shape_omega;` → `detail::UIndex shape_omega;`; `Tensor<MatrixType> omega(a.get_comm(), shape_omega, rank_col);` → add `, detail::internal`. The calls with `range(...)` and `Axes(rank_row)` stay public.
+`rsvd(a, axes_row, axes_col, u, s, vt, target_rank, oversamp)`: apply the same head as Step 9 (`row`, `col`, `axes`), `rank_row = row.size()`, `rank_col = col.size()`; `transpose(a, axes, rank_row)` → `internal::transpose_impl(a, axes, rank_row)`; `const Shape &shape = a_t.shape();` → `const internal::UIndex &shape = a_t.internal_shape();`; `Shape shape_omega;` → `internal::UIndex shape_omega;`; `Tensor<MatrixType> omega(a.get_comm(), shape_omega, rank_col);` → add `, internal::normalized`. The calls with `range(...)` and `Axes(rank_row)` stay public.
 
-`rsvd(multiply_row, multiply_col, shape_row, shape_col, u, s, vt, target_rank, oversamp)`: `Shape shape_omega = shape_col;` → `detail::UIndex shape_omega = to_internal_shape(shape_col);` and add `to_internal_shape(shape_row);` as a discarded validation call (`(void)to_internal_shape(shape_row);`) at the top; `Tensor<MatrixType> omega(u.get_comm(), shape_omega, rank_col);` → add `, detail::internal`.
+`rsvd(multiply_row, multiply_col, shape_row, shape_col, u, s, vt, target_rank, oversamp)`: `Shape shape_omega = shape_col;` → `internal::UIndex shape_omega = to_internal_shape(shape_col);` and add `to_internal_shape(shape_row);` as a discarded validation call (`(void)to_internal_shape(shape_row);`) at the top; `Tensor<MatrixType> omega(u.get_comm(), shape_omega, rank_col);` → add `, internal::normalized`.
 
-`file_io/load.hpp`: `Shape loaded_shape; Axes loaded_map;` and `Shape shape; Axes map;` → `detail::UIndex`.
+`file_io/load.hpp`: `Shape loaded_shape; Axes loaded_map;` and `Shape shape; Axes map;` → `internal::UIndex`.
 
 - [ ] **Step 11: Build and fix remaining compile errors**
 

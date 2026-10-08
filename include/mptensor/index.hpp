@@ -46,7 +46,8 @@ namespace mptensor {
 //! \ingroup Index
 //! \{
 
-namespace detail {
+//! Library-internal helpers and types; not part of the public API.
+namespace internal {
 //! True for unscoped enumerations (implicitly convertible to their underlying type).
 template <typename I, bool = std::is_enum_v<I>>
 struct is_unscoped_enum : std::false_type {};
@@ -82,12 +83,12 @@ T checked_index_cast(I value) {
     return static_cast<T>(value);
   }
 }
-}  // namespace detail
+}  // namespace internal
 
 //! List of non-negative or signed integers used as an index, axes, or shape.
 /*!
-  \c Index (= \c Axes = \c Shape) is the public type. \c detail::UIndex
-  (= \c detail::UAxes = \c detail::UShape) is
+  \c Index (= \c Axes = \c Shape) is the public type. \c internal::UIndex
+  (= \c internal::UAxes = \c internal::UShape) is
   used inside the library.
 */
 template <typename T>
@@ -100,11 +101,11 @@ class BasicIndex {
   BasicIndex(const index_t& index) : idx(index) {}
   //! Converting constructor from a vector of another integer type.
   template <typename U,
-            typename = std::enable_if_t<detail::is_index_value_v<U> &&
+            typename = std::enable_if_t<internal::is_index_value_v<U> &&
                                         !std::is_same_v<U, T>>>
   BasicIndex(const std::vector<U>& index) {
     idx.reserve(index.size());
-    for (const U& v : index) idx.push_back(detail::checked_index_cast<T>(v));
+    for (const U& v : index) idx.push_back(internal::checked_index_cast<T>(v));
   }
   BasicIndex(std::initializer_list<T> list) : idx(list) {}
 
@@ -112,8 +113,8 @@ class BasicIndex {
   /*! Not explicit: <tt>Axes a = 2;</tt> creates <tt>[2]</tt>. */
   template <typename... Ints,
             typename = std::enable_if_t<(sizeof...(Ints) > 0) &&
-                                        (detail::is_index_value_v<Ints> && ...)>>
-  BasicIndex(Ints... js) : idx{detail::checked_index_cast<T>(js)...} {}
+                                        (internal::is_index_value_v<Ints> && ...)>>
+  BasicIndex(Ints... js) : idx{internal::checked_index_cast<T>(js)...} {}
 
   const T& operator[](size_t i) const { return idx[i]; }
   T& operator[](size_t i) { return idx[i]; }
@@ -164,7 +165,7 @@ using Index = BasicIndex<std::ptrdiff_t>;  //!< Public element index.
 using Axes = Index;                        //!< Public axes.
 using Shape = Index;                       //!< Public shape.
 
-namespace detail {
+namespace internal {
 using UIndex = BasicIndex<std::size_t>;  //!< Internal element index.
 using UAxes = UIndex;                    //!< Internal axes.
 using UShape = UIndex;                   //!< Internal shape.
@@ -239,19 +240,19 @@ inline void normalize_slice_ranges(const Index& begin, const Index& end,
     }
   }
 }
-}  // namespace detail
+}  // namespace internal
 
 //! Normalize an axis: [-rank, rank) -> [0, rank).
 inline size_t normalize_axis(std::ptrdiff_t a, size_t rank) {
-  return detail::normalize_value(a, rank, false, "axis", -1);
+  return internal::normalize_value(a, rank, false, "axis", -1);
 }
 
 //! Normalize each axis: [-rank, rank) -> [0, rank).
-inline detail::UAxes normalize_axes(const Axes& axes, size_t rank) {
-  detail::UAxes result;
+inline internal::UAxes normalize_axes(const Axes& axes, size_t rank) {
+  internal::UAxes result;
   result.resize(axes.size());
   for (size_t i = 0; i < axes.size(); ++i) {
-    result[i] = detail::normalize_value(axes[i], rank, false, "axis",
+    result[i] = internal::normalize_value(axes[i], rank, false, "axis",
                                         static_cast<std::ptrdiff_t>(i));
   }
   return result;
@@ -259,22 +260,22 @@ inline detail::UAxes normalize_axes(const Axes& axes, size_t rank) {
 
 //! Normalize an element index: [-n, n) -> [0, n).
 inline size_t normalize_index(std::ptrdiff_t i, size_t n) {
-  return detail::normalize_value(i, n, false, "index", -1);
+  return internal::normalize_value(i, n, false, "index", -1);
 }
 
 //! Normalize a global element index against \c shape.
-inline detail::UIndex normalize_index(const Index& idx,
-                                      const detail::UShape& shape) {
+inline internal::UIndex normalize_index(const Index& idx,
+                                      const internal::UShape& shape) {
   if (idx.size() != shape.size()) {
     std::ostringstream ss;
     ss << "mptensor: index " << idx << " has " << idx.size()
        << " elements, but the tensor has rank " << shape.size();
     throw std::invalid_argument(ss.str());
   }
-  detail::UIndex result;
+  internal::UIndex result;
   result.resize(idx.size());
   for (size_t k = 0; k < idx.size(); ++k) {
-    result[k] = detail::normalize_value(idx[k], shape[k], false, "index",
+    result[k] = internal::normalize_value(idx[k], shape[k], false, "index",
                                         static_cast<std::ptrdiff_t>(k));
   }
   return result;
@@ -282,12 +283,12 @@ inline detail::UIndex normalize_index(const Index& idx,
 
 //! Normalize an exclusive slice end: [-n, n] -> [0, n].
 inline size_t normalize_slice_end(std::ptrdiff_t e, size_t n) {
-  return detail::normalize_value(e, n, true, "slice end", -1);
+  return internal::normalize_value(e, n, true, "slice end", -1);
 }
 
 //! Convert a public shape to the internal type. Negative sizes are invalid.
-inline detail::UShape to_internal_shape(const Shape& s) {
-  detail::UShape result;
+inline internal::UShape to_internal_shape(const Shape& s) {
+  internal::UShape result;
   result.resize(s.size());
   for (size_t k = 0; k < s.size(); ++k) {
     if (s[k] < 0) {
@@ -301,11 +302,11 @@ inline detail::UShape to_internal_shape(const Shape& s) {
 }
 
 //! Convert an internal index to the public type.
-inline Index to_public(const detail::UIndex& u) {
+inline Index to_public(const internal::UIndex& u) {
   Index result;
   result.resize(u.size());
   for (size_t k = 0; k < u.size(); ++k) {
-    result[k] = detail::checked_index_cast<std::ptrdiff_t>(u[k]);
+    result[k] = internal::checked_index_cast<std::ptrdiff_t>(u[k]);
   }
   return result;
 }

@@ -76,7 +76,7 @@ BasicIndex<T> operator+(const BasicIndex<T>&, const BasicIndex<T>&);
 
 using Index = BasicIndex<std::ptrdiff_t>;  // public type
 
-namespace detail {
+namespace internal {
 using UIndex = BasicIndex<size_t>;  // internal use only
 }
 
@@ -107,12 +107,12 @@ These are public functions placed in `index.hpp`. Exception messages include the
 | Function | Accepted range | Conversion | Error |
 |---|---|---|---|
 | `size_t normalize_axis(std::ptrdiff_t a, size_t rank)` | `[-rank, rank)` | add `rank` if negative | `std::out_of_range` |
-| `detail::UIndex normalize_axes(const Axes& axes, size_t rank)` | each element as above | same | `std::out_of_range` |
+| `internal::UIndex normalize_axes(const Axes& axes, size_t rank)` | each element as above | same | `std::out_of_range` |
 | `size_t normalize_index(std::ptrdiff_t i, size_t n)` | `[-n, n)` | add `n` if negative | `std::out_of_range` |
-| `detail::UIndex normalize_index(const Index& idx, const detail::UIndex& shape)` | each element as above | same | `std::invalid_argument` on length mismatch, `std::out_of_range` when out of range |
+| `internal::UIndex normalize_index(const Index& idx, const internal::UIndex& shape)` | each element as above | same | `std::invalid_argument` on length mismatch, `std::out_of_range` when out of range |
 | `size_t normalize_slice_end(std::ptrdiff_t e, size_t n)` | `[-n, n]` | add `n` if negative | `std::out_of_range` |
-| `detail::UIndex to_internal_shape(const Shape& s)` | each element `>= 0` | unchanged | `std::invalid_argument` |
-| `Index to_public(const detail::UIndex& u)` | each element `<= PTRDIFF_MAX` | unchanged | `std::out_of_range` |
+| `internal::UIndex to_internal_shape(const Shape& s)` | each element `>= 0` | unchanged | `std::invalid_argument` |
+| `Index to_public(const internal::UIndex& u)` | each element `<= PTRDIFF_MAX` | unchanged | `std::out_of_range` |
 
 `range(start, stop, step)` behaves like `range()` in python: `range(-2, 0)` is `[-2, -1]`, `range(-1, -5, -1)` is `[-1, -2, -3, -4]`, and the result is empty when `stop` is not reached in the direction of `step` (e.g. `range(3, 2)`). `step == 0` throws `std::invalid_argument`.
 
@@ -120,12 +120,12 @@ These are public functions placed in `index.hpp`. Exception messages include the
 
 ### 5.1 Basic pattern
 
-Public functions take public types, normalize them exactly once at the entry point, and call a `detail::*_impl` function. Internal calls pass `detail::UIndex` directly, so there is no double normalization and no round trip through the public type.
+Public functions take public types, normalize them exactly once at the entry point, and call a `internal::*_impl` function. Internal calls pass `internal::UIndex` directly, so there is no double normalization and no round trip through the public type.
 
 ```cpp
 template <typename M>
 Tensor<M> transpose(const Tensor<M>& a, const Axes& axes, size_t urank) {
-  return detail::transpose_impl(a, normalize_axes(axes, a.rank()), urank);
+  return internal::transpose_impl(a, normalize_axes(axes, a.rank()), urank);
 }
 ```
 
@@ -135,11 +135,11 @@ Normalization (and any exception it throws) happens before any MPI communication
 
 | Item | Change |
 |---|---|
-| `Dim`, `axes_map` (private) | `detail::UIndex` |
+| `Dim`, `axes_map` (private) | `internal::UIndex` |
 | `shape()` | returns `Shape` by value (`to_public(Dim)`) |
-| `internal_shape()` (new) | returns `const detail::UIndex&`; documented as internal |
+| `internal_shape()` (new) | returns `const internal::UIndex&`; documented as internal |
 | `global_index(size_t i)` | returns `Index` |
-| `global_index_fast`, `local_position`, `get_axes_map` | use `detail::UIndex`; documented as internal |
+| `global_index_fast`, `local_position`, `get_axes_map` | use `internal::UIndex`; documented as internal |
 | `get_value`, `set_value` | `normalize_index(idx, Dim)` |
 | `transpose(const Axes&)` (member) | `normalize_axes` |
 | `multiply_vector(..., n_axes, ...)` (each of the 1–4 pair overloads) | `n_axes` becomes `std::ptrdiff_t`; `normalize_axis` |

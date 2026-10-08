@@ -41,13 +41,13 @@
 
 namespace mptensor {
 
-namespace detail {
-//! Tag for the internal constructor that takes a detail::UShape shape.
-struct internal_t {
-  explicit internal_t() = default;
+namespace internal {
+//! Tag: the shape argument of the constructor is already normalized.
+struct normalized_t {
+  explicit normalized_t() = default;
 };
-inline constexpr internal_t internal{};
-}  // namespace detail
+inline constexpr normalized_t normalized{};
+}  // namespace internal
 
 /* Class definition */
 //! Tensor class. The main object of mptensor.
@@ -78,20 +78,20 @@ class Tensor {
   Tensor(const comm_type &, const Shape &);
   Tensor(const comm_type &, const Shape &, size_t upper_rank);
   //! \cond
-  Tensor(const comm_type &, const detail::UShape &shape, size_t upper_rank,
-         detail::internal_t);  // internal use: shape is already normalized
+  Tensor(const comm_type &, const internal::UShape &shape, size_t upper_rank,
+         internal::normalized_t);  // internal use: shape is already normalized
   //! \endcond
   Tensor(const comm_type &, const Tensor<lapack::Matrix<value_type>> &);
   Tensor(const comm_type &, const std::vector<value_type> &);
   //! \}
 
   Shape shape() const;
-  const detail::UShape &internal_shape() const;  //!< Shape as the internal type.
+  const internal::UShape &internal_shape() const;  //!< Shape as the internal type.
   size_t rank() const;
   size_t ndim() const;
   size_t local_size() const;
   size_t get_upper_rank() const;
-  const detail::UAxes &get_axes_map() const;
+  const internal::UAxes &get_axes_map() const;
 
   const MatrixType &get_matrix() const;
   MatrixType &get_matrix();
@@ -101,8 +101,8 @@ class Tensor {
   int get_comm_rank() const;
 
   Index global_index(size_t i) const;
-  void global_index_fast(size_t i, detail::UIndex &idx) const;
-  void local_position(const detail::UIndex &idx, int &comm_rank,
+  void global_index_fast(size_t i, internal::UIndex &idx) const;
+  void local_position(const internal::UIndex &idx, int &comm_rank,
                       size_t &local_idx) const;
 
   const value_type &operator[](size_t local_idx) const;
@@ -166,7 +166,7 @@ class Tensor {
 
  private:
   MatrixType Mat;  //!< local storage.
-  detail::UShape Dim;  //!< Shape of tensor.
+  internal::UShape Dim;  //!< Shape of tensor.
 
   size_t upper_rank;  //!< Upper rank for matrix representation.
 
@@ -176,14 +176,14 @@ class Tensor {
     axes_map[axes[i]]=i. The i-th index of the orignal tensor is moved to the
     (axes_map[i])-th index of the transposed tensor.
   */
-  detail::UAxes axes_map;
+  internal::UAxes axes_map;
 
-  void init(const detail::UShape &, size_t upper_rank);
-  void init(const detail::UShape &, size_t upper_rank, const detail::UAxes &map);
+  void init(const internal::UShape &, size_t upper_rank);
+  void init(const internal::UShape &, size_t upper_rank, const internal::UAxes &map);
   void change_configuration(const size_t new_upper_rank,
-                            const detail::UAxes &new_axes_map);
-  bool local_index(const detail::UIndex &, size_t &i) const;
-  Tensor<MatrixType> &transpose_internal(const detail::UAxes &axes);  // axes already normalized
+                            const internal::UAxes &new_axes_map);
+  bool local_index(const internal::UIndex &, size_t &i) const;
+  Tensor<MatrixType> &transpose_internal(const internal::UAxes &axes);  // axes already normalized
 
   mutable std::vector<size_t> l2g_map_row;
   mutable std::vector<size_t> l2g_map_col;
@@ -211,13 +211,13 @@ Tensor<MatrixType> slice(const Tensor<MatrixType> &a, const Index &index_begin,
 template <typename MatrixType>
 Tensor<MatrixType> extend(const Tensor<MatrixType> &a, const Shape &shape_new);
 
-namespace detail {
+namespace internal {
 template <typename MatrixType>
 Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &a, const UAxes &axes,
                                   size_t urank_new);
 template <typename MatrixType>
 Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &a, const UShape &shape_new);
-}  // namespace detail
+}  // namespace internal
 //! \}
 
 //! \ingroup LinearAlgebra
