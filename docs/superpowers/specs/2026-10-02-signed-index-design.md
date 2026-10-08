@@ -178,6 +178,8 @@ The scalar versions (`slice(a, n_axes, i_begin, i_end)` and the scalar `set_slic
 
 - `shape()` returns a value instead of a reference. `const Shape& s = a.shape();` binds to a temporary (it still works thanks to lifetime extension).
 - `Index::operator[]` returns `std::ptrdiff_t&`. Code that binds the result to `size_t&` breaks.
+- Template argument deduction that mixes an element with `size_t` fails, e.g. `std::min(size_t(chi), shape[0] * shape[0])`; such code needs an explicit cast (`examples/Ising_2D` was updated accordingly).
+- Brace initialization from `size_t` variables, e.g. `Shape{n, n + 1}`, is a narrowing error; use parentheses `Shape(n, n + 1)`.
 - The signatures of `global_index_fast`, `local_position`, and `get_axes_map` change.
 - The file format of saved tensors does not change (the internal `size_t` values are written as text).
 

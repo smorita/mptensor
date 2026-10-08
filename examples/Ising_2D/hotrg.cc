@@ -113,7 +113,7 @@ void Hotrg::update(int chi, int direction) {
 
 void Hotrg::update_child(int chi) {
   Shape shape = a.shape();
-  size_t size = std::min(size_t(chi), shape[0] * shape[0]);
+  size_t size = std::min(size_t(chi), size_t(shape[0] * shape[0]));
   tensor u, vt;
   std::vector<double> s;
 

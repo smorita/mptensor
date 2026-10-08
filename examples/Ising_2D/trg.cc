@@ -91,7 +91,7 @@ inline double Trg::n_spin() const { return exp(log_n_spin); }
 
 void Trg::update(size_t chi) {
   Shape shape = a.shape();
-  size_t size = std::min(chi, shape[0] * shape[1]);
+  size_t size = std::min(chi, size_t(shape[0] * shape[1]));
   DTensor c0, c1, c2, c3;
   DTensor u, v;
   std::vector<double> s, sqrt_s(size);
