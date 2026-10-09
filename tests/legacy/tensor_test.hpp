@@ -20,7 +20,7 @@
 
 /*!
   \file   tensor_test.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   January 14 2015
   \brief  Test code for mptensor
 */

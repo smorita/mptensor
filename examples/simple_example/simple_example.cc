@@ -20,7 +20,7 @@
 
 /*!
   \file   simple_example.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Mar 03 2015
   \brief  Simple example of mptensor
 */

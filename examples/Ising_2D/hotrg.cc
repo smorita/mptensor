@@ -20,7 +20,7 @@
 
 /*!
   \file   hotrg.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Aug 25 2016
 
   \brief  Two-dimensional Ising model by HOTRG

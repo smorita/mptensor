@@ -20,7 +20,7 @@
 
 /*!
   \file   mptensor.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Jun 26 2016
 
   \brief  Top header file of mptensor.

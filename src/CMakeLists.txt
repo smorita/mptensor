@@ -17,5 +17,4 @@ install(TARGETS mptensor
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib)
 install(DIRECTORY ${mptensor_SOURCE_DIR}/include/
-        DESTINATION include
-        PATTERN "doxygen_module.hpp" EXCLUDE)
+        DESTINATION include)

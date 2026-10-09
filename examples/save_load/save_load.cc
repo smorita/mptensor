@@ -20,7 +20,7 @@
 
 /*!
   \file   save_load.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Mar 03 2015
   \brief  Example of save and load
 */

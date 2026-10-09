@@ -20,7 +20,7 @@
 
 /*!
   \file   functions.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   April 24 2015
   \brief  Functions for tensor elements
 */

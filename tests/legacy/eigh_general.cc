@@ -20,7 +20,7 @@
 
 /*!
   \file   eigh_general.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   July 4 2019
   \brief  Test code for eigenvalue decomposition
 */

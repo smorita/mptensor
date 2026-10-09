@@ -1,0 +1,74 @@
+/*
+  Definitions of Doxygen groups (modules) and their hierarchy.
+  Items are added to a group with \ingroup in the source files.
+*/
+
+/*!
+  \defgroup Tensor Tensor class
+  \brief The main class of mptensor: a tensor distributed with MPI or held on one process.
+  \{
+    \defgroup TensorConstructor Constructors
+    \brief Constructors of the Tensor class.
+    \defgroup TensorOps Tensor operations
+    \brief Operations on tensors.
+    \{
+      \defgroup ShapeChange Shape change
+      \brief Operations that change the shape of a tensor.
+      \defgroup LinearAlgebra Linear algebra
+      \brief Operations for linear algebra.
+      \{
+        \defgroup Decomposition Decompositions
+        \brief Functions that decompose a tensor into several tensors.
+        \defgroup LinearEq Linear equation
+        \brief Functions that solve a linear equation.
+      \}
+      \defgroup Arithmetic Arithmetic operations
+      \brief Arithmetic operations on tensors.
+      \defgroup Misc Useful operations
+      \brief Other useful operations.
+      \defgroup Output Output
+      \brief Functions that output information on a tensor.
+      \defgroup Random Randomized algorithm
+      \brief Functions that decompose a tensor with randomized algorithms.
+    \}
+  \}
+  \defgroup Index Index, Axes and Shape
+  \brief Lists of integers that specify element indices, axes, and shapes.
+
+  \c Index, \c Axes, and \c Shape are aliases of the same class,
+  \c BasicIndex<std::ptrdiff_t>. Create one like a python list:
+  <tt>Index(0, 1, 2)</tt>, <tt>Axes{2, 0, 1}</tt>, or <tt>Axes a = 2;</tt>.
+
+  Negative values count from the end, as in numpy:
+  - axes: \c -1 is the last axis, e.g. <tt>transpose(A, Axes(-1, 0, 1))</tt>;
+  - element indices: \c -1 is the last element,
+    e.g. <tt>A.get_value(Index(-1, 0), v)</tt>;
+  - slices: the end may be negative, e.g. <tt>slice(A, 0, 1, -1)</tt> is
+    <tt>A[1:-1]</tt>.
+
+  Out-of-range values throw \c std::out_of_range, and negative sizes in a
+  \c Shape throw \c std::invalid_argument, before any communication starts.
+
+  <tt>range(start, stop, step)</tt> creates a sequence as in python, e.g.
+  <tt>range(-1, -5, -1)</tt> reverses the axes of a rank-4 tensor.
+  \defgroup Matrix Matrix class
+  \brief Matrix classes that store the elements of a tensor.
+  \{
+    \defgroup ScaLAPACK ScaLAPACK
+    \brief Parallelized matrix class using ScaLAPACK.
+    \defgroup LAPACK LAPACK
+    \brief Non-parallelized matrix class using LAPACK.
+  \}
+  \defgroup Complex Complex numbers
+  \brief Value type of complex numbers.
+  \defgroup Internal Internal API
+  \brief Library-internal helpers; not part of the public API.
+
+  \warning Not part of the public API. These names may change or be removed
+  without notice, and user code should not use them.
+
+  Helpers used inside the library. Public functions convert their arguments
+  to the internal types (\c internal::UIndex, \c internal::UAxes,
+  \c internal::UShape, all holding \c size_t) once at the entry point;
+  everything after that works on \c size_t.
+*/

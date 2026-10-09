@@ -3,15 +3,15 @@
 [![GitHub](https://img.shields.io/github/license/smorita/mptensor)][License]
 [![build](https://github.com/smorita/mptensor/actions/workflows/build.yml/badge.svg)](https://github.com/smorita/mptensor/actions/workflows/build.yml)
 [![docs](https://github.com/smorita/mptensor/actions/workflows/docs.yml/badge.svg)](https://smorita.github.io/mptensor/)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3735474.svg)](https://doi.org/10.5281/zenodo.3735474)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3514466.svg)](https://doi.org/10.5281/zenodo.3514466)
 
 
-"mptensor" is parallel C++ libarary for tensor calculations.
+"mptensor" is parallel C++ library for tensor calculations.
 It provides similar interfaces as Numpy and Scipy in Python.
 
 ## Prerequisites
 
-- C++11 compiler
+- C++17 compiler
 - CMake (>= 3.16)
 - [LAPACK](https://www.netlib.org/lapack/)
 
@@ -71,10 +71,13 @@ The HTML documents are available in [here][Documents].
 
 ## Examples
 
-    #include <mptensor.hpp>
+    #include <mptensor/mptensor.hpp>
     using namespace mptensor;
-    typedef Tensor<scalapack::Matrix,double> ptensor;
-    ptensor A(Shape(3,4,5));
+    DTensor A(Shape(3, 4, 5));  // real (double) tensor
+    ZTensor B(Shape(3, 4, 5));  // complex tensor
+
+`DTensor` and `ZTensor` are distributed with ScaLAPACK when MPI is enabled,
+and use LAPACK on a single process otherwise.
 
 Example codes of TRG and HOTRG for the 2D Ising model are in `examples/Ising_2D`.
 

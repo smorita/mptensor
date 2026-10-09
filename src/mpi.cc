@@ -20,7 +20,7 @@
 
 /*!
   \file   mpi.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Mar 24 2020
 
   \brief  Helper functions of MPI library

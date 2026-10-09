@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "mptensor: Parallel Library for Tensor Network Methods"
+type: software
+authors:
+  - family-names: Morita
+    given-names: Satoshi
+    orcid: "https://orcid.org/0000-0002-1834-4755"
+version: 0.5.1
+date-released: 2026-10-09
+doi: 10.5281/zenodo.3514466
+license: LGPL-3.0-or-later
+repository-code: "https://github.com/smorita/mptensor"
+url: "https://smorita.github.io/mptensor/"
+keywords:
+  - tensor network
+  - MPI
+  - ScaLAPACK

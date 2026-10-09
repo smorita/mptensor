@@ -20,7 +20,7 @@
 
 /*!
   \file   rsvd.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Feb 3 2016
 
   \brief  Randomized algorithm for singular value decomposition.
