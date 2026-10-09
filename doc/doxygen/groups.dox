@@ -5,32 +5,35 @@
 
 /*!
   \defgroup Tensor Tensor class
+  \brief The main class of mptensor: a tensor distributed with MPI or held on one process.
   \{
     \defgroup TensorConstructor Constructors
+    \brief Constructors of the Tensor class.
     \defgroup TensorOps Tensor operations
+    \brief Operations on tensors.
     \{
       \defgroup ShapeChange Shape change
-      Operations in order to change the shape of a tensor
+      \brief Operations that change the shape of a tensor.
       \defgroup LinearAlgebra Linear algebra
-      Operations for linear algebra.
+      \brief Operations for linear algebra.
       \{
         \defgroup Decomposition Decompositions
-        Functions to decompose a tensor into some tensors.
+        \brief Functions that decompose a tensor into several tensors.
         \defgroup LinearEq Linear equation
-        Functions to solve a linear equation.
+        \brief Functions that solve a linear equation.
       \}
       \defgroup Arithmetic Arithmetic operations
-      Functions for arithmetic operations.
+      \brief Arithmetic operations on tensors.
       \defgroup Misc Useful operations
-      Other useful operations.
+      \brief Other useful operations.
       \defgroup Output Output
-      Function to output information of a tensor.
+      \brief Functions that output information on a tensor.
       \defgroup Random Randomized algorithm
-      Function to decompose a tensor by randomized algorithms.
+      \brief Functions that decompose a tensor with randomized algorithms.
     \}
   \}
   \defgroup Index Index, Axes and Shape
-  Lists of integers that specify element indices, axes, and shapes.
+  \brief Lists of integers that specify element indices, axes, and shapes.
 
   \c Index, \c Axes, and \c Shape are aliases of the same class,
   \c BasicIndex<std::ptrdiff_t>. Create one like a python list:
@@ -49,15 +52,18 @@
   <tt>range(start, stop, step)</tt> creates a sequence as in python, e.g.
   <tt>range(-1, -5, -1)</tt> reverses the axes of a rank-4 tensor.
   \defgroup Matrix Matrix class
+  \brief Matrix classes that store the elements of a tensor.
   \{
     \defgroup ScaLAPACK ScaLAPACK
-    Parallelized matrix class using ScaLAPACK
+    \brief Parallelized matrix class using ScaLAPACK.
     \defgroup LAPACK LAPACK
-    Non-parallelized matrix class using LAPACK
+    \brief Non-parallelized matrix class using LAPACK.
   \}
   \defgroup Complex Complex numbers
-  Value type of complex numbers
+  \brief Value type of complex numbers.
   \defgroup Internal Internal API
+  \brief Library-internal helpers; not part of the public API.
+
   \warning Not part of the public API. These names may change or be removed
   without notice, and user code should not use them.
 
