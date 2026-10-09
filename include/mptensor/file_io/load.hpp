@@ -67,8 +67,8 @@ void Tensor<MatrixType>::load(const std::string &filename) {
   const size_t this_matrix_type = MatrixType::matrix_type_tag;
   const size_t this_value_type = value_type_tag<value_type>();
   const size_t this_comm_size = get_comm_size();
-  Shape loaded_shape;
-  Axes loaded_map;
+  internal::UShape loaded_shape;
+  internal::UAxes loaded_map;
 
   // Read the base file
   {
@@ -161,8 +161,8 @@ void Tensor<MatrixType>::load_ver_0_2(const char* filename) {
   std::ifstream fin;
   size_t n;
   size_t urank;
-  Shape shape;
-  Axes map;
+  internal::UShape shape;
+  internal::UAxes map;
 
   if (get_comm_rank() == 0) {
     std::clog << "Warning: \"" << filename

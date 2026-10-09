@@ -140,7 +140,7 @@ void Atrg::initialize_down(DTensor& C, DTensor& D) {
 
 void Atrg::swap(int chi, DTensor& B, DTensor& C) {
   Shape shape = B.shape();
-  size_t size = std::min(size_t(chi), shape[0] * shape[0]);
+  size_t size = std::min(size_t(chi), size_t(shape[0] * shape[0]));
   DTensor u, vt;
   std::vector<double> s, sqrt_s(size);
 
@@ -158,7 +158,7 @@ void Atrg::swap(int chi, DTensor& B, DTensor& C) {
 void Atrg::update_from_ABCD(int chi, DTensor& A, DTensor& B, DTensor& C,
                             DTensor& D) {
   Shape shape = A.shape();
-  size_t size = std::min(size_t(chi), shape[0] * shape[0]);
+  size_t size = std::min(size_t(chi), size_t(shape[0] * shape[0]));
   DTensor u, vt;
   std::vector<double> s, sqrt_s(size);
 

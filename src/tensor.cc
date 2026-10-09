@@ -32,7 +32,7 @@
 
 namespace mptensor {
 
-bool is_no_transpose(const Axes& axes, const Axes& axes_map, size_t rank) {
+bool is_no_transpose(const internal::UAxes& axes, const internal::UAxes& axes_map, size_t rank) {
   for (size_t i = 0; i < rank; ++i) {
     if (axes[i] != i) return false;
     if (axes_map[i] != i) return false;
@@ -46,7 +46,7 @@ bool is_no_transpose(const Axes& axes, const Axes& axes_map, size_t rank) {
  */
 namespace debug {
 
-bool check_total_size(const Shape& s1, const Shape& s2) {
+bool check_total_size(const internal::UShape& s1, const internal::UShape& s2) {
   size_t n1 = 1;
   for (size_t i = 0; i < s1.size(); ++i) n1 *= s1[i];
   size_t n2 = 1;
@@ -54,7 +54,7 @@ bool check_total_size(const Shape& s1, const Shape& s2) {
   return n1 == n2;
 }
 
-bool check_extend(const Shape& s_old, const Shape& s_new) {
+bool check_extend(const internal::UShape& s_old, const internal::UShape& s_new) {
   const size_t n = s_old.size();
   bool check = true;
   for (size_t i = 0; i < n; ++i) {
@@ -63,9 +63,9 @@ bool check_extend(const Shape& s_old, const Shape& s_new) {
   return check;
 }
 
-bool check_transpose_axes(const Axes& axes, size_t rank) {
+bool check_transpose_axes(const internal::UAxes& axes, size_t rank) {
   if (axes.size() != rank) return false;
-  Axes v = axes;
+  internal::UAxes v = axes;
   v.sort();
   for (size_t i = 0; i < rank; ++i) {
     if (v[i] != i) return false;
@@ -73,9 +73,9 @@ bool check_transpose_axes(const Axes& axes, size_t rank) {
   return true;
 }
 
-bool check_svd_axes(const Axes& a_row, const Axes& a_col, size_t rank) {
+bool check_svd_axes(const internal::UAxes& a_row, const internal::UAxes& a_col, size_t rank) {
   if (a_row.size() + a_col.size() != rank) return false;
-  Axes v = a_row + a_col;
+  internal::UAxes v = a_row + a_col;
   v.sort();
   for (size_t i = 0; i < rank; ++i) {
     if (v[i] != i) return false;
@@ -83,8 +83,8 @@ bool check_svd_axes(const Axes& a_row, const Axes& a_col, size_t rank) {
   return true;
 }
 
-bool check_trace_axes(const Axes& axes_1, const Axes& axes_2, size_t rank) {
-  Axes v = axes_1 + axes_2;
+bool check_trace_axes(const internal::UAxes& axes_1, const internal::UAxes& axes_2, size_t rank) {
+  internal::UAxes v = axes_1 + axes_2;
   v.sort();
   for (size_t i = 0; i < rank; ++i) {
     if (v[i] != i) return false;
@@ -92,12 +92,12 @@ bool check_trace_axes(const Axes& axes_1, const Axes& axes_2, size_t rank) {
   return true;
 }
 
-bool check_trace_axes(const Axes& axes_a, const Axes& axes_b,
-                      const Shape& shape_a, const Shape& shape_b) {
+bool check_trace_axes(const internal::UAxes& axes_a, const internal::UAxes& axes_b,
+                      const internal::UShape& shape_a, const internal::UShape& shape_b) {
   for (size_t i = 0; i < axes_a.size(); ++i) {
     if (shape_a[axes_a[i]] != shape_b[axes_b[i]]) return false;
   }
-  Axes axes;
+  internal::UAxes axes;
   axes = axes_a;
   axes.sort();
   for (size_t i = 0; i < axes.size(); ++i) {
@@ -111,8 +111,8 @@ bool check_trace_axes(const Axes& axes_a, const Axes& axes_b,
   return true;
 }
 
-bool check_contract_axes(const Axes& axes_1, const Axes& axes_2, size_t rank) {
-  Axes v = axes_1 + axes_2;
+bool check_contract_axes(const internal::UAxes& axes_1, const internal::UAxes& axes_2, size_t rank) {
+  internal::UAxes v = axes_1 + axes_2;
   v.sort();
   const size_t n = v.size();
   for (size_t i = 0; i < n - 1; ++i) {
@@ -122,7 +122,7 @@ bool check_contract_axes(const Axes& axes_1, const Axes& axes_2, size_t rank) {
   return true;
 }
 
-bool check_square(const Shape& shape, size_t urank) {
+bool check_square(const internal::UShape& shape, size_t urank) {
   size_t rank = shape.size();
   size_t d_row(1), d_col(1);
   for (size_t i = 0; i < urank; ++i) d_row *= shape[i];

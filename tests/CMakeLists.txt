@@ -55,6 +55,7 @@ function(mptensor_add_test name target)
   endif()
 endfunction()
 
+add_subdirectory(index)
 add_subdirectory(tensor)
 add_subdirectory(file_io)
 

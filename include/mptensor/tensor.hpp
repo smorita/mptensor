@@ -41,13 +41,23 @@
 
 namespace mptensor {
 
-/* Alias */
-using Axes  = Index;
-using Shape = Index;
+namespace internal {
+//! Tag: the shape argument of the constructor is already normalized.
+struct normalized_t {
+  explicit normalized_t() = default;
+};
+inline constexpr normalized_t normalized{};
+}  // namespace internal
 
 /* Class definition */
 //! Tensor class. The main object of mptensor.
 /*!
+  Axes and element indices accept negative values, which count from the end
+  as in numpy. Out-of-range values throw std::out_of_range, and negative sizes
+  in a Shape throw std::invalid_argument, before any communication starts.
+  With MPI, collective operations must receive the same arguments on all
+  processes; then all processes throw together and may catch and continue.
+
   \ingroup Tensor
 */
 template <typename MatrixType>
@@ -67,16 +77,21 @@ class Tensor {
   explicit Tensor(const comm_type &);
   Tensor(const comm_type &, const Shape &);
   Tensor(const comm_type &, const Shape &, size_t upper_rank);
+  //! \cond
+  Tensor(const comm_type &, const internal::UShape &shape, size_t upper_rank,
+         internal::normalized_t);  // internal use: shape is already normalized
+  //! \endcond
   Tensor(const comm_type &, const Tensor<lapack::Matrix<value_type>> &);
   Tensor(const comm_type &, const std::vector<value_type> &);
   //! \}
 
-  const Shape &shape() const;
+  Shape shape() const;
+  const internal::UShape &internal_shape() const;  //!< Shape as the internal type.
   size_t rank() const;
   size_t ndim() const;
   size_t local_size() const;
   size_t get_upper_rank() const;
-  const Axes &get_axes_map() const;
+  const internal::UAxes &get_axes_map() const;
 
   const MatrixType &get_matrix() const;
   MatrixType &get_matrix();
@@ -86,8 +101,8 @@ class Tensor {
   int get_comm_rank() const;
 
   Index global_index(size_t i) const;
-  void global_index_fast(size_t i, Index &idx) const;
-  void local_position(const Index &idx, int &comm_rank,
+  void global_index_fast(size_t i, internal::UIndex &idx) const;
+  void local_position(const internal::UIndex &idx, int &comm_rank,
                       size_t &local_idx) const;
 
   const value_type &operator[](size_t local_idx) const;
@@ -105,24 +120,24 @@ class Tensor {
   Tensor<MatrixType> &transpose(const Axes &axes);
 
   template <typename D>
-  Tensor<MatrixType> &multiply_vector(const std::vector<D> &vec, size_t n_axes);
+  Tensor<MatrixType> &multiply_vector(const std::vector<D> &vec, std::ptrdiff_t n_axes);
   template <typename D0, typename D1>
   Tensor<MatrixType> &multiply_vector(const std::vector<D0> &vec0,
-                                      size_t n_axes0,
+                                      std::ptrdiff_t n_axes0,
                                       const std::vector<D1> &vec1,
-                                      size_t n_axes1);
+                                      std::ptrdiff_t n_axes1);
   template <typename D0, typename D1, typename D2>
   Tensor<MatrixType> &multiply_vector(
-      const std::vector<D0> &vec0, size_t n_axes0, const std::vector<D1> &vec1,
-      size_t n_axes1, const std::vector<D2> &vec2, size_t n_axes2);
+      const std::vector<D0> &vec0, std::ptrdiff_t n_axes0, const std::vector<D1> &vec1,
+      std::ptrdiff_t n_axes1, const std::vector<D2> &vec2, std::ptrdiff_t n_axes2);
   template <typename D0, typename D1, typename D2, typename D3>
   Tensor<MatrixType> &multiply_vector(
-      const std::vector<D0> &vec0, size_t n_axes0, const std::vector<D1> &vec1,
-      size_t n_axes1, const std::vector<D2> &vec2, size_t n_axes2,
-      const std::vector<D3> &vec3, size_t n_axes3);
+      const std::vector<D0> &vec0, std::ptrdiff_t n_axes0, const std::vector<D1> &vec1,
+      std::ptrdiff_t n_axes1, const std::vector<D2> &vec2, std::ptrdiff_t n_axes2,
+      const std::vector<D3> &vec3, std::ptrdiff_t n_axes3);
 
-  Tensor<MatrixType> &set_slice(const Tensor &a, size_t n_axes, size_t i_begin,
-                                size_t i_end);
+  Tensor<MatrixType> &set_slice(const Tensor &a, std::ptrdiff_t n_axes,
+                                std::ptrdiff_t i_begin, std::ptrdiff_t i_end);
   Tensor<MatrixType> &set_slice(const Tensor &a, const Index &index_begin,
                                 const Index &index_end);
 
@@ -151,7 +166,7 @@ class Tensor {
 
  private:
   MatrixType Mat;  //!< local storage.
-  Shape Dim;       //!< Shape of tensor.
+  internal::UShape Dim;  //!< Shape of tensor.
 
   size_t upper_rank;  //!< Upper rank for matrix representation.
 
@@ -161,13 +176,14 @@ class Tensor {
     axes_map[axes[i]]=i. The i-th index of the orignal tensor is moved to the
     (axes_map[i])-th index of the transposed tensor.
   */
-  Axes axes_map;
+  internal::UAxes axes_map;
 
-  void init(const Shape &, size_t upper_rank);
-  void init(const Shape &, size_t upper_rank, const Axes &map);
+  void init(const internal::UShape &, size_t upper_rank);
+  void init(const internal::UShape &, size_t upper_rank, const internal::UAxes &map);
   void change_configuration(const size_t new_upper_rank,
-                            const Axes &new_axes_map);
-  bool local_index(const Index &, size_t &i) const;
+                            const internal::UAxes &new_axes_map);
+  bool local_index(const internal::UIndex &, size_t &i) const;
+  Tensor<MatrixType> &transpose_internal(const internal::UAxes &axes);  // axes already normalized
 
   mutable std::vector<size_t> l2g_map_row;
   mutable std::vector<size_t> l2g_map_col;
@@ -187,13 +203,21 @@ Tensor<MatrixType> transpose(const Tensor<MatrixType> &a, const Axes &axes,
 template <typename MatrixType>
 Tensor<MatrixType> reshape(const Tensor<MatrixType> &a, const Shape &shape_new);
 template <typename MatrixType>
-Tensor<MatrixType> slice(const Tensor<MatrixType> &a, size_t n_axes,
-                         size_t i_begin, size_t i_end);
+Tensor<MatrixType> slice(const Tensor<MatrixType> &a, std::ptrdiff_t n_axes,
+                         std::ptrdiff_t i_begin, std::ptrdiff_t i_end);
 template <typename MatrixType>
 Tensor<MatrixType> slice(const Tensor<MatrixType> &a, const Index &index_begin,
                          const Index &index_end);
 template <typename MatrixType>
 Tensor<MatrixType> extend(const Tensor<MatrixType> &a, const Shape &shape_new);
+
+namespace internal {
+template <typename MatrixType>
+Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &a, const UAxes &axes,
+                                  size_t urank_new);
+template <typename MatrixType>
+Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &a, const UShape &shape_new);
+}  // namespace internal
 //! \}
 
 //! \ingroup LinearAlgebra

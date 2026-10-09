@@ -18,5 +18,4 @@ install(TARGETS mptensor
         LIBRARY DESTINATION lib)
 install(DIRECTORY ${mptensor_SOURCE_DIR}/include/
         DESTINATION include
-        PATTERN "index_constructor.py" EXCLUDE
         PATTERN "doxygen_module.hpp" EXCLUDE)
