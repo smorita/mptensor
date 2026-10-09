@@ -6,7 +6,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3735474.svg)](https://doi.org/10.5281/zenodo.3735474)
 
 
-"mptensor" is parallel C++ libarary for tensor calculations.
+"mptensor" is parallel C++ library for tensor calculations.
 It provides similar interfaces as Numpy and Scipy in Python.
 
 ## Prerequisites
@@ -71,10 +71,10 @@ The HTML documents are available in [here][Documents].
 
 ## Examples
 
-    #include <mptensor.hpp>
+    #include <mptensor/mptensor.hpp>
     using namespace mptensor;
-    typedef Tensor<scalapack::Matrix,double> ptensor;
-    ptensor A(Shape(3,4,5));
+    using ptensor = Tensor<scalapack::Matrix<double>>;
+    ptensor A(Shape(3, 4, 5));
 
 Example codes of TRG and HOTRG for the 2D Ising model are in `examples/Ising_2D`.
 
