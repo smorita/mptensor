@@ -51,7 +51,25 @@
       Function to decompose a tensor by randomized algorithms.
     \}
   \}
-  \defgroup Index Index class
+  \defgroup Index Index, Axes and Shape
+  Lists of integers that specify element indices, axes, and shapes.
+
+  \c Index, \c Axes, and \c Shape are aliases of the same class,
+  \c BasicIndex<std::ptrdiff_t>. Create one like a python list:
+  <tt>Index(0, 1, 2)</tt>, <tt>Axes{2, 0, 1}</tt>, or <tt>Axes a = 2;</tt>.
+
+  Negative values count from the end, as in numpy:
+  - axes: \c -1 is the last axis, e.g. <tt>transpose(A, Axes(-1, 0, 1))</tt>;
+  - element indices: \c -1 is the last element,
+    e.g. <tt>A.get_value(Index(-1, 0), v)</tt>;
+  - slices: the end may be negative, e.g. <tt>slice(A, 0, 1, -1)</tt> is
+    <tt>A[1:-1]</tt>.
+
+  Out-of-range values throw \c std::out_of_range, and negative sizes in a
+  \c Shape throw \c std::invalid_argument, before any communication starts.
+
+  <tt>range(start, stop, step)</tt> creates a sequence as in python, e.g.
+  <tt>range(-1, -5, -1)</tt> reverses the axes of a rank-4 tensor.
   \defgroup Matrix Matrix class
   \{
     \defgroup ScaLAPACK ScaLAPACK
@@ -61,4 +79,12 @@
   \}
   \defgroup Complex Complex numbers
   Value type of complex numbers
+  \defgroup Internal Internal API
+  \warning Not part of the public API. These names may change or be removed
+  without notice, and user code should not use them.
+
+  Helpers used inside the library. Public functions convert their arguments
+  to the internal types (\c internal::UIndex, \c internal::UAxes,
+  \c internal::UShape, all holding \c size_t) once at the entry point;
+  everything after that works on \c size_t.
 */
