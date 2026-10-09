@@ -20,7 +20,7 @@
 
 /*!
   \file   matrix_lapack.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
 
   \brief  Definition of functions which call LAPACK and BLAS routines.
 */

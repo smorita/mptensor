@@ -20,7 +20,7 @@
 
 /*!
   \file   mpi_wrapper.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Jun 2 2015
 
   \brief  Wrapper functions of MPI communications

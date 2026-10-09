@@ -20,7 +20,7 @@
 
 /*!
   \file   benchmark/rsvd.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Feb  32016
 
   \brief  Benchmark for RSVD.

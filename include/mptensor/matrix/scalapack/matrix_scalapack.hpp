@@ -20,7 +20,7 @@
 
 /*!
   \file   matrix_scalapack.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Dec 12 2014
   \brief  scalapack::Matrix class
 */

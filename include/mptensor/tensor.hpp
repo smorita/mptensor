@@ -20,7 +20,7 @@
 
 /*!
   \file   tensor.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Jan 14 2015
 
   \brief  Tensor class

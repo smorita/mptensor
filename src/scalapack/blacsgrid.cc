@@ -20,7 +20,7 @@
 
 /*!
   \file   blacsgrid.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Dec 12 2014
 
   \brief  BlacsGrid class

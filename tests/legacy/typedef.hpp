@@ -20,7 +20,7 @@
 
 /*!
   \file   typedef.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
 
   \brief  Define TensorD and TensorC.
 

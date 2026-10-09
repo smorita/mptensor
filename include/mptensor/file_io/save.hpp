@@ -20,7 +20,7 @@
 
 /*!
   \file   save.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Mar 18 2020
 
   \brief  Header file of saver.

@@ -20,7 +20,7 @@
 
 /*!
   \file   eigh_rank2.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   April 24 2015
   \brief  Test code for eigenvalue decomposition of matrix
 */

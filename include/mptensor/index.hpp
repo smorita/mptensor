@@ -20,7 +20,7 @@
 
 /*!
   \file   index.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Jan 08 2015
 
   \brief  header file of BasicIndex class template

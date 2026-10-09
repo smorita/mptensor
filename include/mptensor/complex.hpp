@@ -20,7 +20,7 @@
 
 /*!
   \file   complex.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Jan 13 2015
 
   \brief  Define the type of a complex number.
