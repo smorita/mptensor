@@ -73,8 +73,11 @@ The HTML documents are available in [here][Documents].
 
     #include <mptensor/mptensor.hpp>
     using namespace mptensor;
-    using ptensor = Tensor<scalapack::Matrix<double>>;
-    ptensor A(Shape(3, 4, 5));
+    DTensor A(Shape(3, 4, 5));  // real (double) tensor
+    ZTensor B(Shape(3, 4, 5));  // complex tensor
+
+`DTensor` and `ZTensor` are distributed with ScaLAPACK when MPI is enabled,
+and use LAPACK on a single process otherwise.
 
 Example codes of TRG and HOTRG for the 2D Ising model are in `examples/Ising_2D`.
 
