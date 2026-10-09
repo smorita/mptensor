@@ -11,7 +11,7 @@ It provides similar interfaces as Numpy and Scipy in Python.
 
 ## Prerequisites
 
-- C++11 compiler
+- C++17 compiler
 - CMake (>= 3.16)
 - [LAPACK](https://www.netlib.org/lapack/)
 
