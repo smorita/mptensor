@@ -1,0 +1,21 @@
+# CMake package configuration for mptensor.
+#
+#   find_package(mptensor 0.6 REQUIRED)
+#   target_link_libraries(myapp PRIVATE mptensor::mptensor)
+#
+# mptensor_ENABLE_MPI tells whether this mptensor was built with MPI and
+# ScaLAPACK. LAPACK, BLAS, and ScaLAPACK are linked by the paths found when
+# mptensor was built.
+
+@PACKAGE_INIT@
+
+set(mptensor_ENABLE_MPI @MPTENSOR_ENABLE_MPI@)
+
+include(CMakeFindDependencyMacro)
+find_dependency(OpenMP)
+if(mptensor_ENABLE_MPI)
+  find_dependency(MPI)
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/mptensorTargets.cmake")
+check_required_components(mptensor)

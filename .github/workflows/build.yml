@@ -40,7 +40,7 @@ jobs:
       run: >
         cmake -B ${{github.workspace}}/build
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DENABLE_MPI=${{ matrix.mpi }}
+        -DMPTENSOR_ENABLE_MPI=${{ matrix.mpi }}
         -DBUILD_TESTS=ON
         -DBUILD_LEGACY_TESTS=${{ matrix.legacy }}
         -DCMAKE_VERBOSE_MAKEFILE=ON

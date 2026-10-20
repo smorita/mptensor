@@ -14,19 +14,33 @@ project(mptensor
         LANGUAGES CXX
 )
 
-option(ENABLE_MPI "Use MPI and ScaLAPACK" ON)
-option(BUILD_SHARED_LIBS "Build as shared library" OFF)
-option(BUILD_DOCS "Build documents" OFF)
-option(BUILD_TESTS "Build tests" OFF)
-option(BUILD_LEGACY_TESTS "Build legacy tests" OFF)
-
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   set(IS_SUB_PROJECT OFF)
 else()
   set(IS_SUB_PROJECT ON)
 endif()
 
-if(NOT CMAKE_BUILD_TYPE)
+# ENABLE_MPI is the old name of MPTENSOR_ENABLE_MPI.
+if(DEFINED ENABLE_MPI AND NOT DEFINED MPTENSOR_ENABLE_MPI)
+  message(DEPRECATION "ENABLE_MPI is deprecated; use MPTENSOR_ENABLE_MPI instead.")
+  set(MPTENSOR_ENABLE_MPI ${ENABLE_MPI} CACHE BOOL "Use MPI and ScaLAPACK")
+endif()
+option(MPTENSOR_ENABLE_MPI "Use MPI and ScaLAPACK" ON)
+
+if(IS_SUB_PROJECT)
+  set(_mptensor_install_default OFF)
+else()
+  set(_mptensor_install_default ON)
+endif()
+option(MPTENSOR_INSTALL "Install mptensor (default: OFF when used as a subproject)"
+       ${_mptensor_install_default})
+
+option(BUILD_SHARED_LIBS "Build as shared library" OFF)
+option(BUILD_DOCS "Build documents" OFF)
+option(BUILD_TESTS "Build tests" OFF)
+option(BUILD_LEGACY_TESTS "Build legacy tests" OFF)
+
+if(NOT CMAKE_BUILD_TYPE AND NOT IS_SUB_PROJECT)
   if(BUILD_TESTS)
     set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Type of build" FORCE)
   else()
@@ -48,14 +62,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(OpenMP REQUIRED)
-if(NOT TARGET OpenMP::OpenMP_CXX)
-    find_package(Threads REQUIRED)
-    add_library(OpenMP::OpenMP_CXX IMPORTED INTERFACE)
-    set_property(TARGET OpenMP::OpenMP_CXX
-                 PROPERTY INTERFACE_COMPILE_OPTIONS ${OpenMP_CXX_FLAGS})
-    set_property(TARGET OpenMP::OpenMP_CXX
-                 PROPERTY INTERFACE_LINK_LIBRARIES ${OpenMP_CXX_FLAGS} Threads::Threads)
-endif()
 
 find_package(LAPACK)
 if(NOT LAPACK_FOUND)
@@ -64,21 +70,9 @@ if(NOT LAPACK_FOUND)
   find_package(LAPACK REQUIRED)
 endif()
 
-if(ENABLE_MPI)
+if(MPTENSOR_ENABLE_MPI)
   find_package(MPI REQUIRED)
-  if(NOT TARGET MPI::MPI_CXX)
-    string(STRIP "${MPI_CXX_LINK_FLAGS}" MPI_CXX_LINK_FLAGS)
-    add_library(MPI::MPI_CXX IMPORTED INTERFACE)
-    set_property(TARGET MPI::MPI_CXX
-                 PROPERTY INTERFACE_COMPILE_OPTIONS ${MPI_CXX_COMPILE_FLAGS})
-    set_property(TARGET MPI::MPI_CXX
-                 PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${MPI_CXX_INCLUDE_PATH}")
-    set_property(TARGET MPI::MPI_CXX
-                 PROPERTY INTERFACE_LINK_LIBRARIES ${MPI_CXX_LINK_FLAGS} ${MPI_CXX_LIBRARIES})
-  endif()
   find_package(ScaLAPACK REQUIRED)
-else()
-  add_definitions(-D_NO_MPI)
 endif()
 
 add_subdirectory(src)

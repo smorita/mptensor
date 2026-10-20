@@ -26,31 +26,57 @@ It provides similar interfaces as Numpy and Scipy in Python.
 
 ## How to Use
 
-1. Build and install mptensor library
+### Build and install
 
-        # Modern CMake (>= 3.15)
-        cmake -B build
-        cmake --build build
-        sudo cmake --install build
+    cmake -B build
+    cmake --build build
+    sudo cmake --install build
 
-        # Traditional way
-        mkdir build
-        cd build
-        cmake ../
-        make
-        sudo cmake install
+The default install directory is `/usr/local`. It can be changed with
+`cmake --install build --prefix your_install_prefix` (or `-DCMAKE_INSTALL_PREFIX` at configure time).
 
-2. Include the header file `mptensor/mptensor.hpp` in your codes.
-3. Complie your applications with link option `-lmptensor` .
+Main options:
 
-The default install directory is `/usr/local`. It can be changed by `-DCMAKE_INSTALL_PREFIX` option.
-
-    # Modern CMake
-    cmake --install build --prefix your_install_prefix
-    # Traditional way
-    cmake -DCMAKE_INSTALL_PREFIX=your_install_path ../
+- `-DMPTENSOR_ENABLE_MPI=OFF`: build without MPI and ScaLAPACK (default: `ON`).
+  The old name `ENABLE_MPI` is still accepted but deprecated.
+- `-DBUILD_SHARED_LIBS=ON`: build a shared library (default: static).
 
 See also the [CMake documentation](https://cmake.org/cmake/help/latest/manual/cmake.1.html).
+
+### Use from a CMake project
+
+Link the `mptensor::mptensor` target. It carries the include path, the C++17
+requirement, `_NO_MPI` for a non-MPI build, and the MPI, OpenMP, LAPACK, and
+ScaLAPACK libraries, so no other settings are needed.
+
+- **Installed mptensor** (`find_package`)
+
+        find_package(mptensor 0.6 REQUIRED)
+        target_link_libraries(myapp PRIVATE mptensor::mptensor)
+
+  Set `CMAKE_PREFIX_PATH` to the install prefix if it is not a standard location.
+  The variable `mptensor_ENABLE_MPI` tells whether it was built with MPI.
+
+- **Git submodule** (`add_subdirectory`)
+
+        set(MPTENSOR_ENABLE_MPI ON)
+        add_subdirectory(external/mptensor)
+        target_link_libraries(myapp PRIVATE mptensor::mptensor)
+
+  As a subproject, mptensor is not installed together with your project
+  (`MPTENSOR_INSTALL` defaults to `OFF`).
+
+- **FetchContent**
+
+        include(FetchContent)
+        FetchContent_Declare(mptensor
+          GIT_REPOSITORY https://github.com/smorita/mptensor.git
+          GIT_TAG v0.6.0)
+        FetchContent_MakeAvailable(mptensor)
+        target_link_libraries(myapp PRIVATE mptensor::mptensor)
+
+Without CMake, add the include directory, link `-lmptensor` with LAPACK (and
+ScaLAPACK and MPI), and define `_NO_MPI` for a build without MPI.
 
 ## Tests
 
