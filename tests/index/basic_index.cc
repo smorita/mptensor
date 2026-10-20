@@ -146,4 +146,11 @@ TEST(BasicIndex, RangeZeroStepThrows) {
   EXPECT_THROW(mptensor::range(0, 3, 0), std::invalid_argument);
 }
 
+TEST(BasicIndex, InverseRejectsNonPermutations) {
+  EXPECT_THROW(UIndex(0, 3).inverse(), std::out_of_range);
+  EXPECT_THROW(SIndex(-1, 0).inverse(), std::out_of_range);
+  EXPECT_THROW(UIndex(0, 0).inverse(), std::invalid_argument);
+  EXPECT_EQ(SIndex(1, 2, 0).inverse(), SIndex(2, 0, 1));
+}
+
 }  // namespace

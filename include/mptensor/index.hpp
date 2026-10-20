@@ -139,11 +139,31 @@ class BasicIndex {
   void sort() { std::sort(idx.begin(), idx.end()); }
 
   //! Inverse permutation: <tt>inv[(*this)[i]] = i</tt>.
+  /*!
+    \throw std::out_of_range if an element is outside <tt>[0, size())</tt>.
+    \throw std::invalid_argument if an element appears twice.
+  */
   BasicIndex inverse() const {
+    const size_t n = size();
     BasicIndex inv;
-    inv.resize(size());
-    for (size_t i = 0; i < size(); ++i) {
-      inv[static_cast<size_t>(idx[i])] = static_cast<T>(i);
+    inv.resize(n);
+    std::vector<bool> seen(n, false);
+    for (size_t i = 0; i < n; ++i) {
+      if (idx[i] < 0 || static_cast<size_t>(idx[i]) >= n) {
+        std::ostringstream ss;
+        ss << "mptensor: inverse() of " << *this << ": element " << +idx[i]
+           << " at position " << i << " is out of range [0, " << n << ")";
+        throw std::out_of_range(ss.str());
+      }
+      const size_t j = static_cast<size_t>(idx[i]);
+      if (seen[j]) {
+        std::ostringstream ss;
+        ss << "mptensor: inverse() of " << *this << ": " << +idx[i]
+           << " appears more than once, so it is not a permutation";
+        throw std::invalid_argument(ss.str());
+      }
+      seen[j] = true;
+      inv[j] = static_cast<T>(i);
     }
     return inv;
   }
@@ -203,18 +223,20 @@ using UShape = UIndex;
   \param n Size of the range (rank or dimension).
   \param end_inclusive Accept \c n itself (for an exclusive slice end).
   \param kind Name of the value shown in the error message, e.g. "axis".
-  \param position Element number shown in the error message; negative for a
-  scalar argument.
+  \param position Element number (or axis) shown in the error message;
+  negative for a scalar argument.
+  \param position_name Word shown before \c position, e.g. "position" or "axis".
   \throw std::out_of_range if \c v is out of range.
 */
 inline size_t normalize_value(std::ptrdiff_t v, size_t n, bool end_inclusive,
-                              const char* kind, std::ptrdiff_t position) {
+                              const char* kind, std::ptrdiff_t position,
+                              const char* position_name = "position") {
   const std::ptrdiff_t sn = static_cast<std::ptrdiff_t>(n);
   const bool ok = end_inclusive ? (v >= -sn && v <= sn) : (v >= -sn && v < sn);
   if (!ok) {
     std::ostringstream ss;
     ss << "mptensor: " << kind << " " << v;
-    if (position >= 0) ss << " (position " << position << ")";
+    if (position >= 0) ss << " (" << position_name << " " << position << ")";
     ss << " is out of range [" << -sn << ", " << sn
        << (end_inclusive ? "]" : ")");
     throw std::out_of_range(ss.str());
@@ -238,8 +260,8 @@ inline std::pair<size_t, size_t> normalize_slice_range(std::ptrdiff_t begin,
                                                        std::ptrdiff_t end,
                                                        size_t n, size_t axis) {
   const std::ptrdiff_t pos = static_cast<std::ptrdiff_t>(axis);
-  const size_t b = normalize_value(begin, n, false, "slice begin", pos);
-  const size_t e = normalize_value(end, n, true, "slice end", pos);
+  const size_t b = normalize_value(begin, n, false, "slice begin", pos, "axis");
+  const size_t e = normalize_value(end, n, true, "slice end", pos, "axis");
   if (b >= e) {
     std::ostringstream ss;
     ss << "mptensor: slice [" << begin << ", " << end << ") on axis " << axis
@@ -265,6 +287,9 @@ inline void normalize_slice_ranges(const Index& begin, const Index& end,
   uend.resize(rank);
   for (size_t r = 0; r < rank; ++r) {
     if (begin[r] == end[r]) {
+      // Full axis, but the bound itself must still be in [-n, n].
+      normalize_value(begin[r], shape[r], true, "slice bound",
+                      static_cast<std::ptrdiff_t>(r), "axis");
       ubegin[r] = 0;
       uend[r] = shape[r];
     } else {

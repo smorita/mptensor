@@ -1,6 +1,7 @@
 #include <cstddef>
 #include <limits>
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 #include <gtest/gtest.h>
@@ -109,6 +110,31 @@ TEST(NormalizeSliceRanges, IndexSlice) {
   EXPECT_THROW(mptensor::internal::normalize_slice_ranges(
                    SIndex(0, 0), SIndex(1), UIndex(5, 5), b, e),
                std::invalid_argument);
+}
+
+TEST(NormalizeSliceRange, MessageNamesTheAxis) {
+  try {
+    mptensor::internal::normalize_slice_range(7, 8, 5, 1);
+    FAIL() << "no exception";
+  } catch (const std::out_of_range& e) {
+    EXPECT_NE(std::string(e.what()).find("axis 1"), std::string::npos)
+        << e.what();
+  }
+}
+
+TEST(NormalizeSliceRanges, RawEqualBoundsAreStillRangeChecked) {
+  UIndex b, e;
+  // Equal raw bounds mean the full axis, but only for values in [-n, n].
+  mptensor::internal::normalize_slice_ranges(SIndex(5, -5), SIndex(5, -5),
+                                             UIndex(5, 5), b, e);
+  EXPECT_EQ(b, UIndex(0, 0));
+  EXPECT_EQ(e, UIndex(5, 5));
+  EXPECT_THROW(mptensor::internal::normalize_slice_ranges(
+                   SIndex(9), SIndex(9), UIndex(5), b, e),
+               std::out_of_range);
+  EXPECT_THROW(mptensor::internal::normalize_slice_ranges(
+                   SIndex(-6), SIndex(-6), UIndex(5), b, e),
+               std::out_of_range);
 }
 
 }  // namespace
