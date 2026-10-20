@@ -50,12 +50,7 @@ namespace {
 double singular_value(size_t i) { return std::pow(1.0 + i, -2.0); }
 
 ptensor test_tensor(size_t n) {
-#ifdef _NO_MPI
-  // Without MPI, mptensor provides a stand-in MPI_COMM_WORLD in mptensor::mpi.
-  mpi::comm_type comm = mpi::MPI_COMM_WORLD;
-#else
-  mpi::comm_type comm = MPI_COMM_WORLD;
-#endif
+  mpi::comm_type comm = mpi::comm_world();
   ptensor D(Shape(n * n, n * n));
   {
     const int m = D.local_size();

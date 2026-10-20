@@ -37,12 +37,7 @@ int main(int argc, char **argv) {
 
   /* Start */
   mpi::initialize(argc, argv);
-#ifdef _NO_MPI
-  // Without MPI, mptensor provides a stand-in MPI_COMM_WORLD in mptensor::mpi.
-  mpi::comm_type comm = mpi::MPI_COMM_WORLD;
-#else
-  mpi::comm_type comm = MPI_COMM_WORLD;
-#endif
+  mpi::comm_type comm = mpi::comm_world();
 
   /* Get arguments */
   int n;

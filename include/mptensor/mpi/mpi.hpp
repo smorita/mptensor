@@ -45,6 +45,18 @@ extern const comm_type MPI_COMM_WORLD;
 using comm_type = MPI_Comm;  /// Type for MPI communicator
 #endif
 
+//! Communicator of all processes, usable with or without MPI.
+/*!
+  Returns \c MPI_COMM_WORLD with MPI, and the dummy communicator \c 0
+  without MPI (\c _NO_MPI). Write <tt>mpi::comm_world()</tt> instead of
+  \c MPI_COMM_WORLD so that the same code builds in both cases.
+*/
+inline comm_type comm_world() {
+  // Inside this namespace, MPI_COMM_WORLD is the macro from mpi.h with MPI,
+  // or mptensor::mpi::MPI_COMM_WORLD without MPI.
+  return MPI_COMM_WORLD;
+}
+
 extern int rank;
 extern int size;
 extern bool is_root;
