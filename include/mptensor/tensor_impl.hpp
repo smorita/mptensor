@@ -20,7 +20,7 @@
 
 /*!
   \file   tensor_impl.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Jan 14 2015
 
   \brief  Implementation of tensor class
@@ -1110,7 +1110,6 @@ Tensor<MatrixType> reshape(const Tensor<MatrixType> &T, const Shape &shape_new) 
 }
 
 namespace internal {
-//! \cond
 template <typename MatrixType>
 Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &T, const UAxes &axes,
                                   size_t urank_new) {
@@ -1247,7 +1246,6 @@ Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &T, const UShape &shape
 
   return T_new;
 };
-//! \endcond
 }  // namespace internal
 
 //! Slice a tensor.
@@ -1861,8 +1859,8 @@ int svd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
   \f]
 
   \param[in] a A tensor to be decomposed.
-  \param[in] row Axes for left singular vectors.
-  \param[in] col Axes for right singular vectors.
+  \param[in] axes_row Axes for left singular vectors.
+  \param[in] axes_col Axes for right singular vectors.
   \param[out] u Tensor \f$ U \f$ corresponds to left singular vectors.
   \param[out] s Singular values.
   \param[out] vt Tensor \f$ V^\dagger \f$ corresponds to right singular vectors.
@@ -2236,8 +2234,8 @@ int eigh(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col
 //! Compute the eigenvalues of a complex Hermitian or real symmetric tensor
 /*!
   \param[in] a A tensor
-  \param[in] row Axes for left singular vectors.
-  \param[in] col Axes for right singular vectors.
+  \param[in] axes_row Axes for left singular vectors.
+  \param[in] axes_col Axes for right singular vectors.
   \param[out] w Eigenvalues
 
   \return Information from linear-algebra library.
@@ -2475,8 +2473,8 @@ int eig(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
 //! Compute the eigenvalues of a general tensor
 /*!
   \param[in] a A tensor
-  \param[in] row Axes for left singular vectors.
-  \param[in] col Axes for right singular vectors.
+  \param[in] axes_row Axes for left singular vectors.
+  \param[in] axes_col Axes for right singular vectors.
   \param[out] w Eigenvalues
 
   \return Information from linear-algebra library.
@@ -2539,8 +2537,8 @@ int solve(const Tensor<MatrixType> &a, const std::vector<typename MatrixType::va
 
 //! Solve linear equation \f$ AX=B\f$.
 /*!
-  \param[in] a The coefficient matrix A. a.internal_shape() = (M,M)
-  \param[in] b The right hand side matrix or vector B. b.internal_shape() = (M,N) or (M)
+  \param[in] a The coefficient matrix A. a.shape() = (M,M)
+  \param[in] b The right hand side matrix or vector B. b.shape() = (M,N) or (M)
   \param[out] x The solution X. Returned shape is identical to b.
 
   \return Information from linear-algebra library.

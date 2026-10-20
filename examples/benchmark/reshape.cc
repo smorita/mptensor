@@ -20,7 +20,7 @@
 
 /*!
   \file   benchmark/reshape.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Dec 24 2015
   \brief  Benchmark of reshape
 */

@@ -20,7 +20,7 @@
 
 /*!
   \file   timer.hpp
-  \author Satoshi Morita <morita@morita-epson3>
+  \author Satoshi Morita
   \date   Sep 5 2019
   \brief  Timer
 */

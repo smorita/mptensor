@@ -20,7 +20,7 @@
 
 /*!
   \file   rsvd_impl.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Feb 3 2016
 
   \brief  Implementation of RSVD.

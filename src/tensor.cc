@@ -20,7 +20,7 @@
 
 /*!
   \file   tensor.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Jan 13 2015
 
   \brief  utility functions for Tensor class

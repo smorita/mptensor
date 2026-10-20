@@ -20,7 +20,7 @@
 
 /*!
   \file   tensor.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Jan 14 2015
 
   \brief  Tensor class
@@ -41,12 +41,30 @@
 
 namespace mptensor {
 
+template <typename MatrixType>
+class Tensor;
+
 namespace internal {
+//! \ingroup Internal
 //! Tag: the shape argument of the constructor is already normalized.
 struct normalized_t {
   explicit normalized_t() = default;
 };
+//! \ingroup Internal
+//! Value of normalized_t.
 inline constexpr normalized_t normalized{};
+
+// Declared before the Tensor class: Doxygen 1.9.8 otherwise applies the
+// class's trailing private access to a later namespace block.
+//! \ingroup Internal
+//! Body of transpose(): \c axes are already normalized.
+template <typename MatrixType>
+Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &a, const UAxes &axes,
+                                  size_t urank_new);
+//! \ingroup Internal
+//! Body of reshape(): \c shape_new is already normalized.
+template <typename MatrixType>
+Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &a, const UShape &shape_new);
 }  // namespace internal
 
 /* Class definition */
@@ -210,14 +228,6 @@ Tensor<MatrixType> slice(const Tensor<MatrixType> &a, const Index &index_begin,
                          const Index &index_end);
 template <typename MatrixType>
 Tensor<MatrixType> extend(const Tensor<MatrixType> &a, const Shape &shape_new);
-
-namespace internal {
-template <typename MatrixType>
-Tensor<MatrixType> transpose_impl(const Tensor<MatrixType> &a, const UAxes &axes,
-                                  size_t urank_new);
-template <typename MatrixType>
-Tensor<MatrixType> reshape_impl(const Tensor<MatrixType> &a, const UShape &shape_new);
-}  // namespace internal
 //! \}
 
 //! \ingroup LinearAlgebra

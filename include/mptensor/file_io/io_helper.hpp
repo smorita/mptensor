@@ -20,7 +20,7 @@
 
 /*!
   \file   io_helper.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Mar 18 2020
 
   \brief  Header file of helper functions for file io.

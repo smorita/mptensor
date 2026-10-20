@@ -20,7 +20,7 @@
 
 /*!
   \file   matrix.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Thu Oct  8 15:04:31 2015
   \brief  List of header files for matrix classes
 

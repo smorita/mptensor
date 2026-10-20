@@ -20,7 +20,7 @@
 
 /*!
   \file   version.hpp
-  \author Satoshi Morita <smorita@keio.jp>
+  \author Satoshi Morita
   \date   Apr 22 2026
 
   \brief  Version of mptensor.

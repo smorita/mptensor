@@ -20,7 +20,7 @@
 
 /*!
   \file   load.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Mar 18 2020
   \brief  Test code for load function
 */

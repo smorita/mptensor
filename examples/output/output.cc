@@ -20,7 +20,7 @@
 
 /*!
   \file   output.cc
-  \author Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+  \author Synge Todo
   \date   February 16 2017
   \brief  Print out of mptensor
 */

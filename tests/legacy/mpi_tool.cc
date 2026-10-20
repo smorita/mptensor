@@ -20,7 +20,7 @@
 
 /*!
   \file   mpi_tool.cc
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   January 14 2015
   \brief  Some utilities for MPI
 */

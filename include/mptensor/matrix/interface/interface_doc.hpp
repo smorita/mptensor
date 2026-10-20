@@ -20,7 +20,7 @@
 
 /*!
   \file   interface_doc.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
 
   \brief  Documentation of Matrix class interface.
 */

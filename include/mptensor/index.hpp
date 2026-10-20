@@ -20,7 +20,7 @@
 
 /*!
   \file   index.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Jan 08 2015
 
   \brief  header file of BasicIndex class template
@@ -43,11 +43,15 @@
 #include <vector>
 
 namespace mptensor {
-//! \ingroup Index
-//! \{
 
-//! Library-internal helpers and types; not part of the public API.
+//! Library-internal helpers and types.
+/*!
+  \ingroup Internal
+  \warning Not part of the public API. These names may change or be removed
+  without notice, and user code should not use them.
+*/
 namespace internal {
+//! \ingroup Internal
 //! True for unscoped enumerations (implicitly convertible to their underlying type).
 template <typename I, bool = std::is_enum_v<I>>
 struct is_unscoped_enum : std::false_type {};
@@ -55,11 +59,13 @@ template <typename I>
 struct is_unscoped_enum<I, true>
     : std::bool_constant<std::is_convertible_v<I, std::underlying_type_t<I>>> {};
 
+//! \ingroup Internal
 //! True for integer types and unscoped enumerations (accepted as index values).
 template <typename I>
 inline constexpr bool is_index_value_v =
     std::is_integral_v<I> || is_unscoped_enum<I>::value;
 
+//! \ingroup Internal
 //! Convert an integer to \c T, or throw std::out_of_range if it does not fit.
 template <typename T, typename I>
 T checked_index_cast(I value) {
@@ -85,6 +91,7 @@ T checked_index_cast(I value) {
 }
 }  // namespace internal
 
+//! \ingroup Index
 //! List of non-negative or signed integers used as an index, axes, or shape.
 /*!
   \c Index (= \c Axes = \c Shape) is the public type. \c internal::UIndex
@@ -96,6 +103,13 @@ class BasicIndex {
  public:
   using value_type = T;
   using index_t = std::vector<T>;
+
+ private:
+  // Declared before the public members: Doxygen 1.9.8 otherwise applies the
+  // trailing private access to entities in a later namespace block.
+  index_t idx;
+
+ public:
 
   BasicIndex() = default;
   BasicIndex(const index_t& index) : idx(index) {}
@@ -140,11 +154,9 @@ class BasicIndex {
     idx.insert(idx.end(), rhs.idx.begin(), rhs.idx.end());
     return *this;
   }
-
- private:
-  index_t idx;
 };
 
+//! \ingroup Index
 /*! The format is the same as a list of python, for example "[0, 1, 2]". */
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const BasicIndex<T>& idx) {
@@ -155,25 +167,45 @@ std::ostream& operator<<(std::ostream& os, const BasicIndex<T>& idx) {
   return os;
 }
 
+//! \ingroup Index
 //! Joint two indices: Index(0,1) + Index(2,3) = Index(0,1,2,3)
 template <typename T>
 BasicIndex<T> operator+(const BasicIndex<T>& lhs, const BasicIndex<T>& rhs) {
   return (BasicIndex<T>(lhs) += rhs);
 }
 
-using Index = BasicIndex<std::ptrdiff_t>;  //!< Public element index.
-using Axes = Index;                        //!< Public axes.
-using Shape = Index;                       //!< Public shape.
+//! \ingroup Index
+//! Public element index.
+using Index = BasicIndex<std::ptrdiff_t>;
+//! \ingroup Index
+//! Public axes.
+using Axes = Index;
+//! \ingroup Index
+//! Public shape.
+using Shape = Index;
+
 
 namespace internal {
-using UIndex = BasicIndex<std::size_t>;  //!< Internal element index.
-using UAxes = UIndex;                    //!< Internal axes.
-using UShape = UIndex;                   //!< Internal shape.
+//! \ingroup Internal
+//! Internal element index.
+using UIndex = BasicIndex<std::size_t>;
+//! \ingroup Internal
+//! Internal axes.
+using UAxes = UIndex;
+//! \ingroup Internal
+//! Internal shape.
+using UShape = UIndex;
 
+//! \ingroup Internal
 //! Normalize one value into [0, n) (or [0, n] if \c end_inclusive).
 /*!
+  \param v Value to normalize; negative values count from \c n.
+  \param n Size of the range (rank or dimension).
+  \param end_inclusive Accept \c n itself (for an exclusive slice end).
+  \param kind Name of the value shown in the error message, e.g. "axis".
   \param position Element number shown in the error message; negative for a
   scalar argument.
+  \throw std::out_of_range if \c v is out of range.
 */
 inline size_t normalize_value(std::ptrdiff_t v, size_t n, bool end_inclusive,
                               const char* kind, std::ptrdiff_t position) {
@@ -190,6 +222,7 @@ inline size_t normalize_value(std::ptrdiff_t v, size_t n, bool end_inclusive,
   return static_cast<size_t>(v < 0 ? v + sn : v);
 }
 
+//! \ingroup Internal
 //! [0, 1, ..., n-1]
 inline UAxes identity_axes(size_t n) {
   UAxes axes;
@@ -198,6 +231,7 @@ inline UAxes identity_axes(size_t n) {
   return axes;
 }
 
+//! \ingroup Internal
 //! Normalize a scalar slice [begin, end) on an axis of size \c n.
 /*! \throw std::out_of_range if a bound is out of range or the slice is empty. */
 inline std::pair<size_t, size_t> normalize_slice_range(std::ptrdiff_t begin,
@@ -215,6 +249,7 @@ inline std::pair<size_t, size_t> normalize_slice_range(std::ptrdiff_t begin,
   return {b, e};
 }
 
+//! \ingroup Internal
 //! Normalize Index-style slice bounds; raw begin[r] == end[r] means the full axis.
 inline void normalize_slice_ranges(const Index& begin, const Index& end,
                                    const UShape& shape, UIndex& ubegin,
@@ -242,11 +277,13 @@ inline void normalize_slice_ranges(const Index& begin, const Index& end,
 }
 }  // namespace internal
 
+//! \ingroup Index
 //! Normalize an axis: [-rank, rank) -> [0, rank).
 inline size_t normalize_axis(std::ptrdiff_t a, size_t rank) {
   return internal::normalize_value(a, rank, false, "axis", -1);
 }
 
+//! \ingroup Index
 //! Normalize each axis: [-rank, rank) -> [0, rank).
 inline internal::UAxes normalize_axes(const Axes& axes, size_t rank) {
   internal::UAxes result;
@@ -258,11 +295,13 @@ inline internal::UAxes normalize_axes(const Axes& axes, size_t rank) {
   return result;
 }
 
+//! \ingroup Index
 //! Normalize an element index: [-n, n) -> [0, n).
 inline size_t normalize_index(std::ptrdiff_t i, size_t n) {
   return internal::normalize_value(i, n, false, "index", -1);
 }
 
+//! \ingroup Index
 //! Normalize a global element index against \c shape.
 inline internal::UIndex normalize_index(const Index& idx,
                                       const internal::UShape& shape) {
@@ -281,11 +320,13 @@ inline internal::UIndex normalize_index(const Index& idx,
   return result;
 }
 
+//! \ingroup Index
 //! Normalize an exclusive slice end: [-n, n] -> [0, n].
 inline size_t normalize_slice_end(std::ptrdiff_t e, size_t n) {
   return internal::normalize_value(e, n, true, "slice end", -1);
 }
 
+//! \ingroup Index
 //! Convert a public shape to the internal type. Negative sizes are invalid.
 inline internal::UShape to_internal_shape(const Shape& s) {
   internal::UShape result;
@@ -301,6 +342,7 @@ inline internal::UShape to_internal_shape(const Shape& s) {
   return result;
 }
 
+//! \ingroup Index
 //! Convert an internal index to the public type.
 inline Index to_public(const internal::UIndex& u) {
   Index result;
@@ -318,6 +360,7 @@ inline Index to_public(const internal::UIndex& u) {
   Negative values are allowed, e.g. <tt>range(-1, -5, -1)</tt> is
   <tt>[-1, -2, -3, -4]</tt>, which reverses the axes of a rank-4 tensor.
 
+//! \ingroup Index
   \throw std::invalid_argument if <tt>step == 0</tt>.
 */
 inline Index range(const std::ptrdiff_t start, const std::ptrdiff_t stop,
@@ -345,15 +388,16 @@ inline Index range(const std::ptrdiff_t start, const std::ptrdiff_t stop,
   return index;
 }
 
+//! \ingroup Index
 //! Same as <tt>range(start, stop, 1)</tt>.
 inline Index range(const std::ptrdiff_t start, const std::ptrdiff_t stop) {
   return range(start, stop, 1);
 }
 
+//! \ingroup Index
 //! Same as <tt>range(0, stop, 1)</tt>.
 inline Index range(const std::ptrdiff_t stop) { return range(0, stop, 1); }
 
-//! \}
 }  // namespace mptensor
 
 #endif  //  _INDEX_HPP_

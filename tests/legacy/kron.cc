@@ -20,7 +20,7 @@
 
 /*!
   \file   kron.cc
-  \author Satoshi Morita <smorita@keio.jp>
+  \author Satoshi Morita
   \date   May 09 2023
   \brief  Test code for kron
 */

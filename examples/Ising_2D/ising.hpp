@@ -20,7 +20,7 @@
 
 /*!
   \file   ising.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
   \date   Thu Nov 5 2015
   \brief  Two-dimensional Ising model
 */

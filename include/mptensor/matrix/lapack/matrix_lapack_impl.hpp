@@ -20,7 +20,7 @@
 
 /*!
   \file   matrix_lapack_impl.hpp
-  \author Satoshi Morita <morita@issp.u-tokyo.ac.jp>
+  \author Satoshi Morita
 
   \brief  Implemation of mptensor::lapack::Matrix.
 */

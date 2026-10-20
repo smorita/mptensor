@@ -20,7 +20,7 @@
 
 /*!
   \file   file_io.hpp
-  \author Satoshi Morita <smorita@keio.jp>
+  \author Satoshi Morita
 
   \brief  Header file for file I/O functions.
 */

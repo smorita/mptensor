@@ -20,7 +20,7 @@
 
 /*!
   \file   atrg.cc
-  \author Daiki Adachi <daiki.adachi@phys.s.u-tokyo.ac.jp>
+  \author Daiki Adachi
   \date   Oct 29, 2020
 
   \brief  Two-dimensional Ising model by ATRG
