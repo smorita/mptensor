@@ -82,6 +82,9 @@ template <typename MatrixType>
 int rsvd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
          Tensor<MatrixType> &u, std::vector<double> &s, Tensor<MatrixType> &vt,
          const size_t target_rank, const size_t oversamp) {
+  if (target_rank == 0) {
+    throw std::invalid_argument("mptensor: rsvd() target_rank must be positive");
+  }
   const internal::UAxes row = normalize_axes(axes_row, a.rank());
   const internal::UAxes col = normalize_axes(axes_col, a.rank());
   assert(row.size() > 0);
@@ -155,6 +158,9 @@ int rsvd(Func1 &multiply_row, Func2 &multiply_col, const Shape &shape_row,
          const Shape &shape_col, Tensor<MatrixType> &u, std::vector<double> &s,
          Tensor<MatrixType> &vt, const size_t target_rank,
          const size_t oversamp) {
+  if (target_rank == 0) {
+    throw std::invalid_argument("mptensor: rsvd() target_rank must be positive");
+  }
   (void)to_internal_shape(shape_row);  // validate
   const size_t rank_row = shape_row.size();
   const size_t rank_col = shape_col.size();

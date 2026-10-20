@@ -1046,7 +1046,7 @@ Tensor<MatrixType> &Tensor<MatrixType>::operator/=(value_type rhs) {
 template <typename MatrixType>
 Tensor<MatrixType> &Tensor<MatrixType>::operator=(value_type rhs) {
   const size_t n = Mat.local_size();
-  for (int i = 0; i < n; ++i) Mat[i] = rhs;
+  for (size_t i = 0; i < n; ++i) Mat[i] = rhs;
   return (*this);
 }
 
@@ -1927,6 +1927,9 @@ int svd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
 template <typename MatrixType>
 int psvd(const Tensor<MatrixType> &a, std::vector<double> &s,
          const size_t target_rank) {
+  if (target_rank == 0) {
+    throw std::invalid_argument("mptensor: psvd() target_rank must be positive");
+  }
   int info = svd(a, s);
   if (s.size() > target_rank) s.resize(target_rank);
   return info;
@@ -1952,6 +1955,9 @@ template <typename MatrixType>
 int psvd(const Tensor<MatrixType> &a, Tensor<MatrixType> &u,
          std::vector<double> &s, Tensor<MatrixType> &vt,
          const size_t target_rank) {
+  if (target_rank == 0) {
+    throw std::invalid_argument("mptensor: psvd() target_rank must be positive");
+  }
   int info = svd(a, u, s, vt);
   if (s.size() > target_rank) {
     s.resize(target_rank);
@@ -1978,6 +1984,9 @@ int psvd(const Tensor<MatrixType> &a, Tensor<MatrixType> &u,
 template <typename MatrixType>
 int psvd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
          std::vector<double> &s, const size_t target_rank) {
+  if (target_rank == 0) {
+    throw std::invalid_argument("mptensor: psvd() target_rank must be positive");
+  }
   int info = svd(a, axes_row, axes_col, s);
   if (s.size() > target_rank) s.resize(target_rank);
   return info;
@@ -2010,6 +2019,9 @@ template <typename MatrixType>
 int psvd(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
          Tensor<MatrixType> &u, std::vector<double> &s, Tensor<MatrixType> &vt,
          const size_t target_rank) {
+  if (target_rank == 0) {
+    throw std::invalid_argument("mptensor: psvd() target_rank must be positive");
+  }
   int info = svd(a, axes_row, axes_col, u, s, vt);
   if (s.size() > target_rank) {
     s.resize(target_rank);

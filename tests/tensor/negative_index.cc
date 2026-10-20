@@ -186,6 +186,59 @@ TYPED_TEST(NegativeIndex, GetAndSetValue) {
   EXPECT_EQ(max_over_ranks(mine ? 1.0 : 0.0, X.get_comm()), 1.0);
 }
 
+TYPED_TEST(NegativeIndex, Psvd) {
+  const TypeParam A = make_rank4<TypeParam>();
+  TypeParam U, V, U2, V2;
+  std::vector<double> S, S2;
+  psvd(A, Axes(-2, 0), Axes(1, -1), U, S, V, 5);  // == Axes(2, 0), Axes(1, 3)
+  psvd(A, Axes(2, 0), Axes(1, 3), U2, S2, V2, 5);
+  EXPECT_LT(max_vector_diff(S, S2), kEps);
+  EXPECT_EQ(U.shape(), U2.shape());
+  EXPECT_EQ(V.shape(), V2.shape());
+}
+
+TYPED_TEST(NegativeIndex, Rsvd) {
+  const TypeParam A = make_rank4<TypeParam>();
+  TypeParam U, V, U2, V2;
+  std::vector<double> S, S2;
+  const unsigned int seed = 1234u + static_cast<unsigned int>(A.get_comm_rank());
+  set_seed(seed);
+  rsvd(A, Axes(-2, 0), Axes(1, -1), U, S, V, 5, 5);  // == Axes(2, 0), Axes(1, 3)
+  set_seed(seed);
+  rsvd(A, Axes(2, 0), Axes(1, 3), U2, S2, V2, 5, 5);
+  EXPECT_LT(max_vector_diff(S, S2), kEps);
+  EXPECT_EQ(U.shape(), U2.shape());
+}
+
+TYPED_TEST(NegativeIndex, Eig) {
+  using T = typename TypeParam::value_type;
+  TypeParam A(Shape(kL, kL, kL, kL));
+  fill_tensor(A, func4_1<T>);
+  std::vector<complex> W, W2;
+  eig(A, Axes(-4, -3), Axes(2, -1), W);  // == Axes(0, 1), Axes(2, 3)
+  eig(A, Axes(0, 1), Axes(2, 3), W2);
+  double scale = 1.0;
+  for (const complex& w : W2) scale = std::max(scale, std::abs(w));
+  EXPECT_LT(max_vector_diff(W, W2), kEps * scale);
+}
+
+TYPED_TEST(NegativeIndex, Solve) {
+  using T = typename TypeParam::value_type;
+  // Diagonally dominant A[i,j,k,l] so that the linear system is well posed.
+  TypeParam A(Shape(kL, kL, kL, kL));
+  fill_tensor(A, [](const Index& idx, const Shape& shape) {
+    const T diag = (idx[0] == idx[2] && idx[1] == idx[3]) ? T(10.0 * kL * kL) : T(0.0);
+    return func4_1<T>(idx, shape) + diag;
+  });
+  TypeParam B(Shape(kL, kL));
+  fill_tensor(B, func2_1<T>);
+  TypeParam X, X2;
+  solve(A, B, X, Axes(-4, -3), Axes(-2, -1), Axes(-2, -1), Axes());
+  solve(A, B, X2, Axes(0, 1), Axes(2, 3), Axes(0, 1), Axes());
+  EXPECT_EQ(X.shape(), X2.shape());
+  EXPECT_LT(max_diff(X, X2), kEps);
+}
+
 template <typename TensorType>
 class NegativeIndexExceptions : public ::testing::Test {};
 TYPED_TEST_SUITE(NegativeIndexExceptions, TensorTypes, TensorTypeNames);
@@ -212,6 +265,25 @@ TYPED_TEST(NegativeIndexExceptions, OutOfRangeIndices) {
   EXPECT_THROW(slice(A, 1, 3, 3), std::out_of_range);   // empty
   EXPECT_THROW(slice(A, Index(0, 2, 0, 0), Index(0, -9, 0, 0)),
                std::out_of_range);  // [2, 2) is empty
+}
+
+TYPED_TEST(NegativeIndexExceptions, ExtendAndContract) {
+  const TypeParam A = make_rank4<TypeParam>();  // (10, 11, 12, 13)
+  EXPECT_THROW(extend(A, Shape(kL, kL + 1, kL + 2, -1)), std::invalid_argument);
+  TypeParam C(Shape(kL, kL + 1, kL, kL + 2));
+  EXPECT_THROW(contract(C, 0, 9), std::out_of_range);
+  EXPECT_THROW(contract(C, -5, 2), std::out_of_range);
+}
+
+TYPED_TEST(NegativeIndexExceptions, ZeroTargetRank) {
+  const TypeParam A = make_rank4<TypeParam>();
+  TypeParam U, V;
+  std::vector<double> S;
+  EXPECT_THROW(psvd(A, Axes(2, 0), Axes(1, 3), U, S, V, 0), std::invalid_argument);
+  EXPECT_THROW(psvd(A, Axes(2, 0), Axes(1, 3), S, 0), std::invalid_argument);
+  EXPECT_TRUE(S.empty());  // outputs untouched
+  EXPECT_THROW(rsvd(A, Axes(2, 0), Axes(1, 3), U, S, V, 0, 5),
+               std::invalid_argument);
 }
 
 TYPED_TEST(NegativeIndexExceptions, NegativeShape) {
