@@ -100,7 +100,7 @@ TEST(BasicIndex, PushResizeAssign) {
 
 TEST(BasicIndex, SortInverseConcatenate) {
   UIndex p(2, 0, 1);
-  EXPECT_EQ(p.inverse(), UIndex(1, 2, 0));
+  EXPECT_EQ(p.inverse_permutation(), UIndex(1, 2, 0));
   p.sort();
   EXPECT_EQ(p, UIndex(0, 1, 2));
   EXPECT_EQ(UIndex(0, 1) + UIndex(2, 3), UIndex(0, 1, 2, 3));
@@ -146,11 +146,24 @@ TEST(BasicIndex, RangeZeroStepThrows) {
   EXPECT_THROW(mptensor::range(0, 3, 0), std::invalid_argument);
 }
 
-TEST(BasicIndex, InverseRejectsNonPermutations) {
-  EXPECT_THROW(UIndex(0, 3).inverse(), std::out_of_range);
-  EXPECT_THROW(SIndex(-1, 0).inverse(), std::out_of_range);
-  EXPECT_THROW(UIndex(0, 0).inverse(), std::invalid_argument);
-  EXPECT_EQ(SIndex(1, 2, 0).inverse(), SIndex(2, 0, 1));
+TEST(BasicIndex, InversePermutationRejectsNonPermutations) {
+  EXPECT_THROW(UIndex(0, 3).inverse_permutation(), std::out_of_range);
+  EXPECT_THROW(SIndex(-1, 0).inverse_permutation(), std::out_of_range);
+  EXPECT_THROW(UIndex(0, 0).inverse_permutation(), std::invalid_argument);
+  EXPECT_EQ(SIndex(1, 2, 0).inverse_permutation(), SIndex(2, 0, 1));
 }
+
+// inverse() is deprecated but must keep working until it is removed.
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+TEST(BasicIndex, DeprecatedInverseMatchesInversePermutation) {
+  const SIndex p(2, 0, 1);
+  EXPECT_EQ(p.inverse(), p.inverse_permutation());
+}
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 }  // namespace

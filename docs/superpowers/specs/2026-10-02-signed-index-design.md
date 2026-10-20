@@ -61,7 +61,8 @@ class BasicIndex {
   void resize(size_t n);
   void assign(size_t n, const T j[]);
   void sort();
-  BasicIndex inverse() const;
+  BasicIndex inverse_permutation() const;  // throws unless a permutation of 0..n-1
+  [[deprecated]] BasicIndex inverse() const;  // old name of inverse_permutation()
   bool operator==(const BasicIndex&) const;
   BasicIndex& operator+=(const BasicIndex&);
 
@@ -228,7 +229,7 @@ No tensor and no communication is involved, but the executable links `mptensor_g
 - `to_internal_shape`: `std::invalid_argument` for negative values.
 - `to_public`: values are preserved through a round trip.
 - `range`: negative ranges, positive and negative `step`, empty when `stop` is not reached in the direction of `step` (including `start > stop` with the default step), exception when `step == 0`.
-- `sort`, `inverse`, `operator==`, `operator+`, `operator<<` work for both `Index` and `UIndex`.
+- `sort`, `inverse_permutation` (and the deprecated `inverse`), `operator==`, `operator+`, `operator<<` work for both `Index` and `UIndex`.
 
 ### 7.4 `tests/tensor/negative_index.cc`
 

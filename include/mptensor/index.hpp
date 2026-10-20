@@ -138,12 +138,15 @@ class BasicIndex {
   void assign(size_t n, const T j[]) { idx.assign(j, j + n); }
   void sort() { std::sort(idx.begin(), idx.end()); }
 
-  //! Inverse permutation: <tt>inv[(*this)[i]] = i</tt>.
+  //! Inverse of a permutation: <tt>inv[(*this)[i]] = i</tt>.
   /*!
+    For example, the inverse permutation of <tt>(2, 0, 1)</tt> is
+    <tt>(1, 2, 0)</tt>.
+
     \throw std::out_of_range if an element is outside <tt>[0, size())</tt>.
     \throw std::invalid_argument if an element appears twice.
   */
-  BasicIndex inverse() const {
+  BasicIndex inverse_permutation() const {
     const size_t n = size();
     BasicIndex inv;
     inv.resize(n);
@@ -151,14 +154,15 @@ class BasicIndex {
     for (size_t i = 0; i < n; ++i) {
       if (idx[i] < 0 || static_cast<size_t>(idx[i]) >= n) {
         std::ostringstream ss;
-        ss << "mptensor: inverse() of " << *this << ": element " << +idx[i]
+        ss << "mptensor: inverse_permutation() of " << *this << ": element "
+           << +idx[i]
            << " at position " << i << " is out of range [0, " << n << ")";
         throw std::out_of_range(ss.str());
       }
       const size_t j = static_cast<size_t>(idx[i]);
       if (seen[j]) {
         std::ostringstream ss;
-        ss << "mptensor: inverse() of " << *this << ": " << +idx[i]
+        ss << "mptensor: inverse_permutation() of " << *this << ": " << +idx[i]
            << " appears more than once, so it is not a permutation";
         throw std::invalid_argument(ss.str());
       }
@@ -166,6 +170,12 @@ class BasicIndex {
       inv[j] = static_cast<T>(i);
     }
     return inv;
+  }
+
+  //! Same as inverse_permutation().
+  /*! \deprecated Use inverse_permutation(); inverse() will be removed. */
+  [[deprecated("use inverse_permutation()")]] BasicIndex inverse() const {
+    return inverse_permutation();
   }
 
   bool operator==(const BasicIndex& rhs) const { return idx == rhs.idx; }
