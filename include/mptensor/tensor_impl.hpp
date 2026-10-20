@@ -991,7 +991,9 @@ Tensor<lapack::Matrix<typename MatrixType::value_type>> Tensor<MatrixType>::gath
   if (!(axes_map == internal::identity_axes(n))) {
     change_configuration(n / 2, internal::identity_axes(n));
   }
-  Tensor<lapack::Matrix<typename MatrixType::value_type>> T(get_comm(), get_matrix().flatten());
+  // A LAPACK tensor has only a dummy communicator; MPI_Comm may not convert to it.
+  using LocalTensor = Tensor<lapack::Matrix<typename MatrixType::value_type>>;
+  LocalTensor T(typename LocalTensor::comm_type{}, get_matrix().flatten());
   return internal::reshape_impl(T, Dim);
 }
 
@@ -2387,7 +2389,9 @@ int eig(const Tensor<MatrixType> &a, std::vector<complex> &w,
   size_t n = shape[0];
   w.resize(n);
 
-  Tensor<lapack::Matrix<complex>> z_t(a.get_comm(), internal::UShape(n, n), 1, internal::normalized);
+  // A LAPACK tensor has only a dummy communicator; MPI_Comm may not convert to it.
+  Tensor<lapack::Matrix<complex>> z_t(lapack::Matrix<complex>::comm_type{}, internal::UShape(n, n), 1,
+                                      internal::normalized);
 
   int info;
   info = matrix_eig(a_t.get_matrix(), w, z_t.get_matrix());
@@ -2470,7 +2474,9 @@ int eig(const Tensor<MatrixType> &a, const Axes &axes_row, const Axes &axes_col,
   for (size_t i = 0; i < urank; ++i) shape_z[i] = shape[i];
   shape_z[urank] = size;
 
-  Tensor<lapack::Matrix<complex>> z_t(a.get_comm(), shape_z, urank, internal::normalized);
+  // A LAPACK tensor has only a dummy communicator; MPI_Comm may not convert to it.
+  Tensor<lapack::Matrix<complex>> z_t(lapack::Matrix<complex>::comm_type{}, shape_z, urank,
+                                      internal::normalized);
 
   w.resize(size);
 
